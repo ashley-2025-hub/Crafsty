@@ -8,9 +8,15 @@ import {
   doc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const form = document.getElementById("productForm");
+/* =========================
+   ELEMENTS
+========================= */
 
-const productList = document.getElementById("productList");
+const form =
+  document.getElementById("productForm");
+
+const productList =
+  document.getElementById("productList");
 
 /* =========================
    ADD PRODUCT
@@ -20,42 +26,42 @@ form.addEventListener("submit", async (e) => {
 
   e.preventDefault();
 
-  const name =
-    document.getElementById("name").value;
+  const product = {
 
-  const price =
-    Number(document.getElementById("price").value);
+    name:
+      document.getElementById("name").value,
 
-  const emoji =
-    document.getElementById("emoji").value;
+    price:
+      Number(
+        document.getElementById("price").value
+      ),
 
-  const coverImage =
-    document.getElementById("coverImage").value;
+    emoji:
+      document.getElementById("emoji").value,
 
-  const displayImages =
-    document.getElementById("displayImages")
-      .value
-      .split("\n")
-      .map(img => img.trim())
-      .filter(img => img !== "");
+    coverImage:
+      document.getElementById("coverImage").value,
 
-  const description =
-    document.getElementById("description").value;
+    displayImages:
+      document.getElementById("displayImages")
+        .value
+        .split("\n")
+        .map(img => img.trim())
+        .filter(img => img !== ""),
+
+    description:
+      document.getElementById("description").value
+
+  };
 
   try {
 
-    await addDoc(collection(db, "products"), {
+    await addDoc(
+      collection(db, "products"),
+      product
+    );
 
-      name,
-      price,
-      emoji,
-      coverImage,
-      displayImages,
-      description
-
-    });
-
-    alert("Product added!");
+    alert("Product added successfully!");
 
     form.reset();
 
@@ -65,7 +71,9 @@ form.addEventListener("submit", async (e) => {
 
     console.error(error);
 
-    alert("Failed to add product");
+    alert(
+      "Failed to add product.\nCheck console."
+    );
 
   }
 
@@ -81,62 +89,73 @@ async function loadProducts() {
 
   productList.innerHTML = "";
 
-  const snapshot = await getDocs(
-    collection(db, "products")
-  );
+  try {
 
-  snapshot.forEach((docSnap) => {
+    const snapshot = await getDocs(
+      collection(db, "products")
+    );
 
-    const product = docSnap.data();
+    snapshot.forEach((docSnap) => {
 
-    const card = document.createElement("div");
+      const product = docSnap.data();
 
-    card.className = "product-card";
+      const card =
+        document.createElement("div");
 
-    card.innerHTML = `
+      card.className = "product-card";
 
-      <img
-        src="${product.coverImage || '1.png'}"
-        class="product-cover"
-      >
+      card.innerHTML = `
 
-      <h3>
-        ${product.emoji || "🧸"}
-        ${product.name}
-      </h3>
+        <img
+          src="${product.coverImage || '1.png'}"
+          class="product-cover"
+        >
 
-      <p>
-        ${(product.price || 0).toLocaleString()} VND
-      </p>
+        <h3>
+          ${product.emoji || "🧸"}
+          ${product.name || "Unnamed"}
+        </h3>
 
-      <p>
-        ${(product.displayImages || []).length}
-        display images
-      </p>
+        <p>
+          ${(product.price || 0).toLocaleString()} VND
+        </p>
 
-      <button class="delete-btn">
-        Delete
-      </button>
+        <button class="delete-btn">
+          Delete
+        </button>
 
-    `;
+      `;
 
-    const deleteBtn =
-      card.querySelector(".delete-btn");
+      const deleteBtn =
+        card.querySelector(".delete-btn");
 
-    deleteBtn.addEventListener("click", async () => {
+      deleteBtn.addEventListener(
+        "click",
+        async () => {
 
-      await deleteDoc(
-        doc(db, "products", docSnap.id)
+          await deleteDoc(
+            doc(db, "products", docSnap.id)
+          );
+
+          loadProducts();
+
+        }
       );
 
-      loadProducts();
+      productList.appendChild(card);
 
     });
 
-    productList.appendChild(card);
+  } catch (error) {
 
-  });
+    console.error(error);
+
+  }
 
 }
+
+/* =========================
+   START
+========================= */
 
 loadProducts();
