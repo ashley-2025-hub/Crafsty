@@ -1,140 +1,208 @@
 import { db } from "./firebase-config.js";
 
 import {
+  doc,
+  getDoc,
   collection,
-  addDoc,
-  getDocs,
-  deleteDoc,
-  doc
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-const form = document.getElementById("productForm");
-const productList = document.getElementById("productList");
-
-const productsCollection = collection(db, "products");
+  getDocs
+} from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
 /* =========================
-   LOAD PRODUCTS
+   ELEMENTS
 ========================= */
-async function loadProducts() {
-  productList.innerHTML = "";
+
+const productTitle =
+  document.getElementById("productTitle");
+
+const productName =
+  document.getElementById("productName");
+
+const productPrice =
+  document.getElementById("productPrice");
+
+const productDescription =
+  document.getElementById("productDescription");
+
+const mainImage =
+  document.getElementById("mainImage");
+
+const thumbnailRow =
+  document.getElementById("thumbnailRow");
+
+const suggestionList =
+  document.getElementById("suggestionList");
+
+/* =========================
+   GET PRODUCT ID
+========================= */
+
+const params =
+  new URLSearchParams(window.location.search);
+
+const productId =
+  params.get("id");
+
+/* =========================
+   LOAD PRODUCT
+========================= */
+
+async function loadProduct() {
+
+  if (!productId) return;
 
   try {
-    const snapshot = await getDocs(productsCollection);
 
-    snapshot.forEach((docSnap) => {
-      const product = docSnap.data();
+    const productRef =
+      doc(db, "products", productId);
 
-      const card = document.createElement("div");
-      card.className = "product-card";
+    const snapshot =
+      await getDoc(productRef);
 
-      card.innerHTML = `
-        <img src="${product.coverImage}" class="product-cover">
+    if (!snapshot.exists()) {
 
-        <h3>${product.emoji || ""} ${product.name}</h3>
+      productTitle.textContent =
+        "Product Not Found";
 
-        <p>${product.price.toLocaleString()} VND</p>
+      return;
+    }
 
-        <p>${product.displayImages?.length || 0} display images</p>
+    const product = snapshot.data();
 
-        <button class="delete-btn" data-id="${docSnap.id}">
-          Delete
-        </button>
-      `;
+    /* =========================
+       TEXT
+    ========================= */
 
-      productList.appendChild(card);
-    });
+    productTitle.textContent =
+      product.name;
 
-    addDeleteEvents();
+    productName.textContent =
+      `${product.emoji || "🧶"} ${product.name}`;
+
+    productPrice.textContent =
+      `${Number(product.price || 0)
+        .toLocaleString()} VND`;
+
+    productDescription.textContent =
+      product.description || "";
+
+    /* =========================
+       IMAGES
+    ========================= */
+
+    const images = [
+
+      product.coverImage,
+
+      ...(product.displayImages || [])
+
+    ].filter(Boolean);
+
+    if (images.length > 0) {
+
+      mainImage.src = images[0];
+
+      thumbnailRow.innerHTML = "";
+
+      images.forEach((imageUrl) => {
+
+        const img =
+          document.createElement("img");
+
+        img.src = imageUrl;
+
+        img.className =
+          "thumbnail-image";
+
+        img.addEventListener(
+          "click",
+          () => {
+
+            mainImage.src = imageUrl;
+          }
+        );
+
+        thumbnailRow.appendChild(img);
+
+      });
+
+    }
+
+    /* =========================
+       SUGGESTIONS
+    ========================= */
+
+    loadSuggestions(productId);
 
   } catch (error) {
-    console.error("Load error:", error);
+
+    console.error(error);
+
+    productTitle.textContent =
+      "Failed To Load Product";
   }
 }
 
 /* =========================
-   ADD PRODUCT
+   SUGGESTIONS
 ========================= */
-form.addEventListener("submit", async (e) => {
-  e.preventDefault();
 
-  const name = document.getElementById("name").value.trim();
+async function loadSuggestions(currentId) {
 
-  const price = Number(
-    document.getElementById("price").value
-  );
-
-  const emoji = document.getElementById("emoji").value.trim();
-
-  const coverImage = document
-    .getElementById("coverImage")
-    .value.trim();
-
-  const description = document
-    .getElementById("description")
-    .value.trim();
-
-  const displayImagesRaw = document
-    .getElementById("displayImages")
-    .value;
-
-  const displayImages = displayImagesRaw
-    .split("\n")
-    .map((img) => img.trim())
-    .filter((img) => img !== "");
-
-  if (!name || !price || !coverImage) {
-    alert("Please fill all required fields.");
-    return;
-  }
+  if (!suggestionList) return;
 
   try {
-    await addDoc(productsCollection, {
-      name,
-      price,
-      emoji,
-      coverImage,
-      description,
-      displayImages,
-      createdAt: Date.now()
+
+    const snapshot = await getDocs(
+      collection(db, "products")
+    );
+
+    suggestionList.innerHTML = "";
+
+    snapshot.forEach((docSnap) => {
+
+      if (docSnap.id === currentId) return;
+
+      const product = docSnap.data();
+
+      const card =
+        document.createElement("div");
+
+      card.className =
+        "catalog-card";
+
+      card.innerHTML = `
+        <img
+          src="${product.coverImage || ''}"
+          class="catalog-image"
+        >
+
+        <h3>
+          ${product.emoji || "🧶"}
+          ${product.name}
+        </h3>
+      `;
+
+      card.addEventListener(
+        "click",
+        () => {
+
+          window.location.href =
+            `product.html?id=${docSnap.id}`;
+        }
+      );
+
+      suggestionList.appendChild(card);
+
     });
-
-    alert("Product added!");
-
-    form.reset();
-
-    loadProducts();
 
   } catch (error) {
-    console.error("Add product error:", error);
-    alert("Failed to add product.");
+
+    console.error(error);
   }
-});
-
-/* =========================
-   DELETE PRODUCT
-========================= */
-function addDeleteEvents() {
-  const deleteButtons =
-    document.querySelectorAll(".delete-btn");
-
-  deleteButtons.forEach((button) => {
-    button.addEventListener("click", async () => {
-      const id = button.dataset.id;
-
-      try {
-        await deleteDoc(doc(db, "products", id));
-
-        loadProducts();
-
-      } catch (error) {
-        console.error("Delete error:", error);
-      }
-    });
-  });
 }
 
 /* =========================
    START
 ========================= */
-loadProducts();
+
+loadProduct();
