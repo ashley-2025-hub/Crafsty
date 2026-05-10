@@ -6,8 +6,10 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
 /* =========================================
-   ELEMENTS
+   GLOBALS
 ========================================= */
+
+const cart = [];
 
 const catalog =
   document.getElementById("products");
@@ -23,12 +25,6 @@ const emptyText =
 
 const orderData =
   document.getElementById("orderData");
-
-/* =========================================
-   STATE
-========================================= */
-
-const cart = [];
 
 /* =========================================
    BACKGROUND THEMES
@@ -55,34 +51,23 @@ window.changeBackground =
 window.showSection =
   function(section) {
 
-    const shopSection =
+    const shop =
       document.getElementById("shopSection");
 
     const catalogSection =
       document.getElementById("catalogSection");
 
-    if (
-      !shopSection ||
-      !catalogSection
-    ) {
-      return;
-    }
-
     if (section === "shop") {
 
-      shopSection.style.display =
-        "block";
+      shop.style.display = "block";
 
-      catalogSection.style.display =
-        "none";
+      catalogSection.style.display = "none";
 
     } else {
 
-      shopSection.style.display =
-        "none";
+      shop.style.display = "none";
 
-      catalogSection.style.display =
-        "block";
+      catalogSection.style.display = "block";
     }
   };
 
@@ -92,12 +77,7 @@ window.showSection =
 
 async function loadProducts() {
 
-  if (!catalog) {
-    console.error(
-      "Missing #products element"
-    );
-    return;
-  }
+  if (!catalog) return;
 
   try {
 
@@ -125,10 +105,10 @@ async function loadProducts() {
       return;
     }
 
-    querySnapshot.forEach((doc) => {
+    querySnapshot.forEach((docSnap) => {
 
       const product =
-        doc.data();
+        docSnap.data();
 
       const card =
         document.createElement("div");
@@ -139,28 +119,24 @@ async function loadProducts() {
       card.innerHTML = `
 
         <img
-          src="${
-            product.coverImage ||
-            "https://placehold.co/600x600?text=No+Image"
-          }"
-          alt="${product.name || "Product"}">
+          src="${product.coverImage || ""}"
+          alt="${product.name || "Product"}"
+        >
 
         <div class="catalog-info">
 
           <h3>
+            ${product.emoji || "🧶"}
             ${product.name || "Unnamed Product"}
           </h3>
 
           <p>
-            ${product.price || 0} VND
+            ${Number(product.price || 0)
+              .toLocaleString()} VND
           </p>
 
-          <button
-            class="add-btn"
-            type="button">
-
+          <button class="add-btn">
             Add To Cart
-
           </button>
 
         </div>
@@ -174,7 +150,21 @@ async function loadProducts() {
         () => addToCart(product)
       );
 
+      card.addEventListener(
+        "click",
+        (event) => {
+
+          if (
+            event.target.classList.contains("add-btn")
+          ) return;
+
+          window.location.href =
+            `product.html?id=${docSnap.id}`;
+        }
+      );
+
       catalog.appendChild(card);
+
     });
 
   } catch (error) {
@@ -209,14 +199,6 @@ function addToCart(product) {
 
 function renderCart() {
 
-  if (
-    !cartElement ||
-    !totalElement ||
-    !emptyText
-  ) {
-    return;
-  }
-
   cartElement.innerHTML = "";
 
   if (cart.length === 0) {
@@ -235,7 +217,7 @@ function renderCart() {
   cart.forEach((item, index) => {
 
     total +=
-      Number(item.price) || 0;
+      Number(item.price || 0);
 
     const li =
       document.createElement("li");
@@ -246,14 +228,11 @@ function renderCart() {
 
         <img
           class="cart-img"
-          src="${
-            item.coverImage ||
-            "https://placehold.co/100x100"
-          }"
-          alt="${item.name}">
+          src="${item.coverImage || ""}"
+        >
 
         <span>
-          ${item.name}
+          ${item.name || "Product"}
         </span>
 
       </div>
@@ -261,13 +240,12 @@ function renderCart() {
       <div class="cart-controls">
 
         <span>
-          ${item.price} VND
+          ${Number(item.price || 0)
+            .toLocaleString()}
         </span>
 
         <button
-          type="button"
           onclick="removeFromCart(${index})">
-
           ✕
         </button>
 
@@ -275,16 +253,14 @@ function renderCart() {
     `;
 
     cartElement.appendChild(li);
+
   });
 
   totalElement.textContent =
-    total;
+    total.toLocaleString();
 
-  if (orderData) {
-
-    orderData.value =
-      JSON.stringify(cart);
-  }
+  orderData.value =
+    JSON.stringify(cart);
 }
 
 /* =========================================
@@ -328,12 +304,4 @@ window.changeSelectedColor =
    START
 ========================================= */
 
-document.addEventListener(
-  "DOMContentLoaded",
-  () => {
-
-    renderCart();
-
-    loadProducts();
-  }
-);
+loadProducts();
