@@ -12,7 +12,9 @@ import {
 let products = [];
 
 let cart =
-  JSON.parse(localStorage.getItem("cart")) || [];
+  JSON.parse(
+    localStorage.getItem("cart")
+  ) || [];
 
 let selectedItem = null;
 
@@ -44,7 +46,9 @@ onSnapshot(
     }));
 
     renderCatalog();
+
     renderSuggestions();
+
     renderCart();
   }
 );
@@ -85,7 +89,8 @@ function addItem(product) {
 
       name: product.name || "",
 
-      price: Number(product.price) || 0,
+      price:
+        Number(product.price) || 0,
 
       coverImage:
         product.coverImage || "",
@@ -112,7 +117,9 @@ function addItem(product) {
 function removeItem(id) {
 
   const item =
-    cart.find(i => i.id === id);
+    cart.find(
+      i => i.id === id
+    );
 
   if (!item) return;
 
@@ -123,7 +130,9 @@ function removeItem(id) {
   if (item.quantity <= 0) {
 
     cart =
-      cart.filter(i => i.id !== id);
+      cart.filter(
+        i => i.id !== id
+      );
   }
 
   saveCart();
@@ -261,11 +270,37 @@ function renderCart() {
   const cartList =
     document.getElementById("cart");
 
+  const totalEl =
+    document.getElementById("total");
+
+  const emptyText =
+    document.getElementById("empty");
+
+  const orderData =
+    document.getElementById("orderData");
+
   if (!cartList) return;
 
   cartList.innerHTML = "";
 
   let total = 0;
+
+  if (cart.length === 0) {
+
+    if (emptyText) {
+
+      emptyText.style.display =
+        "block";
+    }
+
+  } else {
+
+    if (emptyText) {
+
+      emptyText.style.display =
+        "none";
+    }
+  }
 
   cart.forEach(item => {
 
@@ -333,13 +368,16 @@ function renderCart() {
     cartList.appendChild(li);
   });
 
-  const totalEl =
-    document.getElementById("total");
-
   if (totalEl) {
 
     totalEl.innerText =
       total.toLocaleString();
+  }
+
+  if (orderData) {
+
+    orderData.value =
+      JSON.stringify(cart);
   }
 
   saveCart();
@@ -385,28 +423,44 @@ window.changeBackground =
 window.showSection =
   function(section) {
 
-    const shop =
+    const shopSection =
       document.getElementById(
         "shopSection"
       );
 
-    const catalog =
+    const catalogSection =
       document.getElementById(
         "catalogSection"
       );
 
+    if (
+      !shopSection ||
+      !catalogSection
+    ) return;
+
     if (section === "shop") {
 
-      shop.style.display = "block";
+      shopSection.style.display =
+        "block";
 
-      catalog.style.display = "none";
+      catalogSection.style.display =
+        "none";
 
     } else {
 
-      shop.style.display = "none";
+      shopSection.style.display =
+        "none";
 
-      catalog.style.display = "block";
+      catalogSection.style.display =
+        "block";
     }
+
+    window.scrollTo({
+
+      top: 0,
+
+      behavior: "smooth"
+    });
   };
 
 /* =========================================
@@ -426,4 +480,5 @@ window.changeSelectedColor =
 ========================================= */
 
 renderCart();
+
 renderSuggestions();
