@@ -1,214 +1,193 @@
-import { db } from "./firebase-config.js";
+import { db } from "./firebase.js";
 
 import {
   collection,
-  onSnapshot
+  getDocs
 } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
 /* =========================================
-   DATA
+   GLOBALS
 ========================================= */
 
-let products = [];
+const cart = [];
 
-let cart = [];
+const catalog =
+  document.getElementById("products");
 
-let selectedItem = null;
+const cartElement =
+  document.getElementById("cart");
+
+const totalElement =
+  document.getElementById("total");
+
+const emptyText =
+  document.getElementById("empty");
+
+const orderData =
+  document.getElementById("orderData");
 
 /* =========================================
-   FIREBASE
+   BACKGROUND THEMES
 ========================================= */
 
-onSnapshot(
-  collection(db, "products"),
-  (snapshot) => {
+window.changeBackground =
+  function(color1, color2) {
 
-    products = snapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    }));
+    document.body.style.background =
+      `linear-gradient(
+        135deg,
+        ${color1},
+        ${color2}
+      )`;
 
-    renderCatalog();
-
-    renderSuggestions();
-  }
-);
-
-/* =========================================
-   CATALOG
-========================================= */
-
-function renderCatalog() {
-
-  const catalog =
-    document.getElementById("products");
-
-  if (!catalog) return;
-
-  catalog.innerHTML = "";
-
-  products.forEach(product => {
-
-    const card =
-      document.createElement("div");
-
-    card.className =
-      "catalog-card";
-
-    const image =
-      product.coverImage ||
-      product.image ||
-      "images/placeholder.png";
-
-    card.innerHTML = `
-
-      <img
-        src="${image}"
-        alt="${product.name}">
-
-      <div class="catalog-info">
-
-        <h3>
-          ${product.emoji || "🧶"}
-          ${product.name}
-        </h3>
-
-        <p>
-          ${Number(product.price)
-            .toLocaleString()} VND
-        </p>
-
-        <button class="add-btn">
-          Add To Cart
-        </button>
-
-      </div>
-    `;
-
-    card
-      .querySelector(".add-btn")
-      .onclick = () => {
-
-        addItem(
-          product.name,
-          Number(product.price)
-        );
-      };
-
-    catalog.appendChild(card);
-  });
-}
-
-/* =========================================
-   CART
-========================================= */
-
-function addItem(name, price) {
-
-  const existing =
-    cart.find(
-      item => item.name === name
-    );
-
-  const sticker = {
-
-    color: "None",
-
-    x: Math.random() * 140,
-
-    y: Math.random() * 140
+    document.body.style.backgroundAttachment =
+      "fixed";
   };
 
-  if (existing) {
+/* =========================================
+   SECTION SWITCHING
+========================================= */
 
-    existing.quantity++;
+window.showSection =
+  function(section) {
 
-    existing.stickers.push(sticker);
+    const shop =
+      document.getElementById("shopSection");
 
-  } else {
+    const catalogSection =
+      document.getElementById("catalogSection");
 
-    cart.push({
+    if (section === "shop") {
 
-      name,
+      shop.style.display = "block";
 
-      price,
+      catalogSection.style.display = "none";
 
-      quantity: 1,
+    } else {
 
-      stickers: [sticker]
-    });
-  }
+      shop.style.display = "none";
 
-  selectedItem = sticker;
+      catalogSection.style.display = "block";
+    }
+  };
 
-  renderCart();
-}
+/* =========================================
+   LOAD PRODUCTS
+========================================= */
 
-function removeItem(name) {
+async function loadProducts() {
 
-  const item =
-    cart.find(
-      i => i.name === name
-    );
+  try {
 
-  if (!item) return;
+    catalog.innerHTML = "";
 
-  item.quantity--;
-
-  item.stickers.pop();
-
-  if (item.quantity <= 0) {
-
-    cart =
-      cart.filter(
-        i => i.name !== name
+    const querySnapshot =
+      await getDocs(
+        collection(db, "products")
       );
+
+    if (querySnapshot.empty) {
+
+      catalog.innerHTML = `
+        <p style="color:white;">
+          No products found 🧶
+        </p>
+      `;
+
+      return;
+    }
+
+    querySnapshot.forEach((doc) => {
+
+      const product = doc.data();
+
+      const card =
+        document.createElement("div");
+
+      card.className =
+        "catalog-card";
+
+      card.innerHTML = `
+
+        <img
+          src="${product.coverImage}"
+          alt="${product.name}">
+
+        <div class="catalog-info">
+
+          <h3>
+            ${product.name}
+          </h3>
+
+          <p>
+            ${product.price} VND
+          </p>
+
+          <button class="add-btn">
+            Add To Cart
+          </button>
+
+        </div>
+      `;
+
+      const addButton =
+        card.querySelector(".add-btn");
+
+      addButton.addEventListener(
+        "click",
+        () => addToCart(product)
+      );
+
+      catalog.appendChild(card);
+    });
+
+  } catch (error) {
+
+    console.error(error);
+
+    catalog.innerHTML = `
+      <p style="color:white;">
+        Failed to load products ❌
+      </p>
+    `;
   }
+}
+
+/* =========================================
+   ADD TO CART
+========================================= */
+
+function addToCart(product) {
+
+  cart.push(product);
 
   renderCart();
 }
 
-window.clearCart =
-  function() {
-
-    cart = [];
-
-    renderCart();
-  };
-
 /* =========================================
-   CART RENDER
+   RENDER CART
 ========================================= */
 
 function renderCart() {
 
-  const cartList =
-    document.getElementById("cart");
-
-  const canvas =
-    document.getElementById("canvas");
-
-  cartList.innerHTML = "";
-
-  canvas.innerHTML = "";
-
-  let total = 0;
+  cartElement.innerHTML = "";
 
   if (cart.length === 0) {
 
-    document.getElementById("empty")
-      .style.display = "block";
+    emptyText.style.display =
+      "block";
 
   } else {
 
-    document.getElementById("empty")
-      .style.display = "none";
+    emptyText.style.display =
+      "none";
   }
 
-  cart.forEach(item => {
+  let total = 0;
 
-    total +=
-      item.price * item.quantity;
+  cart.forEach((item, index) => {
+
+    total += Number(item.price);
 
     const li =
       document.createElement("li");
@@ -217,168 +196,79 @@ function renderCart() {
 
       <div class="cart-left">
 
+        <img
+          class="cart-img"
+          src="${item.coverImage}">
+
         <span>
-          🧶 ${item.name}
+          ${item.name}
         </span>
 
       </div>
 
       <div class="cart-controls">
 
-        <button onclick="removeItem('${item.name}')">
-          −
-        </button>
-
         <span>
-          ${item.quantity}
+          ${item.price}
         </span>
 
-        <button onclick="addItem('${item.name}', ${item.price})">
-          +
+        <button
+          onclick="removeFromCart(${index})">
+
+          ✕
         </button>
 
       </div>
     `;
 
-    cartList.appendChild(li);
-
-    item.stickers.forEach(sticker => {
-
-      const div =
-        document.createElement("div");
-
-      div.className =
-        "sticker";
-
-      div.innerHTML = "🧸";
-
-      div.style.left =
-        `${sticker.x}px`;
-
-      div.style.top =
-        `${sticker.y}px`;
-
-      canvas.appendChild(div);
-    });
+    cartElement.appendChild(li);
   });
 
-  document.getElementById("total")
-    .innerText =
-      total.toLocaleString();
+  totalElement.textContent =
+    total;
 
-  document.getElementById("orderData")
-    .value =
-      cart.map(item =>
-        `${item.name} x${item.quantity}`
-      ).join(", ");
-
-  renderSuggestions();
+  orderData.value =
+    JSON.stringify(cart);
 }
 
 /* =========================================
-   SUGGESTIONS
+   REMOVE ITEM
 ========================================= */
 
-function renderSuggestions() {
+window.removeFromCart =
+  function(index) {
 
-  const suggestionList =
-    document.getElementById(
-      "suggestionList"
-    );
-
-  suggestionList.innerHTML = "";
-
-  products.forEach(product => {
-
-    const exists =
-      cart.some(
-        item => item.name === product.name
-      );
-
-    if (exists) return;
-
-    const card =
-      document.createElement("div");
-
-    card.className =
-      "suggest-card";
-
-    card.innerHTML = `
-
-      <img
-        src="${
-          product.coverImage ||
-          product.image
-        }">
-
-      <p>
-        ${product.name}
-      </p>
-    `;
-
-    card.onclick = () => {
-
-      addItem(
-        product.name,
-        Number(product.price)
-      );
-    };
-
-    suggestionList.appendChild(card);
-  });
-}
-
-/* =========================================
-   UI
-========================================= */
-
-window.showSection =
-  function(section) {
-
-    document.getElementById(
-      "catalogSection"
-    ).style.display =
-
-      section === "catalog"
-        ? "block"
-        : "none";
-
-    document.getElementById(
-      "shopSection"
-    ).style.display =
-
-      section === "shop"
-        ? "block"
-        : "none";
-  };
-
-window.changeBackground =
-  function(c1, c2) {
-
-    document.body.style.background =
-      `linear-gradient(
-        135deg,
-        ${c1},
-        ${c2}
-      )`;
-  };
-
-window.changeSelectedColor =
-  function(color) {
-
-    if (!selectedItem) return;
-
-    selectedItem.color = color;
+    cart.splice(index, 1);
 
     renderCart();
   };
 
-window.addItem = addItem;
+/* =========================================
+   CLEAR CART
+========================================= */
 
-window.removeItem = removeItem;
+window.clearCart =
+  function() {
+
+    cart.length = 0;
+
+    renderCart();
+  };
+
+/* =========================================
+   COLOR SELECT
+========================================= */
+
+window.changeSelectedColor =
+  function(color) {
+
+    alert(
+      "Selected color: " + color
+    );
+  };
 
 /* =========================================
    START
 ========================================= */
 
-renderCart();
+loadProducts();
