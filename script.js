@@ -6,7 +6,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
 /* =========================================
-   CART (PERSISTENT)
+   CART (PERSISTENT + ID BASED)
 ========================================= */
 
 const cart =
@@ -56,9 +56,11 @@ async function loadProducts() {
 
   try {
 
-    catalog.innerHTML = `<p style="color:white;">Loading...</p>`;
+    catalog.innerHTML =
+      `<p style="color:white;">Loading...</p>`;
 
-    const snapshot = await getDocs(collection(db, "products"));
+    const snapshot =
+      await getDocs(collection(db, "products"));
 
     catalog.innerHTML = "";
 
@@ -82,7 +84,7 @@ async function loadProducts() {
 
       btn.addEventListener("click", (e) => {
         e.stopPropagation();
-        addToCart(product);
+        addToCart(product, docSnap.id);
       });
 
       card.addEventListener("click", (e) => {
@@ -102,8 +104,13 @@ async function loadProducts() {
    CART LOGIC
 ========================================= */
 
-function addToCart(product) {
-  cart.push(product);
+function addToCart(product, id) {
+
+  cart.push({
+    ...product,
+    id
+  });
+
   saveCart();
   renderCart();
 }
@@ -143,14 +150,16 @@ function renderCart() {
   });
 
   if (totalElement) {
-    totalElement.textContent = total.toLocaleString();
+    totalElement.textContent =
+      total.toLocaleString();
   }
 
   if (orderData) {
-    orderData.value = JSON.stringify(cart);
+    orderData.value =
+      JSON.stringify(cart);
   }
 
-  // ✅ IMPORTANT: load suggestions AFTER cart updates
+  // 🔥 ALWAYS refresh suggestions
   loadSuggestions();
 }
 
@@ -172,16 +181,19 @@ async function loadSuggestions() {
 
     suggestionList.innerHTML = "";
 
-    const cartNames =
-      cart.map(item => item.name);
+    const cartIds =
+      cart.map(item => item.id);
 
     snapshot.forEach((docSnap) => {
 
       const product = docSnap.data();
 
-      if (cartNames.includes(product.name)) return;
+      // ❌ skip if already in cart
+      if (cartIds.includes(docSnap.id)) return;
 
-      const card = document.createElement("div");
+      const card =
+        document.createElement("div");
+
       card.className = "suggest-card";
 
       card.innerHTML = `
@@ -200,11 +212,12 @@ async function loadSuggestions() {
       });
 
       // add button
-      const addBtn = card.querySelector(".suggest-add");
+      const addBtn =
+        card.querySelector(".suggest-add");
 
       addBtn.addEventListener("click", (e) => {
         e.stopPropagation();
-        addToCart(product);
+        addToCart(product, docSnap.id);
       });
 
       suggestionList.appendChild(card);
