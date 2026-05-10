@@ -6,7 +6,7 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
 /* =========================================
-   CART (PERSISTENT + ID BASED)
+   CART (PERSISTENT)
 ========================================= */
 
 const cart =
@@ -39,7 +39,7 @@ window.showSection = function(section) {
     shop.style.display = "block";
     catalogSection.style.display = "none";
 
-    renderCart();
+    renderCart(); // refresh when opening
   } else {
     shop.style.display = "none";
     catalogSection.style.display = "block";
@@ -56,11 +56,9 @@ async function loadProducts() {
 
   try {
 
-    catalog.innerHTML =
-      `<p style="color:white;">Loading...</p>`;
+    catalog.innerHTML = `<p style="color:white;">Loading...</p>`;
 
-    const snapshot =
-      await getDocs(collection(db, "products"));
+    const snapshot = await getDocs(collection(db, "products"));
 
     catalog.innerHTML = "";
 
@@ -84,11 +82,12 @@ async function loadProducts() {
 
       btn.addEventListener("click", (e) => {
         e.stopPropagation();
-        addToCart(product, docSnap.id);
+        addToCart(product);
       });
 
       card.addEventListener("click", (e) => {
         if (e.target.closest(".add-btn")) return;
+
         window.location.href = `product.html?id=${docSnap.id}`;
       });
 
@@ -104,13 +103,8 @@ async function loadProducts() {
    CART LOGIC
 ========================================= */
 
-function addToCart(product, id) {
-
-  cart.push({
-    ...product,
-    id
-  });
-
+function addToCart(product) {
+  cart.push(product);
   saveCart();
   renderCart();
 }
@@ -150,21 +144,19 @@ function renderCart() {
   });
 
   if (totalElement) {
-    totalElement.textContent =
-      total.toLocaleString();
+    totalElement.textContent = total.toLocaleString();
   }
 
   if (orderData) {
-    orderData.value =
-      JSON.stringify(cart);
+    orderData.value = JSON.stringify(cart);
   }
 
-  // 🔥 ALWAYS refresh suggestions
+  // 🔥 LOAD SUGGESTIONS AFTER CART RENDER
   loadSuggestions();
 }
 
 /* =========================================
-   SUGGESTIONS (NOT IN CART)
+   SUGGESTIONS (FIXED)
 ========================================= */
 
 async function loadSuggestions() {
@@ -181,15 +173,16 @@ async function loadSuggestions() {
 
     suggestionList.innerHTML = "";
 
-    const cartIds =
-      cart.map(item => item.id);
+    // compare using names
+    const cartNames =
+      cart.map(item => item.name);
 
     snapshot.forEach((docSnap) => {
 
       const product = docSnap.data();
 
-      // ❌ skip if already in cart
-      if (cartIds.includes(docSnap.id)) return;
+      // skip if already in cart
+      if (cartNames.includes(product.name)) return;
 
       const card =
         document.createElement("div");
@@ -204,23 +197,21 @@ async function loadSuggestions() {
       `;
 
       // go to product page
-      card.addEventListener("click", (e) => {
-        if (e.target.classList.contains("suggest-add")) return;
-
+      card.addEventListener("click", () => {
         window.location.href =
           `product.html?id=${docSnap.id}`;
       });
 
-      // add button
-      const addBtn =
-        card.querySelector(".suggest-add");
+      // add to cart button
+      const addBtn = card.querySelector(".suggest-add");
 
       addBtn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        addToCart(product, docSnap.id);
+        e.stopPropagation(); // prevent redirect
+        addToCart(product);
       });
 
       suggestionList.appendChild(card);
+
     });
 
   } catch (error) {
