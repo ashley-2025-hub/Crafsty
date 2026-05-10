@@ -22,7 +22,8 @@ const orderData = document.getElementById("orderData");
 ========================================= */
 
 window.changeBackground = function (color1, color2) {
-  document.body.style.background = `linear-gradient(135deg, ${color1}, ${color2})`;
+  document.body.style.background =
+    `linear-gradient(135deg, ${color1}, ${color2})`;
   document.body.style.backgroundAttachment = "fixed";
 };
 
@@ -39,6 +40,10 @@ window.showSection = function (section) {
   if (section === "shop") {
     shop.style.display = "block";
     catalogSection.style.display = "none";
+
+    // 🔥 ensure cart updates when opening
+    renderCart();
+
   } else {
     shop.style.display = "none";
     catalogSection.style.display = "block";
@@ -58,16 +63,19 @@ async function loadProducts() {
   }
 
   try {
-    catalog.innerHTML = `<p style="color:white;">Loading products...</p>`;
+    catalog.innerHTML =
+      `<p style="color:white;">Loading products...</p>`;
 
-    const querySnapshot = await getDocs(collection(db, "products"));
+    const querySnapshot =
+      await getDocs(collection(db, "products"));
 
     console.log("Products found:", querySnapshot.size);
 
     catalog.innerHTML = "";
 
     if (querySnapshot.empty) {
-      catalog.innerHTML = `<p style="color:white;">No products found 🧶</p>`;
+      catalog.innerHTML =
+        `<p style="color:white;">No products found 🧶</p>`;
       return;
     }
 
@@ -98,17 +106,22 @@ async function loadProducts() {
         </div>
       `;
 
-      const addButton = card.querySelector(".add-btn");
+      const addButton =
+        card.querySelector(".add-btn");
 
       if (addButton) {
-        addButton.addEventListener("click", () => {
-          addToCart(product);
-        });
+        addButton.addEventListener(
+          "click",
+          (e) => {
+            e.stopPropagation(); // 🔥 prevent card click
+            addToCart(product);
+          }
+        );
       }
 
-      card.addEventListener("click", (event) => {
-        if (event.target.classList.contains("add-btn")) return;
-        window.location.href = `product.html?id=${docSnap.id}`;
+      card.addEventListener("click", () => {
+        window.location.href =
+          `product.html?id=${docSnap.id}`;
       });
 
       catalog.appendChild(card);
@@ -130,19 +143,26 @@ async function loadProducts() {
 ========================================= */
 
 function addToCart(product) {
+  console.log("ADDING:", product);
+
   cart.push(product);
+
   renderCart();
 }
 
 /* =========================================
-   RENDER CART (SAFE VERSION)
+   RENDER CART
 ========================================= */
 
 function renderCart() {
-  if (!cartElement || !totalElement) return;
+  if (!cartElement || !totalElement) {
+    console.log("Cart elements missing");
+    return;
+  }
 
   cartElement.innerHTML = "";
 
+  // 🔥 safe empty text toggle
   if (emptyText) {
     emptyText.style.display =
       cart.length === 0 ? "block" : "none";
@@ -157,24 +177,35 @@ function renderCart() {
 
     li.innerHTML = `
       <div class="cart-left">
-        <img class="cart-img" src="${item.coverImage || ""}">
-        <span>${item.name || "Product"}</span>
+        <img
+          class="cart-img"
+          src="${item.coverImage || ""}">
+        <span>
+          ${item.name || "Product"}
+        </span>
       </div>
 
       <div class="cart-controls">
-        <span>${Number(item.price || 0).toLocaleString()}</span>
-        <button onclick="removeFromCart(${index})">✕</button>
+        <span>
+          ${Number(item.price || 0).toLocaleString()}
+        </span>
+
+        <button onclick="removeFromCart(${index})">
+          ✕
+        </button>
       </div>
     `;
 
     cartElement.appendChild(li);
   });
 
-  totalElement.textContent = total.toLocaleString();
+  totalElement.textContent =
+    total.toLocaleString();
 
-  // 🔥 FIX: prevent crash here
+  // 🔥 prevent crash
   if (orderData) {
-    orderData.value = JSON.stringify(cart);
+    orderData.value =
+      JSON.stringify(cart);
   }
 }
 
