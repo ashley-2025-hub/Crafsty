@@ -52,30 +52,37 @@ async function loadProducts() {
 
       card.innerHTML = `
         <img
-          src="${product.coverImage || 'https://placehold.co/300'}"
+          src="${product.coverImage || 'https://placehold.co/500'}"
           class="catalog-image"
         >
 
         <h3>
-          ${product.emoji || "🧸"}
+          ${product.emoji || "🧶"}
           ${product.name || "Unnamed"}
         </h3>
 
         <p>
-          ${(product.price || 0).toLocaleString()} VND
+          ${Number(product.price || 0).toLocaleString()}
+          VND
         </p>
 
         <button class="add-btn">
-          Add to Cart
+          Add To Cart
         </button>
       `;
+
+      /* =========================
+         ADD TO CART
+      ========================= */
 
       const addButton =
         card.querySelector(".add-btn");
 
       addButton.addEventListener(
         "click",
-        () => {
+        (event) => {
+
+          event.stopPropagation();
 
           total += Number(product.price || 0);
 
@@ -86,6 +93,22 @@ async function loadProducts() {
               " VND";
           }
 
+          alert(
+            `${product.name} added to cart!`
+          );
+        }
+      );
+
+      /* =========================
+         OPEN PRODUCT PAGE
+      ========================= */
+
+      card.addEventListener(
+        "click",
+        () => {
+
+          window.location.href =
+            `product.html?id=${docSnap.id}`;
         }
       );
 
@@ -95,7 +118,10 @@ async function loadProducts() {
 
   } catch (error) {
 
-    console.error(error);
+    console.error(
+      "Load products error:",
+      error
+    );
 
     productContainer.innerHTML = `
       <h2>Failed to load products</h2>
