@@ -1,530 +1,512 @@
-/* =========================
-   GOOGLE FONT
-========================= */
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700&display=swap');
 
-@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700&display=swap');
-
-/* =========================
-   RESET
-========================= */
+/* =========================================
+   GLOBAL
+========================================= */
 
 *{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
 }
-
-/* =========================
-   BODY
-========================= */
 
 body{
 
-  font-family:'Baloo 2', cursive;
+    font-family:'Baloo 2', cursive;
 
-  background:
+    background:
     linear-gradient(
-      135deg,
-      #c86d98,
-      #8d72c9
+        135deg,
+        #c06c9f,
+        #a678d1
     );
 
-  min-height:100vh;
+    min-height:100vh;
 
-  color:white;
+    color:white;
 
-  padding:30px;
+    overflow-x:hidden;
 
-  overflow-x:hidden;
+    padding:40px;
 }
 
-/* =========================
-   TITLE
-========================= */
+/* =========================================
+   PAGE TITLE
+========================================= */
 
-h1{
+.page-title{
 
-  text-align:center;
+    text-align:center;
 
-  font-size:64px;
+    font-size:72px;
 
-  margin-bottom:40px;
+    color:white;
 
-  color:white;
+    margin-bottom:40px;
+
+    line-height:1;
 }
 
-/* =========================
-   NAVIGATION
-========================= */
+/* =========================================
+   CART
+========================================= */
 
-.nav{
+.cart-box{
 
-  display:flex;
+    position:fixed;
 
-  justify-content:center;
+    right:24px;
 
-  gap:20px;
+    bottom:24px;
 
-  margin-bottom:40px;
+    background:
+    rgba(255,255,255,0.16);
 
-  position:relative;
+    backdrop-filter:blur(18px);
 
-  z-index:1000;
+    border:
+    1px solid rgba(255,255,255,0.18);
+
+    border-radius:24px;
+
+    padding:18px 24px;
+
+    font-size:22px;
+
+    font-weight:700;
+
+    box-shadow:
+    0 10px 24px rgba(0,0,0,0.14);
+
+    z-index:999;
 }
 
-.nav button{
-
-  border:none;
-
-  background:#f7b3d1;
-
-  color:white;
-
-  padding:14px 28px;
-
-  border-radius:20px;
-
-  font-size:20px;
-
-  font-weight:700;
-
-  cursor:pointer;
-
-  transition:0.3s;
-}
-
-.nav button:hover{
-
-  transform:scale(1.05);
-
-  background:#ff9fc7;
-}
-
-/* =========================
-   MAIN LAYOUT
-========================= */
-
-.container{
-
-  width:100%;
-
-  display:grid;
-
-  grid-template-columns:
-    repeat(auto-fit,minmax(320px,1fr));
-
-  gap:30px;
-
-  align-items:start;
-}
-
-/* =========================
-   PANELS
-========================= */
-
-.products,
-.box,
-.admin-panel{
-
-  background:
-    rgba(255,255,255,0.15);
-
-  backdrop-filter:blur(10px);
-
-  border:
-    1px solid rgba(255,255,255,0.2);
-
-  border-radius:35px;
-
-  padding:30px;
-
-  position:relative;
-
-  z-index:1;
-}
-
-/* =========================
-   HEADINGS
-========================= */
-
-h2{
-
-  font-size:42px;
-
-  margin-bottom:20px;
-
-  color:black;
-}
-
-h3{
-
-  font-size:28px;
-
-  margin:15px 0;
-}
-
-/* =========================
-   INPUTS
-========================= */
-
-input,
-textarea{
-
-  width:100%;
-
-  border:none;
-
-  outline:none;
-
-  background:#f2eef2;
-
-  border-radius:22px;
-
-  padding:18px;
-
-  font-size:22px;
-
-  margin-bottom:20px;
-
-  resize:none;
-}
-
-/* =========================
-   BUTTONS
-========================= */
-
-button{
-
-  border:none;
-
-  cursor:pointer;
-
-  transition:0.3s;
-}
-
-button:hover{
-
-  transform:scale(1.05);
-}
-
-/* =========================
-   ORDER BUTTON
-========================= */
-
-form button,
-.add-btn{
-
-  background:#f7b3d1;
-
-  color:white;
-
-  padding:14px 26px;
-
-  border-radius:18px;
-
-  font-size:20px;
-
-  font-weight:700;
-}
-
-/* =========================
+/* =========================================
    CATALOG
-========================= */
+========================================= */
 
 .catalog{
 
-  width:100%;
+    width:100%;
 
-  display:grid;
+    max-width:1400px;
 
-  grid-template-columns:
-    repeat(auto-fit,minmax(260px,1fr));
+    margin:auto;
 
-  gap:30px;
+    display:grid;
 
-  margin-top:20px;
+    grid-template-columns:
+    repeat(auto-fit,minmax(280px,1fr));
+
+    gap:32px;
+
+    padding:20px 0 80px;
 }
 
-/* =========================
+/* =========================================
    PRODUCT CARD
-========================= */
+========================================= */
 
-.catalog-card,
+.catalog-card{
+
+    background:
+    rgba(255,255,255,0.14);
+
+    border-radius:30px;
+
+    padding:20px;
+
+    backdrop-filter:blur(18px);
+
+    border:
+    1px solid rgba(255,255,255,0.18);
+
+    box-shadow:
+    0 10px 24px rgba(0,0,0,0.12);
+
+    transition:0.25s;
+}
+
+.catalog-card:hover{
+
+    transform:
+    translateY(-4px);
+}
+
+/* =========================================
+   PRODUCT IMAGE
+========================================= */
+
+.catalog-image{
+
+    width:100%;
+
+    height:320px;
+
+    object-fit:cover;
+
+    border-radius:24px;
+
+    margin-bottom:18px;
+
+    background:white;
+}
+
+/* =========================================
+   PRODUCT TEXT
+========================================= */
+
+.catalog-card h3{
+
+    font-size:28px;
+
+    color:white;
+
+    margin-bottom:8px;
+
+    line-height:1.2;
+}
+
+.catalog-card p{
+
+    font-size:20px;
+
+    color:
+    rgba(255,255,255,0.92);
+
+    margin-bottom:16px;
+}
+
+/* =========================================
+   BUTTON
+========================================= */
+
+.add-btn{
+
+    width:100%;
+
+    height:54px;
+
+    border:none;
+
+    border-radius:18px;
+
+    background:#f5a9cb;
+
+    color:white;
+
+    font-size:20px;
+
+    font-weight:700;
+
+    cursor:pointer;
+
+    transition:0.25s;
+}
+
+.add-btn:hover{
+
+    opacity:0.9;
+
+    transform:
+    translateY(-2px);
+}
+
+/* =========================================
+   ADMIN PAGE
+========================================= */
+
+.admin-wrapper{
+
+    max-width:1400px;
+
+    margin:auto;
+
+    display:grid;
+
+    grid-template-columns:
+    520px 1fr;
+
+    gap:40px;
+
+    align-items:start;
+}
+
+/* =========================================
+   ADMIN BOX
+========================================= */
+
+.admin-box{
+
+    padding:34px;
+
+    border-radius:34px;
+
+    background:
+    rgba(255,255,255,0.14);
+
+    backdrop-filter:blur(18px);
+
+    border:
+    1px solid rgba(255,255,255,0.18);
+
+    box-shadow:
+    0 15px 40px rgba(0,0,0,0.12);
+}
+
+.admin-box h2{
+
+    text-align:center;
+
+    font-size:36px;
+
+    margin-bottom:30px;
+
+    color:white;
+}
+
+/* =========================================
+   INPUTS
+========================================= */
+
+.admin-box input,
+.admin-box textarea{
+
+    width:100%;
+
+    padding:18px 22px;
+
+    margin-bottom:18px;
+
+    border:none;
+
+    border-radius:22px;
+
+    background:
+    rgba(255,255,255,0.88);
+
+    color:#555;
+
+    font-size:20px;
+
+    outline:none;
+
+    font-family:'Baloo 2', cursive;
+}
+
+.admin-box textarea{
+
+    min-height:160px;
+
+    resize:vertical;
+}
+
+/* =========================================
+   ADMIN BUTTON
+========================================= */
+
+.admin-box button{
+
+    width:160px;
+
+    height:58px;
+
+    border:none;
+
+    border-radius:20px;
+
+    background:#f5a9cb;
+
+    color:white;
+
+    font-size:22px;
+
+    font-weight:700;
+
+    cursor:pointer;
+
+    display:block;
+
+    margin:12px auto 0;
+
+    transition:0.25s;
+}
+
+.admin-box button:hover{
+
+    transform:
+    translateY(-2px);
+
+    opacity:0.9;
+}
+
+/* =========================================
+   PRODUCT LIST
+========================================= */
+
+#productList{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(auto-fill,minmax(320px,1fr));
+
+    gap:30px;
+}
+
+/* =========================================
+   ADMIN PRODUCT CARD
+========================================= */
+
 .product-card{
 
-  background:
-    rgba(255,255,255,0.15);
+    padding:20px;
 
-  border:
-    1px solid rgba(255,255,255,0.2);
+    border-radius:30px;
 
-  border-radius:30px;
+    background:
+    rgba(255,255,255,0.14);
 
-  padding:20px;
+    backdrop-filter:blur(18px);
 
-  text-align:center;
+    border:
+    1px solid rgba(255,255,255,0.18);
+
+    box-shadow:
+    0 10px 24px rgba(0,0,0,0.12);
+
+    transition:0.25s;
 }
 
-.catalog-image,
+.product-card:hover{
+
+    transform:
+    translateY(-4px);
+}
+
 .product-card img{
 
-  width:100%;
-
-  height:260px;
-
-  object-fit:cover;
-
-  border-radius:25px;
-
-  margin-bottom:15px;
-}
-
-/* =========================
-   BOX
-========================= */
-
-.box-layout{
-
-  display:flex;
-
-  gap:20px;
-
-  align-items:flex-start;
-
-  flex-wrap:wrap;
-}
-
-#canvas{
-
-  width:280px;
-
-  min-height:280px;
-
-  background:#e5c391;
-
-  border:4px solid #c48a37;
-
-  border-radius:30px;
-
-  padding:15px;
-
-  display:flex;
-
-  flex-wrap:wrap;
-
-  gap:10px;
-}
-
-.canvas-item{
-
-  width:80px;
-
-  height:80px;
-
-  object-fit:cover;
-
-  border-radius:15px;
-}
-
-/* =========================
-   COLORS
-========================= */
-
-.color-panel{
-
-  display:flex;
-
-  flex-direction:column;
-
-  gap:12px;
-}
-
-.color-circle{
-
-  width:50px;
-
-  height:50px;
-
-  border-radius:50%;
-
-  border:3px solid white;
-}
-
-.pink{
-  background:#f7b3d1;
-}
-
-.blue{
-  background:#8ec5ff;
-}
-
-.white{
-  background:#ffffff;
-}
-
-.brown{
-  background:#a86e37;
-}
-
-/* =========================
-   BIN
-========================= */
-
-#bin{
-
-  width:80px;
-
-  height:80px;
-
-  border-radius:50%;
-
-  background:white;
-
-  color:black;
-
-  display:flex;
-
-  align-items:center;
-
-  justify-content:center;
-
-  font-size:40px;
-
-  margin-top:30px;
-
-  cursor:pointer;
-
-  border:4px solid #ff9f9f;
-}
-
-/* =========================
-   CART
-========================= */
-
-#cart{
-
-  list-style:none;
-
-  margin-bottom:20px;
-}
-
-#cart li{
-
-  font-size:24px;
-
-  margin-bottom:10px;
-}
-
-/* =========================
-   SUGGESTIONS
-========================= */
-
-#suggestionList{
-
-  display:flex;
-
-  gap:15px;
-
-  flex-wrap:wrap;
-}
-
-.suggestion-card{
-
-  position:relative;
-}
-
-.suggestion-card img{
-
-  width:140px;
-
-  height:140px;
-
-  object-fit:cover;
-
-  border-radius:20px;
-}
-
-.suggestion-card button{
-
-  position:absolute;
-
-  bottom:10px;
-
-  right:10px;
-
-  width:40px;
-
-  height:40px;
-
-  border-radius:50%;
-
-  background:#f7b3d1;
-
-  color:white;
-
-  font-size:22px;
-}
-
-/* =========================
-   THEME PICKER
-========================= */
-
-.theme-picker{
-
-  display:flex;
-
-  align-items:center;
-
-  gap:12px;
-
-  margin-bottom:30px;
-
-  flex-wrap:wrap;
-}
-
-.theme-btn{
-
-  width:35px;
-
-  height:35px;
-
-  border-radius:50%;
-
-  cursor:pointer;
-
-  border:3px solid white;
-}
-
-/* =========================
-   MOBILE
-========================= */
-
-@media(max-width:768px){
-
-  h1{
-    font-size:42px;
-  }
-
-  h2{
-    font-size:32px;
-  }
-
-  .container{
-    grid-template-columns:1fr;
-  }
-
-  #canvas{
     width:100%;
-  }
 
-  .nav{
-    flex-wrap:wrap;
-  }
+    height:290px;
+
+    object-fit:cover;
+
+    border-radius:24px;
+
+    margin-bottom:16px;
 }
 
-.page-title{
-  text-align:center;
-  font-size:64px;
-  margin-bottom:40px;
-  color:white;
+.product-card h3{
+
+    font-size:28px;
+
+    color:white;
+
+    margin-bottom:10px;
+}
+
+.product-card p{
+
+    color:
+    rgba(255,255,255,0.92);
+
+    font-size:20px;
+
+    margin-bottom:8px;
+
+    line-height:1.4;
+}
+
+/* =========================================
+   DELETE BUTTON
+========================================= */
+
+.product-card button{
+
+    width:120px;
+
+    height:52px;
+
+    border:none;
+
+    border-radius:18px;
+
+    background:#f5a9cb;
+
+    color:white;
+
+    font-size:20px;
+
+    font-weight:700;
+
+    cursor:pointer;
+
+    margin-top:14px;
+
+    transition:0.25s;
+}
+
+.product-card button:hover{
+
+    opacity:0.9;
+}
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width:1100px){
+
+    .admin-wrapper{
+
+        grid-template-columns:1fr;
+    }
+
+    #productList{
+
+        grid-template-columns:
+        repeat(auto-fill,minmax(280px,1fr));
+    }
+}
+
+@media (max-width:700px){
+
+    body{
+
+        padding:20px;
+    }
+
+    .page-title{
+
+        font-size:52px;
+    }
+
+    .admin-box{
+
+        padding:24px;
+    }
+
+    .admin-box h2{
+
+        font-size:30px;
+    }
+
+    .admin-box input,
+    .admin-box textarea{
+
+        font-size:18px;
+
+        padding:16px 18px;
+    }
+
+    .product-card img{
+
+        height:240px;
+    }
+
+    .catalog-image{
+
+        height:260px;
+    }
 }
