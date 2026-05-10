@@ -5,22 +5,39 @@ import {
   onSnapshot
 } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
-/* =========================
+/* =========================================
    DATA
-========================= */
+========================================= */
 
 let products = [];
 
 let cart =
-  JSON.parse(
-    localStorage.getItem("cart")
-  ) || [];
+  JSON.parse(localStorage.getItem("cart")) || [];
 
 let selectedItem = null;
 
-/* =========================
+/* =========================================
+   ELEMENTS
+========================================= */
+
+const catalog =
+  document.querySelector(".catalog");
+
+const cartList =
+  document.getElementById("cart");
+
+const totalEl =
+  document.getElementById("total");
+
+const suggestionList =
+  document.getElementById("suggestionList");
+
+const emptyText =
+  document.getElementById("empty");
+
+/* =========================================
    SAVE CART
-========================= */
+========================================= */
 
 function saveCart() {
 
@@ -30,9 +47,9 @@ function saveCart() {
   );
 }
 
-/* =========================
-   BACKGROUND THEMES
-========================= */
+/* =========================================
+   BACKGROUND
+========================================= */
 
 window.changeBackground =
   function(color1, color2) {
@@ -48,22 +65,18 @@ window.changeBackground =
       "fixed";
   };
 
-/* =========================
-   SECTION SWITCHING
-========================= */
+/* =========================================
+   SECTION SWITCH
+========================================= */
 
 window.showSection =
   function(section) {
 
     const shopSection =
-      document.getElementById(
-        "shopSection"
-      );
+      document.getElementById("shopSection");
 
     const catalogSection =
-      document.getElementById(
-        "catalogSection"
-      );
+      document.getElementById("catalogSection");
 
     if (
       !shopSection ||
@@ -88,9 +101,9 @@ window.showSection =
     }
   };
 
-/* =========================
+/* =========================================
    FIREBASE LIVE
-========================= */
+========================================= */
 
 onSnapshot(
   collection(db, "products"),
@@ -98,45 +111,45 @@ onSnapshot(
 
     products =
       snapshot.docs.map(doc => ({
+
         id: doc.id,
+
         ...doc.data()
       }));
 
     renderCatalog();
+
     renderSuggestions();
+
     renderCart();
   }
 );
 
-/* =========================
+/* =========================================
    ADD ITEM
-========================= */
+========================================= */
 
-function addItem(product) {
+function addItem(product, button = null) {
 
   const existing =
     cart.find(
       item => item.id === product.id
     );
 
-  const newSticker = {
+  const sticker = {
 
     color: "None",
 
-    x:
-      Math.random() * 100 + 20,
+    x: Math.random() * 120,
 
-    y:
-      Math.random() * 100 + 20
+    y: Math.random() * 120
   };
 
   if (existing) {
 
     existing.quantity += 1;
 
-    existing.stickers.push(
-      newSticker
-    );
+    existing.stickers.push(sticker);
 
   } else {
 
@@ -144,7 +157,8 @@ function addItem(product) {
 
       id: product.id,
 
-      name: product.name,
+      name:
+        product.name || "Unnamed",
 
       price:
         Number(product.price) || 0,
@@ -154,31 +168,55 @@ function addItem(product) {
 
       quantity: 1,
 
-      stickers: [newSticker]
+      stickers: [sticker]
     });
   }
 
-  selectedItem = newSticker;
+  selectedItem = sticker;
 
   saveCart();
 
   renderCart();
 
   renderSuggestions();
+
+  /* BUTTON TEXT */
+
+  if (button) {
+
+    const original =
+      button.innerText;
+
+    button.innerText =
+      "Added To Cart ✓";
+
+    button.disabled = true;
+
+    setTimeout(() => {
+
+      button.innerText =
+        original;
+
+      button.disabled = false;
+
+    }, 1200);
+  }
 }
 
-/* =========================
+/* =========================================
    REMOVE ITEM
-========================= */
+========================================= */
 
 function removeItem(id) {
 
   const item =
-    cart.find(i => i.id === id);
+    cart.find(
+      i => i.id === id
+    );
 
   if (!item) return;
 
-  item.quantity--;
+  item.quantity -= 1;
 
   item.stickers.pop();
 
@@ -197,16 +235,27 @@ function removeItem(id) {
   renderSuggestions();
 }
 
-/* =========================
-   CATALOG
-========================= */
+/* =========================================
+   CLEAR CART
+========================================= */
+
+window.clearCart =
+  function() {
+
+    cart = [];
+
+    saveCart();
+
+    renderCart();
+
+    renderSuggestions();
+  };
+
+/* =========================================
+   RENDER CATALOG
+========================================= */
 
 function renderCatalog() {
-
-  const catalog =
-    document.querySelector(
-      ".catalog"
-    );
 
   if (!catalog) return;
 
@@ -215,6 +264,7 @@ function renderCatalog() {
   if (products.length === 0) {
 
     catalog.innerHTML = `
+
       <p style="color:white;">
         No products found 🧶
       </p>
@@ -231,23 +281,25 @@ function renderCatalog() {
     card.className =
       "catalog-card";
 
+    const price =
+      Number(product.price) || 0;
+
     card.innerHTML = `
 
       <img
         src="${product.coverImage || ""}"
-        alt="${product.name}"
+        alt="${product.name || ""}"
       >
 
       <div class="catalog-info">
 
         <h3>
           ${product.emoji || "🧶"}
-          ${product.name}
+          ${product.name || "Unnamed"}
         </h3>
 
         <p>
-          ${Number(product.price)
-            .toLocaleString()} VND
+          ${price.toLocaleString()} VND
         </p>
 
         <button class="add-btn">
@@ -264,21 +316,7 @@ function renderCatalog() {
 
       e.stopPropagation();
 
-      addItem(product);
-
-      addBtn.innerText =
-        "Added To Cart ✓";
-
-      addBtn.disabled = true;
-
-      setTimeout(() => {
-
-        addBtn.innerText =
-          "Add To Cart";
-
-        addBtn.disabled = false;
-
-      }, 1500);
+      addItem(product, addBtn);
     };
 
     card.onclick = () => {
@@ -291,29 +329,25 @@ function renderCatalog() {
   });
 }
 
-/* =========================
+/* =========================================
    SUGGESTIONS
-========================= */
+========================================= */
 
 function renderSuggestions() {
-
-  const suggestionList =
-    document.getElementById(
-      "suggestionList"
-    );
 
   if (!suggestionList) return;
 
   suggestionList.innerHTML = "";
 
-  products.forEach(product => {
+  const filtered =
+    products.filter(product => {
 
-    const isInCart =
-      cart.some(
+      return !cart.some(
         item => item.id === product.id
       );
+    });
 
-    if (isInCart) return;
+  filtered.slice(0, 4).forEach(product => {
 
     const card =
       document.createElement("div");
@@ -325,11 +359,12 @@ function renderSuggestions() {
 
       <img
         src="${product.coverImage || ""}"
+        alt="${product.name || ""}"
       >
 
       <p>
         ${product.emoji || "🧶"}
-        ${product.name}
+        ${product.name || ""}
       </p>
     `;
 
@@ -342,14 +377,11 @@ function renderSuggestions() {
   });
 }
 
-/* =========================
+/* =========================================
    RENDER CART
-========================= */
+========================================= */
 
 function renderCart() {
-
-  const cartList =
-    document.getElementById("cart");
 
   if (!cartList) return;
 
@@ -357,10 +389,33 @@ function renderCart() {
 
   let total = 0;
 
+  if (cart.length === 0) {
+
+    if (emptyText) {
+
+      emptyText.style.display =
+        "block";
+    }
+
+  } else {
+
+    if (emptyText) {
+
+      emptyText.style.display =
+        "none";
+    }
+  }
+
   cart.forEach(item => {
 
+    const itemPrice =
+      Number(item.price) || 0;
+
+    const itemQuantity =
+      Number(item.quantity) || 0;
+
     total +=
-      item.price * item.quantity;
+      itemPrice * itemQuantity;
 
     const li =
       document.createElement("li");
@@ -371,11 +426,12 @@ function renderCart() {
 
         <img
           class="cart-img"
-          src="${item.coverImage}"
+          src="${item.coverImage || ""}"
+          alt="${item.name || ""}"
         >
 
         <span>
-          ${item.name}
+          ${item.name || "Unnamed"}
         </span>
 
       </div>
@@ -387,7 +443,7 @@ function renderCart() {
         </button>
 
         <span>
-          ${item.quantity}
+          ${itemQuantity}
         </span>
 
         <button class="plus-btn">
@@ -403,58 +459,57 @@ function renderCart() {
     const plusBtn =
       li.querySelector(".plus-btn");
 
-    minusBtn.onclick =
-      () => removeItem(item.id);
+    minusBtn.onclick = () => {
 
-    plusBtn.onclick =
-      () => addItem(item);
+      removeItem(item.id);
+    };
+
+    plusBtn.onclick = () => {
+
+      addItem(item);
+    };
 
     cartList.appendChild(li);
   });
 
-  const totalEl =
-    document.getElementById("total");
-
   if (totalEl) {
 
     totalEl.innerText =
-      total.toLocaleString();
+      `${total.toLocaleString()}`;
   }
-
-  saveCart();
 }
 
-/* =========================
-   CLEAR CART
-========================= */
-
-window.clearCart =
-  function() {
-
-    cart = [];
-
-    saveCart();
-
-    renderCart();
-
-    renderSuggestions();
-  };
-
-/* =========================
+/* =========================================
    COLOR SELECT
-========================= */
+========================================= */
 
 window.changeSelectedColor =
   function(color) {
 
-    console.log(
-      "Selected color:",
-      color
-    );
+    const canvas =
+      document.getElementById("canvas");
+
+    if (!canvas) return;
+
+    const colors = {
+
+      Pink: "#ffd1dc",
+
+      Blue: "#8ec5ff",
+
+      White: "#ffffff",
+
+      Brown: "#9c6b3d"
+    };
+
+    canvas.style.background =
+      colors[color] ||
+      "#f0d0a1";
   };
 
-/* =========================
+/* =========================================
    START
-========================= */
+========================================= */
 
 renderCart();
+renderSuggestions();
