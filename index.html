@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
 
   <meta charset="UTF-8">
@@ -9,201 +8,136 @@
     name="viewport"
     content="width=device-width, initial-scale=1.0">
 
-  <title>Crochet Shop 🧶</title>
+  <title>My Crochet Shop</title>
 
   <link
     rel="stylesheet"
     href="style.css">
 
 </head>
-
 <body>
 
   <h1>
     My Crochet Shop 🧶
   </h1>
 
-  <!-- THEME PICKER -->
-
-  <div class="theme-picker">
-
-    <p>🎨 Background</p>
-
-    <div
-      class="theme-btn pink"
-      onclick="changeBackground('#c86d98','#8d72c9')">
-    </div>
-
-    <div
-      class="theme-btn blue"
-      onclick="changeBackground('#5f87b8','#7b9ec7')">
-    </div>
-
-    <div
-      class="theme-btn yellow"
-      onclick="changeBackground('#b79035','#d6b867')">
-    </div>
-
-    <div
-      class="theme-btn purple"
-      onclick="changeBackground('#7f5fc0','#ab8ce0')">
-    </div>
-
-  </div>
-
   <!-- NAV -->
 
   <div class="nav">
 
-    <button
-      type="button"
-      onclick="showSection('shop')">
-      🧾 Order
+    <button>
+      📋 Order
     </button>
 
-    <button
-      type="button"
-      onclick="showSection('catalog')">
+    <button onclick="window.location.href='catalog.html'">
       🧸 Catalog
     </button>
 
   </div>
 
-  <!-- SHOP SECTION -->
+  <!-- MAIN -->
 
-  <div id="shopSection">
+  <div class="container">
 
-    <div class="container">
+    <!-- CART -->
 
-      <!-- CART -->
+    <div class="products">
 
-      <div class="products">
+      <h2>
+        🛒 In Cart
+      </h2>
 
-        <h2>🛒 In Cart</h2>
+      <ul id="cart"></ul>
 
-        <ul id="cart"></ul>
+      <h3>
+        ✨ You may also like
+      </h3>
 
-        <p id="empty">
-          Your cart is empty 🧺
-        </p>
+      <div id="suggestionList"></div>
 
-        <!-- SUGGESTIONS -->
+    </div>
 
-        <div id="suggestions">
+    <!-- BOX -->
 
-          <h3>✨ You may also like</h3>
+    <div class="box">
 
-          <div id="suggestionList"></div>
+      <h2>
+        Your Box
+      </h2>
 
-        </div>
+      <div class="box-layout">
 
-      </div>
+        <div id="canvas"></div>
 
-      <!-- BOX -->
+        <div class="color-panel">
 
-      <div class="box">
+          <h3>Colors</h3>
 
-        <h2>Your Box</h2>
+          <div
+            class="color-circle pink"
+            onclick="changeBoxColor('#f0bfd0')">
+          </div>
 
-        <div class="box-layout">
+          <div
+            class="color-circle blue"
+            onclick="changeBoxColor('#8ec5ff')">
+          </div>
 
-          <div id="canvas"></div>
+          <div
+            class="color-circle white"
+            onclick="changeBoxColor('#ffffff')">
+          </div>
 
-          <!-- COLORS -->
-
-          <div class="color-panel">
-
-            <h3>Colors</h3>
-
-            <button
-              type="button"
-              class="color-circle pink"
-              onclick="changeSelectedColor('Pink')">
-            </button>
-
-            <button
-              type="button"
-              class="color-circle blue"
-              onclick="changeSelectedColor('Blue')">
-            </button>
-
-            <button
-              type="button"
-              class="color-circle white"
-              onclick="changeSelectedColor('White')">
-            </button>
-
-            <button
-              type="button"
-              class="color-circle brown"
-              onclick="changeSelectedColor('Brown')">
-            </button>
-
+          <div
+            class="color-circle brown"
+            onclick="changeBoxColor('#b57b42')">
           </div>
 
         </div>
 
-        <h2>
-          Total:
-          <span id="total">0</span>
-          VND
-        </h2>
-
-        <div
-          id="bin"
-          onclick="clearCart()">
-          🗑️
-        </div>
-
       </div>
 
-      <!-- ORDER FORM -->
+      <h2>
+        Total:
+        <span id="totalPrice">
+          0
+        </span>
+        VND
+      </h2>
 
-      <div class="products">
-
-        <form
-          id="orderForm"
-          action="https://formspree.io/f/xeenrvvk"
-          method="POST">
-
-          <h2>💖 Your Info</h2>
-
-          <input
-            type="text"
-            name="name"
-            placeholder="Your name"
-            required>
-
-          <input
-            type="text"
-            name="contact"
-            placeholder="Phone / Instagram"
-            required>
-
-          <input
-            type="hidden"
-            name="order"
-            id="orderData">
-
-          <button type="submit">
-            Place Order
-          </button>
-
-        </form>
-
-      </div>
+      <button onclick="clearCart()">
+        🗑️
+      </button>
 
     </div>
 
-  </div>
+    <!-- INFO -->
 
-  <!-- CATALOG -->
+    <div class="products">
 
-  <div
-    id="catalogSection"
-    style="display:none;">
+      <h2>
+        💖 Your Info
+      </h2>
 
-    <div class="catalog"></div>
+      <input
+        type="text"
+        id="customerName"
+        placeholder="Your name">
+
+      <br><br>
+
+      <input
+        type="text"
+        id="customerContact"
+        placeholder="Phone / Instagram">
+
+      <br><br>
+
+      <button onclick="placeOrder()">
+        Place Order
+      </button>
+
+    </div>
 
   </div>
 
