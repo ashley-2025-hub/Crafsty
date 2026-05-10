@@ -1,3 +1,4 @@
+```javascript
 import { db } from "./firebase-config.js";
 
 import {
@@ -12,8 +13,7 @@ import {
    ELEMENTS
 ========================= */
 
-const form =
-  document.getElementById("productForm");
+const form = document.getElementById("productForm");
 
 const productList =
   document.getElementById("productList");
@@ -26,42 +26,55 @@ form.addEventListener("submit", async (e) => {
 
   e.preventDefault();
 
-  const product = {
+  const name =
+    document.getElementById("name").value.trim();
 
-    name:
-      document.getElementById("name").value,
+  const price =
+    Number(
+      document.getElementById("price").value
+    );
 
-    price:
-      Number(
-        document.getElementById("price").value
-      ),
+  const emoji =
+    document.getElementById("emoji").value.trim();
 
-    emoji:
-      document.getElementById("emoji").value,
+  const coverImage =
+    document.getElementById("coverImage").value.trim();
 
-    coverImage:
-      document.getElementById("coverImage").value,
+  const description =
+    document.getElementById("description").value.trim();
 
-    displayImages:
-      document.getElementById("displayImages")
-        .value
-        .split("\n")
-        .map(img => img.trim())
-        .filter(img => img !== ""),
+  const displayImagesText =
+    document.getElementById("displayImages").value;
 
-    description:
-      document.getElementById("description").value
+  const displayImages =
+    displayImagesText
+      .split("\n")
+      .map(url => url.trim())
+      .filter(url => url !== "");
 
-  };
+  /* VALIDATION */
+
+  if (!name || !price) {
+    alert("Please fill required fields");
+    return;
+  }
 
   try {
 
     await addDoc(
       collection(db, "products"),
-      product
+      {
+        name,
+        price,
+        emoji,
+        coverImage,
+        description,
+        displayImages,
+        createdAt: Date.now()
+      }
     );
 
-    alert("Product added successfully!");
+    alert("Product added!");
 
     form.reset();
 
@@ -71,10 +84,7 @@ form.addEventListener("submit", async (e) => {
 
     console.error(error);
 
-    alert(
-      "Failed to add product.\nCheck console."
-    );
-
+    alert("Failed to add product");
   }
 
 });
@@ -95,20 +105,18 @@ async function loadProducts() {
       collection(db, "products")
     );
 
-    snapshot.forEach((docSnap) => {
+    snapshot.forEach((productDoc) => {
 
-      const product = docSnap.data();
+      const product = productDoc.data();
 
-      const card =
-        document.createElement("div");
+      const card = document.createElement("div");
 
       card.className = "product-card";
 
       card.innerHTML = `
-
         <img
           src="${product.coverImage || '1.png'}"
-          class="product-cover"
+          class="product-image"
         >
 
         <h3>
@@ -120,10 +128,14 @@ async function loadProducts() {
           ${(product.price || 0).toLocaleString()} VND
         </p>
 
+        <p>
+          ${(product.displayImages || []).length}
+          display images
+        </p>
+
         <button class="delete-btn">
           Delete
         </button>
-
       `;
 
       const deleteBtn =
@@ -133,11 +145,29 @@ async function loadProducts() {
         "click",
         async () => {
 
-          await deleteDoc(
-            doc(db, "products", docSnap.id)
-          );
+          const confirmDelete =
+            confirm("Delete product?");
 
-          loadProducts();
+          if (!confirmDelete) return;
+
+          try {
+
+            await deleteDoc(
+              doc(
+                db,
+                "products",
+                productDoc.id
+              )
+            );
+
+            loadProducts();
+
+          } catch (error) {
+
+            console.error(error);
+
+            alert("Delete failed");
+          }
 
         }
       );
@@ -150,6 +180,9 @@ async function loadProducts() {
 
     console.error(error);
 
+    productList.innerHTML = `
+      <h2>Failed to load products</h2>
+    `;
   }
 
 }
@@ -159,3 +192,4 @@ async function loadProducts() {
 ========================= */
 
 loadProducts();
+```
