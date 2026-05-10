@@ -5,9 +5,9 @@ import {
   onSnapshot
 } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
-/* =========================================
+/* =========================
    DATA
-========================================= */
+========================= */
 
 let products = [];
 
@@ -16,9 +16,11 @@ let cart =
     localStorage.getItem("cart")
   ) || [];
 
-/* =========================================
+let selectedItem = null;
+
+/* =========================
    SAVE CART
-========================================= */
+========================= */
 
 function saveCart() {
 
@@ -28,75 +30,113 @@ function saveCart() {
   );
 }
 
-/* =========================================
-   TOAST MESSAGE
-========================================= */
+/* =========================
+   BACKGROUND THEMES
+========================= */
 
-function showToast(message) {
+window.changeBackground =
+  function(color1, color2) {
 
-  const toast =
-    document.createElement("div");
+    document.body.style.background =
+      `linear-gradient(
+        135deg,
+        ${color1},
+        ${color2}
+      )`;
 
-  toast.className =
-    "toast-message";
+    document.body.style.backgroundAttachment =
+      "fixed";
+  };
 
-  toast.innerText =
-    message;
+/* =========================
+   SECTION SWITCHING
+========================= */
 
-  document.body.appendChild(toast);
+window.showSection =
+  function(section) {
 
-  setTimeout(() => {
+    const shopSection =
+      document.getElementById(
+        "shopSection"
+      );
 
-    toast.style.opacity = "0";
+    const catalogSection =
+      document.getElementById(
+        "catalogSection"
+      );
 
-    setTimeout(() => {
+    if (
+      !shopSection ||
+      !catalogSection
+    ) return;
 
-      toast.remove();
+    if (section === "shop") {
 
-    }, 300);
+      shopSection.style.display =
+        "block";
 
-  }, 1500);
-}
+      catalogSection.style.display =
+        "none";
 
-/* =========================================
+    } else {
+
+      shopSection.style.display =
+        "none";
+
+      catalogSection.style.display =
+        "block";
+    }
+  };
+
+/* =========================
    FIREBASE LIVE
-========================================= */
+========================= */
 
 onSnapshot(
   collection(db, "products"),
   (snapshot) => {
 
-    products = snapshot.docs.map(doc => ({
-
-      id: doc.id,
-
-      ...doc.data()
-    }));
+    products =
+      snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
 
     renderCatalog();
-
     renderSuggestions();
-
     renderCart();
   }
 );
 
-/* =========================================
+/* =========================
    ADD ITEM
-========================================= */
+========================= */
 
 function addItem(product) {
-
-  if (!product) return;
 
   const existing =
     cart.find(
       item => item.id === product.id
     );
 
+  const newSticker = {
+
+    color: "None",
+
+    x:
+      Math.random() * 100 + 20,
+
+    y:
+      Math.random() * 100 + 20
+  };
+
   if (existing) {
 
     existing.quantity += 1;
+
+    existing.stickers.push(
+      newSticker
+    );
 
   } else {
 
@@ -104,8 +144,7 @@ function addItem(product) {
 
       id: product.id,
 
-      name:
-        product.name || "",
+      name: product.name,
 
       price:
         Number(product.price) || 0,
@@ -113,33 +152,35 @@ function addItem(product) {
       coverImage:
         product.coverImage || "",
 
-      quantity: 1
+      quantity: 1,
+
+      stickers: [newSticker]
     });
   }
+
+  selectedItem = newSticker;
 
   saveCart();
 
   renderCart();
 
   renderSuggestions();
-
-  showToast("Added to cart 🧶");
 }
 
-/* =========================================
+/* =========================
    REMOVE ITEM
-========================================= */
+========================= */
 
 function removeItem(id) {
 
   const item =
-    cart.find(
-      i => i.id === id
-    );
+    cart.find(i => i.id === id);
 
   if (!item) return;
 
   item.quantity--;
+
+  item.stickers.pop();
 
   if (item.quantity <= 0) {
 
@@ -156,20 +197,31 @@ function removeItem(id) {
   renderSuggestions();
 }
 
-/* =========================================
+/* =========================
    CATALOG
-========================================= */
+========================= */
 
 function renderCatalog() {
 
   const catalog =
-    document.getElementById(
-      "products"
+    document.querySelector(
+      ".catalog"
     );
 
   if (!catalog) return;
 
   catalog.innerHTML = "";
+
+  if (products.length === 0) {
+
+    catalog.innerHTML = `
+      <p style="color:white;">
+        No products found 🧶
+      </p>
+    `;
+
+    return;
+  }
 
   products.forEach(product => {
 
@@ -183,18 +235,18 @@ function renderCatalog() {
 
       <img
         src="${product.coverImage || ""}"
-        alt="${product.name || ""}"
+        alt="${product.name}"
       >
 
       <div class="catalog-info">
 
         <h3>
           ${product.emoji || "🧶"}
-          ${product.name || ""}
+          ${product.name}
         </h3>
 
         <p>
-          ${Number(product.price || 0)
+          ${Number(product.price)
             .toLocaleString()} VND
         </p>
 
@@ -213,6 +265,20 @@ function renderCatalog() {
       e.stopPropagation();
 
       addItem(product);
+
+      addBtn.innerText =
+        "Added To Cart ✓";
+
+      addBtn.disabled = true;
+
+      setTimeout(() => {
+
+        addBtn.innerText =
+          "Add To Cart";
+
+        addBtn.disabled = false;
+
+      }, 1500);
     };
 
     card.onclick = () => {
@@ -225,9 +291,9 @@ function renderCatalog() {
   });
 }
 
-/* =========================================
+/* =========================
    SUGGESTIONS
-========================================= */
+========================= */
 
 function renderSuggestions() {
 
@@ -263,7 +329,7 @@ function renderSuggestions() {
 
       <p>
         ${product.emoji || "🧶"}
-        ${product.name || ""}
+        ${product.name}
       </p>
     `;
 
@@ -276,23 +342,14 @@ function renderSuggestions() {
   });
 }
 
-/* =========================================
-   CART
-========================================= */
+/* =========================
+   RENDER CART
+========================= */
 
 function renderCart() {
 
   const cartList =
     document.getElementById("cart");
-
-  const totalEl =
-    document.getElementById("total");
-
-  const emptyText =
-    document.getElementById("empty");
-
-  const orderData =
-    document.getElementById("orderData");
 
   if (!cartList) return;
 
@@ -300,22 +357,10 @@ function renderCart() {
 
   let total = 0;
 
-  if (cart.length === 0) {
-
-    emptyText.style.display =
-      "block";
-
-  } else {
-
-    emptyText.style.display =
-      "none";
-  }
-
   cart.forEach(item => {
 
     total +=
-      item.price *
-      item.quantity;
+      item.price * item.quantity;
 
     const li =
       document.createElement("li");
@@ -358,122 +403,58 @@ function renderCart() {
     const plusBtn =
       li.querySelector(".plus-btn");
 
-    minusBtn.onclick = () => {
+    minusBtn.onclick =
+      () => removeItem(item.id);
 
-      removeItem(item.id);
-    };
-
-    plusBtn.onclick = () => {
-
-      const realProduct =
-        products.find(
-          p => p.id === item.id
-        );
-
-      addItem(realProduct);
-    };
+    plusBtn.onclick =
+      () => addItem(item);
 
     cartList.appendChild(li);
   });
 
-  totalEl.innerText =
-    total.toLocaleString();
+  const totalEl =
+    document.getElementById("total");
 
-  orderData.value =
-    JSON.stringify(cart);
+  if (totalEl) {
+
+    totalEl.innerText =
+      total.toLocaleString();
+  }
 
   saveCart();
 }
 
-/* =========================================
+/* =========================
    CLEAR CART
-========================================= */
+========================= */
 
-window.clearCart = function() {
+window.clearCart =
+  function() {
 
-  cart = [];
+    cart = [];
 
-  saveCart();
+    saveCart();
 
-  renderCart();
+    renderCart();
 
-  renderSuggestions();
-};
-
-/* =========================================
-   BACKGROUND
-========================================= */
-
-window.changeBackground =
-  function(color1, color2) {
-
-    document.body.style.background =
-      `linear-gradient(
-        135deg,
-        ${color1},
-        ${color2}
-      )`;
-
-    document.body.style.backgroundAttachment =
-      "fixed";
+    renderSuggestions();
   };
 
-/* =========================================
-   SECTION SWITCHING
-========================================= */
-
-window.showSection =
-  function(section) {
-
-    const shopSection =
-      document.getElementById(
-        "shopSection"
-      );
-
-    const catalogSection =
-      document.getElementById(
-        "catalogSection"
-      );
-
-    if (section === "shop") {
-
-      shopSection.style.display =
-        "block";
-
-      catalogSection.style.display =
-        "none";
-
-    } else {
-
-      shopSection.style.display =
-        "none";
-
-      catalogSection.style.display =
-        "block";
-    }
-
-    window.scrollTo({
-      top: 0,
-      behavior: "smooth"
-    });
-  };
-
-/* =========================================
+/* =========================
    COLOR SELECT
-========================================= */
+========================= */
 
 window.changeSelectedColor =
   function(color) {
 
-    showToast(
-      `Selected color: ${color}`
+    console.log(
+      "Selected color:",
+      color
     );
   };
 
-/* =========================================
+/* =========================
    START
-========================================= */
+========================= */
 
 renderCart();
-
-renderSuggestions();
