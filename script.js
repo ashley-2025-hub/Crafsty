@@ -39,7 +39,7 @@ window.showSection = function(section) {
     shop.style.display = "block";
     catalogSection.style.display = "none";
 
-    renderCart(); // 🔥 refresh
+    renderCart();
   } else {
     shop.style.display = "none";
     catalogSection.style.display = "block";
@@ -87,7 +87,6 @@ async function loadProducts() {
 
       card.addEventListener("click", (e) => {
         if (e.target.closest(".add-btn")) return;
-
         window.location.href = `product.html?id=${docSnap.id}`;
       });
 
@@ -118,65 +117,7 @@ function renderCart() {
   if (emptyText) {
     emptyText.style.display =
       cart.length === 0 ? "block" : "none";
-    loadSuggestions();
   }
-
-  /* =========================================
-   SUGGESTIONS (NOT IN CART)
-========================================= */
-<button onclick="addToCartFromSuggestion('${docSnap.id}')">
-  + Add
-</button>
-async function loadSuggestions() {
-
-  const suggestionList =
-    document.getElementById("suggestionList");
-
-  if (!suggestionList) return;
-
-  try {
-
-    const snapshot =
-      await getDocs(collection(db, "products"));
-
-    suggestionList.innerHTML = "";
-
-    // get names in cart to compare
-    const cartNames =
-      cart.map(item => item.name);
-
-    snapshot.forEach((docSnap) => {
-
-      const product = docSnap.data();
-
-      // ❌ skip if already in cart
-      if (cartNames.includes(product.name)) return;
-
-      const card =
-        document.createElement("div");
-
-      card.className = "suggest-card";
-
-      card.innerHTML = `
-        <img src="${product.coverImage || ""}">
-        <h4>${product.emoji || "🧶"} ${product.name}</h4>
-        <p>${Number(product.price || 0).toLocaleString()} VND</p>
-      `;
-
-      // 👉 click = go to product page
-      card.addEventListener("click", () => {
-        window.location.href =
-          `product.html?id=${docSnap.id}`;
-      });
-
-      suggestionList.appendChild(card);
-
-    });
-
-  } catch (error) {
-    console.error("Suggestion error:", error);
-  }
-}
 
   let total = 0;
 
@@ -208,7 +149,75 @@ async function loadSuggestions() {
   if (orderData) {
     orderData.value = JSON.stringify(cart);
   }
+
+  // ✅ IMPORTANT: load suggestions AFTER cart updates
+  loadSuggestions();
 }
+
+/* =========================================
+   SUGGESTIONS (NOT IN CART)
+========================================= */
+
+async function loadSuggestions() {
+
+  const suggestionList =
+    document.getElementById("suggestionList");
+
+  if (!suggestionList) return;
+
+  try {
+
+    const snapshot =
+      await getDocs(collection(db, "products"));
+
+    suggestionList.innerHTML = "";
+
+    const cartNames =
+      cart.map(item => item.name);
+
+    snapshot.forEach((docSnap) => {
+
+      const product = docSnap.data();
+
+      if (cartNames.includes(product.name)) return;
+
+      const card = document.createElement("div");
+      card.className = "suggest-card";
+
+      card.innerHTML = `
+        <img src="${product.coverImage || ""}">
+        <h4>${product.emoji || "🧶"} ${product.name}</h4>
+        <p>${Number(product.price || 0).toLocaleString()} VND</p>
+        <button class="suggest-add">+ Add</button>
+      `;
+
+      // go to product page
+      card.addEventListener("click", (e) => {
+        if (e.target.classList.contains("suggest-add")) return;
+
+        window.location.href =
+          `product.html?id=${docSnap.id}`;
+      });
+
+      // add button
+      const addBtn = card.querySelector(".suggest-add");
+
+      addBtn.addEventListener("click", (e) => {
+        e.stopPropagation();
+        addToCart(product);
+      });
+
+      suggestionList.appendChild(card);
+    });
+
+  } catch (error) {
+    console.error("Suggestion error:", error);
+  }
+}
+
+/* =========================================
+   REMOVE / CLEAR
+========================================= */
 
 window.removeFromCart = function(index) {
   cart.splice(index, 1);
@@ -227,4 +236,4 @@ window.clearCart = function() {
 ========================================= */
 
 loadProducts();
-renderCart(); // 🔥 important
+renderCart();
