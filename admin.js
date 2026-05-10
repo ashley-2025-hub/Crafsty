@@ -1,67 +1,142 @@
 import { db } from "./firebase-config.js";
+
 import {
   collection,
   addDoc,
+  getDocs,
   deleteDoc,
-  doc,
-  onSnapshot
-} from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+  doc
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const form = document.getElementById("productForm");
 
 const productList = document.getElementById("productList");
 
-async function addProduct() {
-  try {
-    const name = document.getElementById("name").value.trim();
-    const price = Number(document.getElementById("price").value);
-    const emoji = document.getElementById("emoji").value.trim();
-    const coverImage = document.getElementById("coverImage").value.trim();
-    const description = document.getElementById("description").value.trim();
-    const displayImages = document.getElementById("displayImages").value.split("\n").map(img => img.trim()).filter(Boolean);
+/* =========================
+   ADD PRODUCT
+========================= */
 
-    if (!name || !price || !coverImage) {
-      alert("Please fill in Name, Price, and Cover Image!");
-      return;
-    }
+form.addEventListener("submit", async (e) => {
+
+  e.preventDefault();
+
+  const name =
+    document.getElementById("name").value;
+
+  const price =
+    Number(document.getElementById("price").value);
+
+  const emoji =
+    document.getElementById("emoji").value;
+
+  const coverImage =
+    document.getElementById("coverImage").value;
+
+  const displayImages =
+    document.getElementById("displayImages")
+      .value
+      .split("\n")
+      .map(img => img.trim())
+      .filter(img => img !== "");
+
+  const description =
+    document.getElementById("description").value;
+
+  try {
 
     await addDoc(collection(db, "products"), {
+
       name,
       price,
       emoji,
       coverImage,
-      description,
       displayImages,
-      createdAt: Date.now()
+      description
+
     });
 
-    document.getElementById("productForm").reset();
-    alert("Product added successfully! 🧶");
-  } catch (e) {
-    console.error("Error adding document: ", e);
-  }
-}
+    alert("Product added!");
 
-async function deleteProduct(id) {
-  if (confirm("Are you sure you want to delete this product?")) {
-    await deleteDoc(doc(db, "products", id));
-  }
-}
+    form.reset();
 
-onSnapshot(collection(db, "products"), (snapshot) => {
-  productList.innerHTML = "";
-  snapshot.forEach((docSnap) => {
-    const product = docSnap.data();
-    const card = document.createElement("div");
-    card.className = "product-card";
-    card.innerHTML = `
-      <img src="${product.coverImage}" alt="${product.name}">
-      <h3>${product.emoji || "🧶"} ${product.name}</h3>
-      <p>${Number(product.price).toLocaleString()} VND</p>
-      <button onclick="deleteProduct('${docSnap.id}')">Delete</button>
-    `;
-    productList.appendChild(card);
-  });
+    loadProducts();
+
+  } catch (error) {
+
+    console.error(error);
+
+    alert("Failed to add product");
+
+  }
+
 });
 
-// EXPOSE TO HTML
-window.addProduct = addProduct;
-window.deleteProduct = deleteProduct;
+/* =========================
+   LOAD PRODUCTS
+========================= */
+
+async function loadProducts() {
+
+  if (!productList) return;
+
+  productList.innerHTML = "";
+
+  const snapshot = await getDocs(
+    collection(db, "products")
+  );
+
+  snapshot.forEach((docSnap) => {
+
+    const product = docSnap.data();
+
+    const card = document.createElement("div");
+
+    card.className = "product-card";
+
+    card.innerHTML = `
+
+      <img
+        src="${product.coverImage || '1.png'}"
+        class="product-cover"
+      >
+
+      <h3>
+        ${product.emoji || "🧸"}
+        ${product.name}
+      </h3>
+
+      <p>
+        ${(product.price || 0).toLocaleString()} VND
+      </p>
+
+      <p>
+        ${(product.displayImages || []).length}
+        display images
+      </p>
+
+      <button class="delete-btn">
+        Delete
+      </button>
+
+    `;
+
+    const deleteBtn =
+      card.querySelector(".delete-btn");
+
+    deleteBtn.addEventListener("click", async () => {
+
+      await deleteDoc(
+        doc(db, "products", docSnap.id)
+      );
+
+      loadProducts();
+
+    });
+
+    productList.appendChild(card);
+
+  });
+
+}
+
+loadProducts();
