@@ -1,5 +1,3 @@
-<!-- product.html -->
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -49,38 +47,49 @@
         alt="Product Image"
       >
 
+      <!-- THUMBNAILS -->
+
+      <div
+        id="thumbnailRow"
+        class="thumbnail-row"
+      >
+      </div>
+
     </div>
 
     <!-- RIGHT SIDE -->
 
     <div class="product-info-panel">
 
-      <!-- SMALL DISPLAY IMAGES -->
-
-      <div
-        id="thumbnailRow"
-        class="thumbnail-row top-thumbnails"
-      ></div>
-
-      <h1 id="productTitle">
-        Loading Product...
+      <h1 id="productName">
+        Loading...
       </h1>
-
-      <h2 id="productName"></h2>
 
       <p
         id="productPrice"
         class="product-price"
-      ></p>
+      >
+      </p>
 
       <p
         id="productDescription"
         class="product-description"
-      ></p>
+      >
+      </p>
+
+      <!-- MOVED THUMBNAILS ABOVE BUTTON -->
+
+      <div
+        id="topThumbnailRow"
+        class="top-thumbnail-row"
+      >
+      </div>
+
+      <!-- ADD BUTTON -->
 
       <button
-        id="addToCartBtn"
         class="big-add-btn"
+        onclick="addToCart()"
       >
         Add To Cart 🧶
       </button>
@@ -89,10 +98,14 @@
 
   </div>
 
+  <!-- SCRIPT -->
+
   <script
     type="module"
     src="product.js"
-  ></script>
+  >
+  </script>
 
 </body>
+
 </html>
