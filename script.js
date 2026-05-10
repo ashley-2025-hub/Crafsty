@@ -118,7 +118,65 @@ function renderCart() {
   if (emptyText) {
     emptyText.style.display =
       cart.length === 0 ? "block" : "none";
+    loadSuggestions();
   }
+
+  /* =========================================
+   SUGGESTIONS (NOT IN CART)
+========================================= */
+<button onclick="addToCartFromSuggestion('${docSnap.id}')">
+  + Add
+</button>
+async function loadSuggestions() {
+
+  const suggestionList =
+    document.getElementById("suggestionList");
+
+  if (!suggestionList) return;
+
+  try {
+
+    const snapshot =
+      await getDocs(collection(db, "products"));
+
+    suggestionList.innerHTML = "";
+
+    // get names in cart to compare
+    const cartNames =
+      cart.map(item => item.name);
+
+    snapshot.forEach((docSnap) => {
+
+      const product = docSnap.data();
+
+      // ❌ skip if already in cart
+      if (cartNames.includes(product.name)) return;
+
+      const card =
+        document.createElement("div");
+
+      card.className = "suggest-card";
+
+      card.innerHTML = `
+        <img src="${product.coverImage || ""}">
+        <h4>${product.emoji || "🧶"} ${product.name}</h4>
+        <p>${Number(product.price || 0).toLocaleString()} VND</p>
+      `;
+
+      // 👉 click = go to product page
+      card.addEventListener("click", () => {
+        window.location.href =
+          `product.html?id=${docSnap.id}`;
+      });
+
+      suggestionList.appendChild(card);
+
+    });
+
+  } catch (error) {
+    console.error("Suggestion error:", error);
+  }
+}
 
   let total = 0;
 
