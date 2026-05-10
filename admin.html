@@ -1,54 +1,90 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
   <title>Admin Panel</title>
-  <link rel="stylesheet" href="style.css">
+
+  <link
+    rel="stylesheet"
+    href="style.css"
+  />
 </head>
+
 <body>
 
-  <h1 class="page-title">Admin Panel 🧶</h1>
+  <h1 class="page-title">
+    Admin Panel 🧶
+  </h1>
 
   <div class="admin-wrapper">
 
+    <!-- ADD PRODUCT -->
     <div class="admin-box">
+
       <h2>Add Product</h2>
 
       <form id="productForm">
 
-        <input id="name" placeholder="Product Name">
+        <input
+          id="name"
+          type="text"
+          placeholder="Product Name"
+          required
+        >
 
-        <input id="price" type="number" placeholder="Price">
+        <input
+          id="price"
+          type="number"
+          placeholder="Price"
+          required
+        >
 
-        <input id="emoji" placeholder="Emoji">
+        <input
+          id="emoji"
+          type="text"
+          placeholder="Emoji"
+        >
 
-        <input id="coverImage" placeholder="Cover Image URL">
+        <input
+          id="coverImage"
+          type="text"
+          placeholder="Cover Image URL"
+        >
 
         <textarea
           id="displayImages"
-          placeholder="Display Images URLs (one per line)">
-        </textarea>
+          placeholder="Display Images URLs (one per line)"
+        ></textarea>
 
         <textarea
           id="description"
-          placeholder="Description">
-        </textarea>
+          placeholder="Description"
+        ></textarea>
 
-        <button
-          type="button"
-          onclick="addProduct()">
+        <button type="submit">
           Add Product
         </button>
 
       </form>
+
     </div>
 
+    <!-- PRODUCT LIST -->
     <div id="productList"></div>
 
   </div>
 
-  <script type="module" src="admin.js"></script>
+  <script
+    type="module"
+    src="./admin.js"
+  ></script>
 
 </body>
 </html>
