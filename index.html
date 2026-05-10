@@ -7,47 +7,55 @@
 
   <meta
     name="viewport"
-    content="width=device-width, initial-scale=1.0">
+    content="width=device-width, initial-scale=1.0"
+  >
 
-  <title>Crochet Shop 🧶</title>
+  <title>
+    Crochet Shop 🧶
+  </title>
 
   <link
     rel="stylesheet"
-    href="style.css">
+    href="style.css"
+  >
 
 </head>
 
 <body>
 
+  <!-- TITLE -->
+
   <h1>
     My Crochet Shop 🧶
   </h1>
 
-  <!-- THEME -->
+  <!-- THEME PICKER -->
 
   <div class="theme-picker">
 
-    <p>🎨 Background</p>
+    <p>
+      🎨 Background
+    </p>
 
     <div
       class="theme-btn pink"
-      onclick="changeBackground('#c86d98','#8d72c9')">
-    </div>
+      onclick="changeBackground('#c86d98','#8d72c9')"
+    ></div>
 
     <div
       class="theme-btn blue"
-      onclick="changeBackground('#5f87b8','#7b9ec7')">
-    </div>
+      onclick="changeBackground('#5f87b8','#7b9ec7')"
+    ></div>
 
     <div
       class="theme-btn yellow"
-      onclick="changeBackground('#b79035','#d6b867')">
-    </div>
+      onclick="changeBackground('#b79035','#d6b867')"
+    ></div>
 
     <div
       class="theme-btn purple"
-      onclick="changeBackground('#7f5fc0','#ab8ce0')">
-    </div>
+      onclick="changeBackground('#7f5fc0','#ab8ce0')"
+    ></div>
 
   </div>
 
@@ -57,38 +65,26 @@
 
     <button
       type="button"
-      onclick="showSection('catalog')">
-
-      🧸 Catalog
-
+      onclick="showSection('shop')"
+    >
+      🧾 Order
     </button>
 
     <button
       type="button"
-      onclick="showSection('shop')">
-
-      🧾 Order
-
+      onclick="showSection('catalog')"
+    >
+      🧸 Catalog
     </button>
 
   </div>
 
-  <!-- CATALOG -->
-
-  <section id="catalogSection">
-
-    <div
-      id="products"
-      class="catalog">
-    </div>
-
-  </section>
-
-  <!-- SHOP -->
+  <!-- SHOP SECTION -->
 
   <section
     id="shopSection"
-    style="display:none;">
+    style="display:block;"
+  >
 
     <div class="container">
 
@@ -96,13 +92,17 @@
 
       <div class="products">
 
-        <h2>🛒 In Cart</h2>
+        <h2>
+          🛒 In Cart
+        </h2>
 
         <ul id="cart"></ul>
 
         <p id="empty">
           Your cart is empty 🧺
         </p>
+
+        <!-- SUGGESTIONS -->
 
         <div id="suggestions">
 
@@ -120,85 +120,98 @@
 
       <div class="box">
 
-        <h2>Your Box</h2>
+        <h2>
+          Your Box
+        </h2>
 
         <div class="box-layout">
 
           <div id="canvas"></div>
 
+          <!-- COLORS -->
+
           <div class="color-panel">
 
-            <h3>Colors</h3>
+            <h3>
+              Colors
+            </h3>
 
             <button
+              type="button"
               class="color-circle pink"
-              onclick="changeSelectedColor('Pink')">
-            </button>
+              onclick="changeSelectedColor('Pink')"
+            ></button>
 
             <button
+              type="button"
               class="color-circle blue"
-              onclick="changeSelectedColor('Blue')">
-            </button>
+              onclick="changeSelectedColor('Blue')"
+            ></button>
 
             <button
+              type="button"
               class="color-circle white"
-              onclick="changeSelectedColor('White')">
-            </button>
+              onclick="changeSelectedColor('White')"
+            ></button>
 
             <button
+              type="button"
               class="color-circle brown"
-              onclick="changeSelectedColor('Brown')">
-            </button>
+              onclick="changeSelectedColor('Brown')"
+            ></button>
 
           </div>
 
         </div>
 
         <h2>
-
           Total:
           <span id="total">0</span>
           VND
-
         </h2>
 
         <div
           id="bin"
-          onclick="clearCart()">
-
+          onclick="clearCart()"
+        >
           🗑️
-
         </div>
 
       </div>
 
-      <!-- FORM -->
+      <!-- ORDER FORM -->
 
       <div class="products">
 
         <form
           id="orderForm"
           action="https://formspree.io/f/xeenrvvk"
-          method="POST">
+          method="POST"
+        >
 
-          <h2>💖 Your Info</h2>
+          <h2>
+            💖 Your Info
+          </h2>
 
           <input
             type="text"
             name="name"
             placeholder="Your name"
-            required>
+            required
+          >
 
           <input
             type="text"
             name="contact"
             placeholder="Phone / Instagram"
-            required>
+            required
+          >
 
           <input
             type="hidden"
             name="order"
-            id="orderData">
+            id="orderData"
+          >
 
           <button type="submit">
             Place Order
@@ -212,10 +225,25 @@
 
   </section>
 
+  <!-- CATALOG SECTION -->
+
+  <section
+    id="catalogSection"
+    style="display:none;"
+  >
+
+    <div
+      id="products"
+      class="catalog"
+    ></div>
+
+  </section>
+
   <script
     type="module"
-    src="script.js">
-  </script>
+    src="./script.js"
+  ></script>
 
 </body>
+
 </html>
