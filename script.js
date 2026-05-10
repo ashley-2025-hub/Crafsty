@@ -16,8 +16,6 @@ let cart =
     localStorage.getItem("cart")
   ) || [];
 
-let selectedItem = null;
-
 /* =========================================
    SAVE CART
 ========================================= */
@@ -28,6 +26,36 @@ function saveCart() {
     "cart",
     JSON.stringify(cart)
   );
+}
+
+/* =========================================
+   TOAST MESSAGE
+========================================= */
+
+function showToast(message) {
+
+  const toast =
+    document.createElement("div");
+
+  toast.className =
+    "toast-message";
+
+  toast.innerText =
+    message;
+
+  document.body.appendChild(toast);
+
+  setTimeout(() => {
+
+    toast.style.opacity = "0";
+
+    setTimeout(() => {
+
+      toast.remove();
+
+    }, 300);
+
+  }, 1500);
 }
 
 /* =========================================
@@ -66,20 +94,9 @@ function addItem(product) {
       item => item.id === product.id
     );
 
-  const newSticker = {
-
-    color: "None",
-
-    x: Math.random() * 100 + 20,
-
-    y: Math.random() * 100 + 20
-  };
-
   if (existing) {
 
     existing.quantity += 1;
-
-    existing.stickers.push(newSticker);
 
   } else {
 
@@ -87,7 +104,8 @@ function addItem(product) {
 
       id: product.id,
 
-      name: product.name || "",
+      name:
+        product.name || "",
 
       price:
         Number(product.price) || 0,
@@ -95,19 +113,17 @@ function addItem(product) {
       coverImage:
         product.coverImage || "",
 
-      quantity: 1,
-
-      stickers: [newSticker]
+      quantity: 1
     });
   }
-
-  selectedItem = newSticker;
 
   saveCart();
 
   renderCart();
 
   renderSuggestions();
+
+  showToast("Added to cart 🧶");
 }
 
 /* =========================================
@@ -124,8 +140,6 @@ function removeItem(id) {
   if (!item) return;
 
   item.quantity--;
-
-  item.stickers.pop();
 
   if (item.quantity <= 0) {
 
@@ -149,7 +163,9 @@ function removeItem(id) {
 function renderCatalog() {
 
   const catalog =
-    document.querySelector(".catalog");
+    document.getElementById(
+      "products"
+    );
 
   if (!catalog) return;
 
@@ -183,7 +199,7 @@ function renderCatalog() {
         </p>
 
         <button class="add-btn">
-          Add
+          Add To Cart
         </button>
 
       </div>
@@ -243,7 +259,6 @@ function renderSuggestions() {
 
       <img
         src="${product.coverImage || ""}"
-        alt="${product.name || ""}"
       >
 
       <p>
@@ -287,26 +302,20 @@ function renderCart() {
 
   if (cart.length === 0) {
 
-    if (emptyText) {
-
-      emptyText.style.display =
-        "block";
-    }
+    emptyText.style.display =
+      "block";
 
   } else {
 
-    if (emptyText) {
-
-      emptyText.style.display =
-        "none";
-    }
+    emptyText.style.display =
+      "none";
   }
 
   cart.forEach(item => {
 
     total +=
-      Number(item.price) *
-      Number(item.quantity);
+      item.price *
+      item.quantity;
 
     const li =
       document.createElement("li");
@@ -317,12 +326,11 @@ function renderCart() {
 
         <img
           class="cart-img"
-          src="${item.coverImage || ""}"
-          alt="${item.name || ""}"
+          src="${item.coverImage}"
         >
 
         <span>
-          ${item.name || ""}
+          ${item.name}
         </span>
 
       </div>
@@ -368,17 +376,11 @@ function renderCart() {
     cartList.appendChild(li);
   });
 
-  if (totalEl) {
+  totalEl.innerText =
+    total.toLocaleString();
 
-    totalEl.innerText =
-      total.toLocaleString();
-  }
-
-  if (orderData) {
-
-    orderData.value =
-      JSON.stringify(cart);
-  }
+  orderData.value =
+    JSON.stringify(cart);
 
   saveCart();
 }
@@ -433,11 +435,6 @@ window.showSection =
         "catalogSection"
       );
 
-    if (
-      !shopSection ||
-      !catalogSection
-    ) return;
-
     if (section === "shop") {
 
       shopSection.style.display =
@@ -456,9 +453,7 @@ window.showSection =
     }
 
     window.scrollTo({
-
       top: 0,
-
       behavior: "smooth"
     });
   };
@@ -470,7 +465,7 @@ window.showSection =
 window.changeSelectedColor =
   function(color) {
 
-    alert(
+    showToast(
       `Selected color: ${color}`
     );
   };
