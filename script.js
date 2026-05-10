@@ -1,9 +1,13 @@
 import { db } from "./firebase-config.js";
-
 import {
   collection,
   getDocs
 } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+
+/* =========================================
+   DEBUG (remove later if you want)
+========================================= */
+console.log("✅ SCRIPT LOADED");
 
 /* =========================================
    CART (PERSISTENT)
@@ -38,8 +42,7 @@ window.showSection = function(section) {
   if (section === "shop") {
     shop.style.display = "block";
     catalogSection.style.display = "none";
-
-    renderCart(); // refresh when opening
+    renderCart();
   } else {
     shop.style.display = "none";
     catalogSection.style.display = "block";
@@ -60,7 +63,14 @@ async function loadProducts() {
 
     const snapshot = await getDocs(collection(db, "products"));
 
+    console.log("📦 Products loaded:", snapshot.size);
+
     catalog.innerHTML = "";
+
+    if (snapshot.empty) {
+      catalog.innerHTML = `<p style="color:white;">No products found 🧶</p>`;
+      return;
+    }
 
     snapshot.forEach((docSnap) => {
 
@@ -78,6 +88,7 @@ async function loadProducts() {
         </div>
       `;
 
+      // ADD BUTTON
       const btn = card.querySelector(".add-btn");
 
       btn.addEventListener("click", (e) => {
@@ -85,22 +96,27 @@ async function loadProducts() {
         addToCart(product);
       });
 
+      // CLICK CARD → GO TO PRODUCT PAGE
       card.addEventListener("click", (e) => {
         if (e.target.closest(".add-btn")) return;
 
-        window.location.href = `product.html?id=${docSnap.id}`;
+        window.location.href =
+          `product.html?id=${docSnap.id}`;
       });
 
       catalog.appendChild(card);
     });
 
   } catch (err) {
-    console.error(err);
+    console.error("❌ LOAD ERROR:", err);
+
+    catalog.innerHTML =
+      `<p style="color:white;">Failed to load ❌</p>`;
   }
 }
 
 /* =========================================
-   CART LOGIC
+   CART
 ========================================= */
 
 function addToCart(product) {
@@ -144,19 +160,19 @@ function renderCart() {
   });
 
   if (totalElement) {
-    totalElement.textContent = total.toLocaleString();
+    totalElement.textContent =
+      total.toLocaleString();
   }
 
   if (orderData) {
     orderData.value = JSON.stringify(cart);
   }
 
-  // 🔥 LOAD SUGGESTIONS AFTER CART RENDER
-  loadSuggestions();
+  loadSuggestions(); // 🔥 important
 }
 
 /* =========================================
-   SUGGESTIONS (FIXED)
+   SUGGESTIONS
 ========================================= */
 
 async function loadSuggestions() {
@@ -173,7 +189,6 @@ async function loadSuggestions() {
 
     suggestionList.innerHTML = "";
 
-    // compare using names
     const cartNames =
       cart.map(item => item.name);
 
@@ -196,26 +211,26 @@ async function loadSuggestions() {
         <button class="suggest-add">+ Add</button>
       `;
 
-      // go to product page
+      // CLICK CARD → PRODUCT PAGE
       card.addEventListener("click", () => {
         window.location.href =
           `product.html?id=${docSnap.id}`;
       });
 
-      // add to cart button
-      const addBtn = card.querySelector(".suggest-add");
+      // ADD BUTTON
+      const addBtn =
+        card.querySelector(".suggest-add");
 
       addBtn.addEventListener("click", (e) => {
-        e.stopPropagation(); // prevent redirect
+        e.stopPropagation();
         addToCart(product);
       });
 
       suggestionList.appendChild(card);
-
     });
 
   } catch (error) {
-    console.error("Suggestion error:", error);
+    console.error("❌ Suggestion error:", error);
   }
 }
 
