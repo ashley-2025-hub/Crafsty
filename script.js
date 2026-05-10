@@ -1,46 +1,9 @@
-import {
-  initializeApp
-} from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
+import { db } from "./firebase.js";
 
 import {
-  getFirestore,
   collection,
   getDocs
 } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
-
-/* =========================================
-   FIREBASE
-========================================= */
-
-const firebaseConfig = {
-
-  apiKey:
-    "AIzaSyDDuQmK13GmmTLFu09GVSghOXjPLJTvS7c",
-
-  authDomain:
-    "crafsty.firebaseapp.com",
-
-  projectId:
-    "crafsty",
-
-  storageBucket:
-    "crafsty.firebasestorage.app",
-
-  messagingSenderId:
-    "147789746977",
-
-  appId:
-    "1:147789746977:web:307f39520d85f242c56460",
-
-  measurementId:
-    "G-CPPGL2H68W"
-};
-
-const app =
-  initializeApp(firebaseConfig);
-
-const db =
-  getFirestore(app);
 
 /* =========================================
    GLOBALS
@@ -117,30 +80,18 @@ async function loadProducts() {
 
   try {
 
-    catalog.innerHTML = `
-
-      <p style="color:white;">
-
-        Loading products...
-
-      </p>
-    `;
+    catalog.innerHTML = "";
 
     const snapshot =
       await getDocs(
         collection(db, "products")
       );
 
-    catalog.innerHTML = "";
-
     if (snapshot.empty) {
 
       catalog.innerHTML = `
-
         <p style="color:white;">
-
-          No products found.
-
+          No products found 🧶
         </p>
       `;
 
@@ -149,8 +100,7 @@ async function loadProducts() {
 
     snapshot.forEach((doc) => {
 
-      const product =
-        doc.data();
+      const product = doc.data();
 
       const card =
         document.createElement("div");
@@ -161,62 +111,43 @@ async function loadProducts() {
       card.innerHTML = `
 
         <img
-          src="${
-            product.coverImage ||
-            'https://placehold.co/500x500?text=No+Image'
-          }"
+          src="${product.coverImage}"
           alt="${product.name}">
 
         <div class="catalog-info">
 
           <h3>
-
-            ${product.name || "Unnamed Product"}
-
+            ${product.name}
           </h3>
 
           <p>
-
-            ${
-              Number(product.price || 0)
-              .toLocaleString()
-            } VND
-
+            ${product.price} VND
           </p>
 
           <button class="add-btn">
-
             Add To Cart
-
           </button>
 
         </div>
       `;
 
-      const addButton =
-        card.querySelector(".add-btn");
-
-      addButton.addEventListener(
-        "click",
-        () => addToCart(product)
-      );
+      card
+        .querySelector(".add-btn")
+        .addEventListener(
+          "click",
+          () => addToCart(product)
+        );
 
       catalog.appendChild(card);
     });
 
   } catch (error) {
 
-    console.error(
-      "Firestore error:",
-      error
-    );
+    console.error(error);
 
     catalog.innerHTML = `
-
       <p style="color:white;">
-
-        Failed to load products.
-
+        Failed to load products ❌
       </p>
     `;
   }
@@ -256,7 +187,7 @@ function renderCart() {
 
   cart.forEach((item, index) => {
 
-    total += Number(item.price || 0);
+    total += Number(item.price);
 
     const li =
       document.createElement("li");
@@ -267,15 +198,10 @@ function renderCart() {
 
         <img
           class="cart-img"
-          src="${
-            item.coverImage ||
-            'https://placehold.co/100x100?text=?'
-          }">
+          src="${item.coverImage}">
 
         <span>
-
-          ${item.name || "Product"}
-
+          ${item.name}
         </span>
 
       </div>
@@ -283,19 +209,13 @@ function renderCart() {
       <div class="cart-controls">
 
         <span>
-
-          ${
-            Number(item.price || 0)
-            .toLocaleString()
-          }
-
+          ${item.price}
         </span>
 
         <button
           onclick="removeFromCart(${index})">
 
           ✕
-
         </button>
 
       </div>
@@ -305,14 +225,14 @@ function renderCart() {
   });
 
   totalElement.textContent =
-    total.toLocaleString();
+    total;
 
   orderData.value =
     JSON.stringify(cart);
 }
 
 /* =========================================
-   REMOVE FROM CART
+   REMOVE ITEM
 ========================================= */
 
 window.removeFromCart =
@@ -336,14 +256,14 @@ window.clearCart =
   };
 
 /* =========================================
-   COLOR SELECTOR
+   COLOR PICKER
 ========================================= */
 
 window.changeSelectedColor =
   function(color) {
 
     alert(
-      "Selected color: " + color
+      `Selected color: ${color}`
     );
   };
 
