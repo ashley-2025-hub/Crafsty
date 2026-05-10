@@ -1,82 +1,110 @@
 import { db } from "./firebase-config.js";
-import { collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
-let products = [];
-let cart = JSON.parse(localStorage.getItem("cart")) || [];
-let selectedItem = null;
+import {
+  collection,
+  getDocs
+} from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
-onSnapshot(collection(db, "products"), (snapshot) => {
-  products = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-  renderLiveCatalog();
-  renderCart();
-});
+const productContainer =
+  document.getElementById("productContainer");
 
-function saveCart() {
-  localStorage.setItem("cart", JSON.stringify(cart));
-}
+const totalElement =
+  document.getElementById("total");
 
-function addItem(name, price) {
-  const existing = cart.find(item => item.name === name);
-  const newSticker = { color: "None", x: 50, y: 50 };
-  
-  if (existing) {
-    existing.quantity += 1;
-    existing.stickers.push(newSticker);
-  } else {
-    cart.push({ name, price, quantity: 1, stickers: [newSticker] });
-  }
-  selectedItem = newSticker;
-  saveCart();
-  renderCart();
-}
+let total = 0;
 
-function removeItem(name) {
-  const idx = cart.findIndex(i => i.name === name);
-  if (idx === -1) return;
-  cart[idx].quantity -= 1;
-  cart[idx].stickers.pop();
-  if (cart[idx].quantity <= 0) cart.splice(idx, 1);
-  saveCart();
-  renderCart();
-}
+/* =========================
+   LOAD PRODUCTS
+========================= */
 
-function renderCart() {
-  const cartList = document.getElementById("cart");
-  const canvas = document.getElementById("canvas");
-  if (!cartList || !canvas) return;
+async function loadProducts() {
 
-  cartList.innerHTML = "";
-  canvas.innerHTML = "";
-  let total = 0;
+  if (!productContainer) return;
 
-  cart.forEach(item => {
-    total += item.price * item.quantity;
-    const li = document.createElement("li");
-    li.innerHTML = `<span>${item.name}</span> 
-                    <button onclick="removeItem('${item.name}')">-</button>
-                    <span>${item.quantity}</span>
-                    <button onclick="addItem('${item.name}', ${item.price})">+</button>`;
-    cartList.appendChild(li);
+  productContainer.innerHTML =
+    "<p>Loading products...</p>";
 
-    item.stickers.forEach(s => {
-      const sticker = document.createElement("div");
-      sticker.className = "sticker";
-      sticker.innerHTML = "🧶"; // Simplified for logic
-      sticker.style.left = s.x + "px";
-      sticker.style.top = s.y + "px";
-      canvas.appendChild(sticker);
+  try {
+
+    const snapshot = await getDocs(
+      collection(db, "products")
+    );
+
+    productContainer.innerHTML = "";
+
+    if (snapshot.empty) {
+
+      productContainer.innerHTML = `
+        <h2>No products found</h2>
+      `;
+
+      return;
+    }
+
+    snapshot.forEach((docSnap) => {
+
+      const product = docSnap.data();
+
+      const card =
+        document.createElement("div");
+
+      card.className = "catalog-card";
+
+      card.innerHTML = `
+        <img
+          src="${product.coverImage || 'https://placehold.co/300'}"
+          class="catalog-image"
+        >
+
+        <h3>
+          ${product.emoji || "🧸"}
+          ${product.name || "Unnamed"}
+        </h3>
+
+        <p>
+          ${(product.price || 0).toLocaleString()} VND
+        </p>
+
+        <button class="add-btn">
+          Add to Cart
+        </button>
+      `;
+
+      const addButton =
+        card.querySelector(".add-btn");
+
+      addButton.addEventListener(
+        "click",
+        () => {
+
+          total += Number(product.price || 0);
+
+          if (totalElement) {
+
+            totalElement.textContent =
+              total.toLocaleString() +
+              " VND";
+          }
+
+        }
+      );
+
+      productContainer.appendChild(card);
+
     });
-  });
-  document.getElementById("total").innerText = total.toLocaleString();
+
+  } catch (error) {
+
+    console.error(error);
+
+    productContainer.innerHTML = `
+      <h2>Failed to load products</h2>
+    `;
+  }
 }
 
-// EXPOSE TO HTML
-window.addItem = addItem;
-window.removeItem = removeItem;
-window.clearCart = () => { cart = []; saveCart(); renderCart(); };
-window.changeBackground = (c1, c2) => { document.body.style.background = `linear-gradient(135deg, ${c1}, ${c2})`; };
-window.showSection = (s) => {
-  document.getElementById("shopSection").style.display = s === "shop" ? "block" : "none";
-  document.getElementById("catalogSection").style.display = s === "catalog" ? "block" : "none";
-};
-window.changeSelectedColor = (color) => { if(selectedItem) { selectedItem.color = color; saveCart(); renderCart(); }};
+/* =========================
+   START
+========================= */
+
+loadProducts();
