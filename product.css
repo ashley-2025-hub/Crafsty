@@ -1,0 +1,304 @@
+/* =========================================
+   PRODUCT PAGE
+========================================= */
+
+.back-btn {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 10px;
+
+  margin-bottom: 28px;
+
+  padding: 12px 22px;
+
+  border: none;
+
+  border-radius: 18px;
+
+  cursor: pointer;
+
+  font-size: 15px;
+
+  font-weight: bold;
+
+  color: white;
+
+  background:
+    linear-gradient(
+      135deg,
+      #ff9fc8,
+      #ffbfdc
+    );
+
+  box-shadow:
+    0 8px 20px rgba(0,0,0,0.12);
+
+  transition: 0.2s;
+}
+
+.back-btn:hover {
+
+  transform:
+    translateY(-2px)
+    scale(1.03);
+}
+
+/* =========================================
+   PAGE LAYOUT
+========================================= */
+
+.product-page {
+
+  max-width: 1250px;
+
+  margin: auto;
+
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 1fr)
+    420px;
+
+  gap: 35px;
+
+  align-items: start;
+}
+
+/* =========================================
+   PANELS
+========================================= */
+
+.product-gallery,
+.product-info-panel {
+
+  background:
+    rgba(255,255,255,0.14);
+
+  border:
+    1px solid rgba(255,255,255,0.22);
+
+  border-radius: 32px;
+
+  padding: 28px;
+
+  backdrop-filter: blur(18px);
+
+  box-shadow:
+    0 18px 45px rgba(0,0,0,0.15);
+}
+
+/* =========================================
+   GALLERY
+========================================= */
+
+.product-gallery {
+
+  width: 100%;
+
+  display: flex;
+
+  flex-direction: column;
+
+  gap: 20px;
+}
+
+/* =========================================
+   MAIN IMAGE
+========================================= */
+
+.main-product-image {
+
+  width: 100%;
+
+  max-height: 700px;
+
+  aspect-ratio: 1 / 1;
+
+  object-fit: cover;
+
+  display: block;
+
+  background: white;
+
+  border-radius: 24px;
+
+  overflow: hidden;
+
+  border:
+    2px solid rgba(255,255,255,0.4);
+
+  box-shadow:
+    inset 0 2px 10px rgba(0,0,0,0.06);
+}
+
+/* =========================================
+   THUMBNAILS
+========================================= */
+
+.thumbnail-row {
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(auto-fit, minmax(90px, 1fr));
+
+  gap: 14px;
+
+  width: 100%;
+}
+
+.thumbnail-image {
+
+  width: 100%;
+
+  aspect-ratio: 1 / 1;
+
+  object-fit: cover;
+
+  border-radius: 18px;
+
+  background: white;
+
+  cursor: pointer;
+
+  transition: 0.22s;
+
+  border:
+    3px solid transparent;
+
+  overflow: hidden;
+
+  box-sizing: border-box;
+}
+
+.thumbnail-image:hover {
+
+  transform:
+    translateY(-4px)
+    scale(1.04);
+
+  border-color: #ffb6d3;
+
+  box-shadow:
+    0 10px 20px rgba(255,105,180,0.18);
+}
+
+/* =========================================
+   INFO PANEL
+========================================= */
+
+.product-info-panel {
+
+  text-align: left;
+
+  color: white;
+}
+
+#productName {
+
+  margin-top: 0;
+
+  font-size: 38px;
+
+  line-height: 1.2;
+
+  color: white;
+}
+
+.product-price {
+
+  margin-top: 12px;
+
+  font-size: 38px;
+
+  font-weight: bold;
+
+  color: #ffd0e5;
+}
+
+.product-description {
+
+  margin-top: 22px;
+
+  line-height: 1.9;
+
+  font-size: 17px;
+
+  color: rgba(255,255,255,0.92);
+
+  white-space: pre-line;
+}
+
+/* =========================================
+   BUTTON
+========================================= */
+
+.big-add-btn {
+
+  width: 100%;
+
+  margin-top: 30px;
+
+  padding: 18px;
+
+  border: none;
+
+  border-radius: 22px;
+
+  cursor: pointer;
+
+  font-size: 18px;
+
+  font-weight: bold;
+
+  color: white;
+
+  background:
+    linear-gradient(
+      135deg,
+      #ff9fc8,
+      #ffbfdc
+    );
+
+  box-shadow:
+    0 10px 24px rgba(0,0,0,0.12);
+
+  transition: 0.2s;
+}
+
+.big-add-btn:hover {
+
+  transform:
+    translateY(-2px)
+    scale(1.02);
+}
+
+/* =========================================
+   MOBILE
+========================================= */
+
+@media (max-width: 950px) {
+
+  .product-page {
+
+    grid-template-columns: 1fr;
+  }
+
+  .product-info-panel {
+
+    text-align: center;
+  }
+
+  #productName {
+
+    font-size: 30px;
+  }
+
+  .product-price {
+
+    font-size: 32px;
+  }
+}

@@ -1,0 +1,98 @@
+<!-- product.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>Product</title>
+
+  <link
+    rel="stylesheet"
+    href="style.css"
+  >
+
+</head>
+
+<body>
+
+  <!-- BACK BUTTON -->
+
+  <button
+    class="back-btn"
+    onclick="goBackToCatalog()"
+  >
+    ← Back To Catalog
+  </button>
+
+  <!-- PRODUCT PAGE -->
+
+  <div class="product-page">
+
+    <!-- LEFT SIDE -->
+
+    <div class="product-gallery">
+
+      <!-- MAIN IMAGE -->
+
+      <img
+        id="mainImage"
+        class="main-product-image"
+        src=""
+        alt="Product Image"
+      >
+
+    </div>
+
+    <!-- RIGHT SIDE -->
+
+    <div class="product-info-panel">
+
+      <!-- SMALL DISPLAY IMAGES -->
+
+      <div
+        id="thumbnailRow"
+        class="thumbnail-row top-thumbnails"
+      ></div>
+
+      <h1 id="productTitle">
+        Loading Product...
+      </h1>
+
+      <h2 id="productName"></h2>
+
+      <p
+        id="productPrice"
+        class="product-price"
+      ></p>
+
+      <p
+        id="productDescription"
+        class="product-description"
+      ></p>
+
+      <button
+        id="addToCartBtn"
+        class="big-add-btn"
+      >
+        Add To Cart 🧶
+      </button>
+
+    </div>
+
+  </div>
+
+  <script
+    type="module"
+    src="product.js"
+  ></script>
+
+</body>
+</html>
