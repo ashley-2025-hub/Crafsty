@@ -909,7 +909,16 @@ textarea:focus {
 
   .color-panel {
     flex-direction: row;
-    justify-content: center;
     flex-wrap: wrap;
+    justify-content: center;
   }
+}
+
+/* =========================================
+   GLOBAL IMAGE FIX
+========================================= */
+
+img {
+  max-width: 100%;
+  display: block;
 }
