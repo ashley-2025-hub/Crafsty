@@ -1,111 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
 
   <meta charset="UTF-8">
 
   <meta
     name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
+    content="width=device-width, initial-scale=1.0">
 
   <title>Product</title>
 
   <link
     rel="stylesheet"
-    href="style.css"
-  >
+    href="style.css">
 
 </head>
-
 <body>
-
-  <!-- BACK BUTTON -->
 
   <button
     class="back-btn"
-    onclick="goBackToCatalog()"
-  >
+    onclick="goBackToCatalog()">
     ← Back To Catalog
   </button>
 
-  <!-- PRODUCT PAGE -->
+  <h1 id="productTitle">
+    Loading Product...
+  </h1>
 
   <div class="product-page">
 
-    <!-- LEFT SIDE -->
-
     <div class="product-gallery">
 
-      <!-- MAIN IMAGE -->
+      <div
+        id="thumbnailRow"
+        class="thumbnail-row top-thumbnails">
+      </div>
 
       <img
         id="mainImage"
         class="main-product-image"
         src=""
-        alt="Product Image"
-      >
-
-      <!-- THUMBNAILS -->
-
-      <div
-        id="thumbnailRow"
-        class="thumbnail-row"
-      >
-      </div>
+        alt="Product Image">
 
     </div>
-
-    <!-- RIGHT SIDE -->
 
     <div class="product-info-panel">
-
-      <h1 id="productName">
-        Loading...
-      </h1>
-
-      <p
-        id="productPrice"
-        class="product-price"
-      >
-      </p>
-
-      <p
-        id="productDescription"
-        class="product-description"
-      >
-      </p>
-
-      <!-- MOVED THUMBNAILS ABOVE BUTTON -->
-
-      <div
-        id="topThumbnailRow"
-        class="top-thumbnail-row"
-      >
-      </div>
-
-      <!-- ADD BUTTON -->
-
-      <button
-        class="big-add-btn"
-        onclick="addToCart()"
-      >
-        Add To Cart 🧶
-      </button>
-
-    </div>
-
-  </div>
-
-  <!-- SCRIPT -->
-
-  <script
-    type="module"
-    src="product.js"
-  >
-  </script>
-
-</body>
 
 </html>
