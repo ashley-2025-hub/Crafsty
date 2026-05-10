@@ -1,49 +1,135 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
 
   <meta charset="UTF-8">
 
   <meta
     name="viewport"
-    content="width=device-width, initial-scale=1.0">
+    content="width=device-width, initial-scale=1.0"
+  >
 
   <title>Product</title>
 
   <link
     rel="stylesheet"
-    href="style.css">
+    href="style.css"
+  >
+
+  <link
+    rel="stylesheet"
+    href="product.css"
+  >
 
 </head>
+
 <body>
+
+  <!-- BACK BUTTON -->
 
   <button
     class="back-btn"
-    onclick="goBackToCatalog()">
+    onclick="goBackToCatalog()"
+  >
     ← Back To Catalog
   </button>
+
+  <!-- TITLE -->
 
   <h1 id="productTitle">
     Loading Product...
   </h1>
 
+  <!-- PAGE -->
+
   <div class="product-page">
+
+    <!-- LEFT -->
 
     <div class="product-gallery">
 
+      <!-- THUMBNAILS -->
+
       <div
         id="thumbnailRow"
-        class="thumbnail-row top-thumbnails">
-      </div>
+        class="thumbnail-row top-thumbnails"
+      ></div>
+
+      <!-- MAIN IMAGE -->
 
       <img
         id="mainImage"
         class="main-product-image"
         src=""
-        alt="Product Image">
+        alt="Product Image"
+      >
 
     </div>
 
+    <!-- RIGHT -->
+
     <div class="product-info-panel">
+
+      <h2 id="productName">
+        Product Name
+      </h2>
+
+      <p
+        id="productPrice"
+        class="product-price"
+      >
+        0 VND
+      </p>
+
+      <p
+        id="productDescription"
+        class="product-description"
+      >
+        Product description...
+      </p>
+
+      <button
+        id="addToCartBtn"
+        class="big-add-btn"
+      >
+        Add To Cart
+      </button>
+
+    </div>
+
+  </div>
+
+  <!-- SUGGESTIONS -->
+
+  <section class="suggest-section">
+
+    <h2>
+      You May Also Like
+    </h2>
+
+    <div
+      id="suggestionList"
+      class="suggestion-grid"
+    ></div>
+
+  </section>
+
+  <script
+    type="module"
+    src="./product.js"
+  ></script>
+
+  <script>
+
+    function goBackToCatalog() {
+
+      window.location.href =
+        "./index.html";
+    }
+
+  </script>
+
+</body>
 
 </html>
