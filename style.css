@@ -131,6 +131,87 @@ button:hover {
 }
 
 /* =========================================
+   CATALOG
+========================================= */
+
+.catalog {
+
+  width: 100%;
+
+  max-width: 1300px;
+
+  margin: 40px auto;
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(auto-fit, minmax(260px, 1fr));
+
+  gap: 28px;
+
+  padding: 10px;
+}
+
+.catalog-card {
+
+  background:
+    rgba(255,255,255,0.16);
+
+  backdrop-filter: blur(18px);
+
+  border:
+    1px solid rgba(255,255,255,0.22);
+
+  border-radius: 28px;
+
+  overflow: hidden;
+
+  box-shadow:
+    0 12px 30px rgba(0,0,0,0.12);
+
+  transition: 0.25s;
+}
+
+.catalog-card:hover {
+
+  transform:
+    translateY(-6px)
+    scale(1.02);
+}
+
+.catalog-card img {
+
+  width: 100%;
+
+  height: 240px;
+
+  object-fit: cover;
+
+  display: block;
+}
+
+.catalog-info {
+
+  padding: 18px;
+}
+
+.catalog-info h3 {
+
+  color: white;
+
+  margin-top: 0;
+
+  margin-bottom: 10px;
+}
+
+.catalog-info p {
+
+  color:
+    rgba(255,255,255,0.9);
+
+  margin-bottom: 14px;
+}
+/* =========================================
    CART
 ========================================= */
 
@@ -656,4 +737,12 @@ textarea:focus {
 
     align-items: center;
   }
+   .catalog {
+
+  grid-template-columns: 1fr;
 }
+}
+
+
+
+
