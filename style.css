@@ -51,6 +51,104 @@ span {
 }
 
 /* =========================================
+   THEME PICKER
+========================================= */
+
+.theme-picker {
+
+  display: flex;
+
+  justify-content: center;
+
+  align-items: center;
+
+  gap: 14px;
+
+  margin-bottom: 24px;
+
+  flex-wrap: wrap;
+}
+
+.theme-btn {
+
+  width: 34px;
+
+  height: 34px;
+
+  border-radius: 50%;
+
+  cursor: pointer;
+
+  border:
+    3px solid white;
+
+  transition: 0.2s;
+}
+
+.theme-btn:hover {
+
+  transform:
+    scale(1.12);
+}
+
+.theme-btn.pink {
+
+  background:
+    linear-gradient(
+      135deg,
+      #c86d98,
+      #8d72c9
+    );
+}
+
+.theme-btn.blue {
+
+  background:
+    linear-gradient(
+      135deg,
+      #5f87b8,
+      #7b9ec7
+    );
+}
+
+.theme-btn.yellow {
+
+  background:
+    linear-gradient(
+      135deg,
+      #b79035,
+      #d6b867
+    );
+}
+
+.theme-btn.purple {
+
+  background:
+    linear-gradient(
+      135deg,
+      #7f5fc0,
+      #ab8ce0
+    );
+}
+
+/* =========================================
+   NAVIGATION
+========================================= */
+
+.nav {
+
+  display: flex;
+
+  justify-content: center;
+
+  gap: 16px;
+
+  margin-bottom: 30px;
+
+  flex-wrap: wrap;
+}
+
+/* =========================================
    BUTTONS
 ========================================= */
 
@@ -140,19 +238,25 @@ button:hover {
 
   max-width: 1300px;
 
-  margin: 40px auto;
+  margin: 30px auto;
 
   display: grid;
 
   grid-template-columns:
-    repeat(auto-fit, minmax(260px, 1fr));
+    repeat(auto-fit, minmax(240px, 1fr));
 
-  gap: 28px;
+  gap: 26px;
 
   padding: 10px;
 }
 
 .catalog-card {
+
+  width: 100%;
+
+  max-width: 280px;
+
+  margin: auto;
 
   background:
     rgba(255,255,255,0.16);
@@ -170,6 +274,8 @@ button:hover {
     0 12px 30px rgba(0,0,0,0.12);
 
   transition: 0.25s;
+
+  cursor: pointer;
 }
 
 .catalog-card:hover {
@@ -211,6 +317,7 @@ button:hover {
 
   margin-bottom: 14px;
 }
+
 /* =========================================
    CART
 ========================================= */
@@ -737,12 +844,9 @@ textarea:focus {
 
     align-items: center;
   }
-   .catalog {
 
-  grid-template-columns: 1fr;
+  .catalog {
+
+    grid-template-columns: 1fr;
+  }
 }
-}
-
-
-
-
