@@ -1,504 +1,81 @@
-/* =========================================
-   GLOBAL
-========================================= */
-
 * {
-  margin: 0;
-  padding: 0;
   box-sizing: border-box;
 }
 
 body {
+
+  margin: 0;
+
+  padding: 30px;
+
+  min-height: 100vh;
+
+  overflow-x: hidden;
+
   font-family: "Comic Sans MS", cursive;
 
   background:
     linear-gradient(135deg, #c86d98, #8d72c9);
 
-  min-height: 100vh;
-
   color: white;
-
-  padding: 30px;
 }
 
-h1 {
+.page-title {
+
   text-align: center;
 
-  font-size: 60px;
+  font-size: 64px;
 
   margin-bottom: 40px;
 }
-
-/* =========================================
-   BUTTONS
-========================================= */
 
 button {
+
   border: none;
 
-  cursor: pointer;
-
-  transition: 0.25s;
-
-  font-family: inherit;
-}
-
-button:hover {
-  transform: translateY(-3px);
-}
-
-/* =========================================
-   MAIN PAGE LAYOUT
-========================================= */
-
-.main-layout {
-  width: 100%;
-
-  max-width: 1600px;
-
-  margin: auto;
-
-  display: grid;
-
-  grid-template-columns:
-    repeat(3, minmax(320px, 1fr));
-
-  gap: 30px;
-
-  align-items: start;
-}
-
-.panel {
-  background:
-    rgba(255,255,255,0.15);
-
-  backdrop-filter: blur(18px);
-
-  border:
-    1px solid rgba(255,255,255,0.2);
-
-  border-radius: 34px;
-
-  padding: 28px;
-
-  box-shadow:
-    0 10px 30px rgba(0,0,0,0.12);
-}
-
-/* =========================================
-   SHOP HEADER
-========================================= */
-
-.top-controls {
-  text-align: center;
-
-  margin-bottom: 40px;
-}
-
-.nav-buttons {
-  display: flex;
-
-  justify-content: center;
-
-  gap: 16px;
-
-  margin-top: 20px;
-}
-
-.nav-btn {
-  padding: 16px 28px;
-
-  border-radius: 20px;
-
-  background:
-    #f7aac8;
-
-  color: white;
-
-  font-size: 22px;
-
-  font-weight: bold;
-}
-
-/* =========================================
-   CATALOG GRID
-========================================= */
-
-.catalog-grid {
-  width: 100%;
-
-  display: grid;
-
-  grid-template-columns:
-    repeat(auto-fit, minmax(260px, 1fr));
-
-  gap: 26px;
-
-  margin-top: 30px;
-}
-
-.product-card {
-  background:
-    rgba(255,255,255,0.14);
-
-  border:
-    1px solid rgba(255,255,255,0.2);
-
-  backdrop-filter: blur(18px);
-
-  border-radius: 28px;
-
-  overflow: hidden;
-
-  transition: 0.28s;
-
-  cursor: pointer;
-}
-
-.product-card:hover {
-  transform:
-    translateY(-6px)
-    scale(1.02);
-}
-
-.product-card img {
-  width: 100%;
-
-  aspect-ratio: 1 / 1;
-
-  object-fit: cover;
-}
-
-.product-content {
-  padding: 18px;
-}
-
-.product-content h3 {
-  font-size: 30px;
-
-  margin-bottom: 10px;
-}
-
-.product-content p {
-  font-size: 22px;
-
-  opacity: 0.92;
-}
-
-/* =========================================
-   PRODUCT PAGE
-========================================= */
-
-.back-btn {
-  position: fixed;
-
-  top: 20px;
-  left: 20px;
-
-  z-index: 999;
-
-  background: #f7aac8;
-
-  color: white;
-
-  padding: 14px 20px;
+  padding: 14px 22px;
 
   border-radius: 18px;
 
-  font-size: 18px;
-}
-
-.product-page {
-  width: 100%;
-
-  max-width: 1500px;
-
-  margin: 80px auto;
-
-  display: grid;
-
-  grid-template-columns:
-    1.1fr 0.7fr;
-
-  gap: 40px;
-
-  align-items: start;
-}
-
-.product-gallery {
-  background:
-    rgba(255,255,255,0.14);
-
-  padding: 28px;
-
-  border-radius: 30px;
-
-  backdrop-filter: blur(16px);
-}
-
-.main-product-image {
-  width: 100%;
-
-  border-radius: 28px;
-
-  object-fit: cover;
-
-  aspect-ratio: 1 / 1;
-}
-
-.thumbnail-row {
-  display: flex;
-
-  gap: 16px;
-
-  margin-top: 18px;
-
-  flex-wrap: wrap;
-}
-
-.thumbnail-image {
-  width: 120px;
-  height: 120px;
-
-  border-radius: 20px;
-
-  object-fit: cover;
-
   cursor: pointer;
 
-  transition: 0.22s;
-}
-
-.thumbnail-image:hover {
-  transform: scale(1.05);
-}
-
-.product-info-panel {
-  background:
-    rgba(255,255,255,0.14);
-
-  padding: 28px;
-
-  border-radius: 30px;
-
-  backdrop-filter: blur(16px);
-
-  position: sticky;
-
-  top: 30px;
-}
-
-.product-info-panel h2 {
-  font-size: 46px;
-
-  margin-bottom: 18px;
-}
-
-.product-price {
-  font-size: 30px;
-
-  margin-bottom: 20px;
-}
-
-.product-description {
-  line-height: 1.7;
-
-  font-size: 20px;
-
-  opacity: 0.92;
-
-  margin-bottom: 30px;
-}
-
-.add-cart-btn {
-  width: 100%;
-
-  padding: 20px;
-
-  border-radius: 22px;
-
-  background: #f7aac8;
+  font-weight: bold;
 
   color: white;
 
-  font-size: 22px;
-
-  font-weight: bold;
-}
-
-/* =========================================
-   ADMIN PAGE
-========================================= */
-
-.admin-wrapper {
-  width: 100%;
-
-  max-width: 1500px;
-
-  margin: auto;
-
-  display: grid;
-
-  grid-template-columns:
-    420px 1fr;
-
-  gap: 34px;
-
-  align-items: start;
-}
-
-.admin-box {
   background:
-    rgba(255,255,255,0.14);
+    linear-gradient(135deg, #ff9fc8, #ffbfdc);
 
-  border-radius: 34px;
-
-  padding: 30px;
-
-  backdrop-filter: blur(18px);
-
-  position: sticky;
-
-  top: 20px;
+  transition: 0.2s;
 }
 
-.admin-box h2 {
-  text-align: center;
+button:hover {
 
-  margin-bottom: 24px;
-
-  font-size: 40px;
+  transform: translateY(-2px);
 }
 
-.admin-box input,
-.admin-box textarea {
-  width: 100%;
-
-  margin-bottom: 18px;
-
-  padding: 16px;
-
-  border: none;
-
-  border-radius: 20px;
-
-  font-size: 18px;
-
-  font-family: inherit;
-}
-
-.admin-box textarea {
-  min-height: 150px;
-
-  resize: vertical;
-}
-
-.admin-box button {
-  width: 100%;
-
-  padding: 18px;
-
-  border-radius: 22px;
-
-  background: #f7aac8;
-
-  color: white;
-
-  font-size: 20px;
-
-  font-weight: bold;
-}
-
-#productList {
-  display: grid;
-
-  grid-template-columns:
-    repeat(auto-fit, minmax(260px, 1fr));
-
-  gap: 24px;
-}
-
-/* =========================================
-   ADMIN PRODUCT CARD
-========================================= */
-
-.admin-product-card {
-  background:
-    rgba(255,255,255,0.14);
-
-  border-radius: 30px;
-
-  padding: 20px;
-
-  backdrop-filter: blur(18px);
-}
-
-.admin-product-card img {
-  width: 100%;
-
-  aspect-ratio: 1 / 1;
-
-  object-fit: cover;
-
-  border-radius: 22px;
-
-  margin-bottom: 14px;
-}
-
-.admin-product-card h3 {
-  font-size: 28px;
-
-  margin-bottom: 10px;
-}
-
-.admin-product-card p {
-  font-size: 20px;
-
-  margin-bottom: 8px;
-}
-
-.admin-product-card button {
-  margin-top: 14px;
+input,
+textarea {
 
   width: 100%;
 
   padding: 14px;
 
+  border: none;
+
   border-radius: 18px;
 
-  background: #f7aac8;
+  margin-top: 14px;
 
-  color: white;
+  font-size: 15px;
+}
 
-  font-size: 18px;
+textarea {
+
+  min-height: 140px;
+
+  resize: vertical;
 }
 
 /* =========================================
-   MOBILE
-========================================= */
-
-@media (max-width: 1000px) {
-
-  .main-layout,
-  .product-page,
-  .admin-wrapper {
-    grid-template-columns: 1fr;
-  }
-
-  h1 {
-    font-size: 42px;
-  }
-
-  .product-info-panel {
-    position: static;
-  }
-
-  .admin-box {
-    position: static;
-  }
-
-  .thumbnail-image {
-    width: 90px;
-    height: 90px;
-  }
 }
