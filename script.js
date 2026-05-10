@@ -1,258 +1,217 @@
 import { db } from "./firebase-config.js";
 import {
   collection,
-  getDocs
+  onSnapshot
 } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
-/* =========================================
-   DEBUG (remove later if you want)
-========================================= */
-console.log("✅ SCRIPT LOADED");
+/* =========================
+   DATA
+========================= */
 
-/* =========================================
-   CART (PERSISTENT)
-========================================= */
+let products = [];
 
-const cart =
-  JSON.parse(localStorage.getItem("cart")) || [];
+// ✅ persistent cart
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+let selectedItem = null;
 
 function saveCart() {
   localStorage.setItem("cart", JSON.stringify(cart));
 }
 
-/* =========================================
-   ELEMENTS
-========================================= */
+/* =========================
+   FIREBASE LIVE
+========================= */
 
-const catalog = document.getElementById("products");
-const cartElement = document.getElementById("cart");
-const totalElement = document.getElementById("total");
-const emptyText = document.getElementById("empty");
-const orderData = document.getElementById("orderData");
+onSnapshot(collection(db, "products"), (snapshot) => {
 
-/* =========================================
-   SECTION SWITCH
-========================================= */
+  products = snapshot.docs.map(doc => ({
+    id: doc.id,
+    ...doc.data()
+  }));
 
-window.showSection = function(section) {
+  renderCatalog();
+  renderSuggestions();
+  renderCart();
+});
 
-  const shop = document.getElementById("shopSection");
-  const catalogSection = document.getElementById("catalogSection");
+/* =========================
+   CART LOGIC
+========================= */
 
-  if (section === "shop") {
-    shop.style.display = "block";
-    catalogSection.style.display = "none";
-    renderCart();
+function addItem(product) {
+
+  const existing =
+    cart.find(item => item.id === product.id);
+
+  const newSticker = {
+    color: "None",
+    x: Math.random() * 100 + 20,
+    y: Math.random() * 100 + 20
+  };
+
+  if (existing) {
+    existing.quantity += 1;
+    existing.stickers.push(newSticker);
   } else {
-    shop.style.display = "none";
-    catalogSection.style.display = "block";
-  }
-};
-
-/* =========================================
-   LOAD PRODUCTS
-========================================= */
-
-async function loadProducts() {
-
-  if (!catalog) return;
-
-  try {
-
-    catalog.innerHTML = `<p style="color:white;">Loading...</p>`;
-
-    const snapshot = await getDocs(collection(db, "products"));
-
-    console.log("📦 Products loaded:", snapshot.size);
-
-    catalog.innerHTML = "";
-
-    if (snapshot.empty) {
-      catalog.innerHTML = `<p style="color:white;">No products found 🧶</p>`;
-      return;
-    }
-
-    snapshot.forEach((docSnap) => {
-
-      const product = docSnap.data();
-
-      const card = document.createElement("div");
-      card.className = "catalog-card";
-
-      card.innerHTML = `
-        <img src="${product.coverImage || ""}">
-        <div class="catalog-info">
-          <h3>${product.emoji || "🧶"} ${product.name}</h3>
-          <p>${Number(product.price || 0).toLocaleString()} VND</p>
-          <button class="add-btn">Add To Cart</button>
-        </div>
-      `;
-
-      // ADD BUTTON
-      const btn = card.querySelector(".add-btn");
-
-      btn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        addToCart(product);
-      });
-
-      // CLICK CARD → GO TO PRODUCT PAGE
-      card.addEventListener("click", (e) => {
-        if (e.target.closest(".add-btn")) return;
-
-        window.location.href =
-          `product.html?id=${docSnap.id}`;
-      });
-
-      catalog.appendChild(card);
+    cart.push({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      coverImage: product.coverImage,
+      quantity: 1,
+      stickers: [newSticker]
     });
-
-  } catch (err) {
-    console.error("❌ LOAD ERROR:", err);
-
-    catalog.innerHTML =
-      `<p style="color:white;">Failed to load ❌</p>`;
   }
-}
 
-/* =========================================
-   CART
-========================================= */
+  selectedItem = newSticker;
 
-function addToCart(product) {
-  cart.push(product);
   saveCart();
   renderCart();
 }
 
-function renderCart() {
+function removeItem(id) {
 
-  if (!cartElement) return;
+  const item = cart.find(i => i.id === id);
+  if (!item) return;
 
-  cartElement.innerHTML = "";
+  item.quantity--;
+  item.stickers.pop();
 
-  if (emptyText) {
-    emptyText.style.display =
-      cart.length === 0 ? "block" : "none";
+  if (item.quantity <= 0) {
+    cart = cart.filter(i => i.id !== id);
   }
 
-  let total = 0;
+  saveCart();
+  renderCart();
+}
 
-  cart.forEach((item, index) => {
+/* =========================
+   CATALOG
+========================= */
 
-    total += Number(item.price || 0);
+function renderCatalog() {
 
-    const li = document.createElement("li");
+  const catalog = document.querySelector(".catalog");
+  if (!catalog) return;
 
-    li.innerHTML = `
-      <div class="cart-left">
-        <img class="cart-img" src="${item.coverImage || ""}">
-        <span>${item.name}</span>
-      </div>
+  catalog.innerHTML = "";
 
-      <div class="cart-controls">
-        <span>${Number(item.price).toLocaleString()}</span>
-        <button onclick="removeFromCart(${index})">✕</button>
+  products.forEach(product => {
+
+    const card = document.createElement("div");
+    card.className = "catalog-card";
+
+    card.innerHTML = `
+      <img src="${product.coverImage || ""}">
+      <div class="catalog-info">
+        <h3>${product.emoji || "🧶"} ${product.name}</h3>
+        <p>${Number(product.price).toLocaleString()} VND</p>
+
+        <button class="add-btn">Add</button>
       </div>
     `;
 
-    cartElement.appendChild(li);
+    card.querySelector(".add-btn").onclick = (e) => {
+      e.stopPropagation();
+      addItem(product);
+    };
+
+    card.onclick = () => {
+      window.location.href = `product.html?id=${product.id}`;
+    };
+
+    catalog.appendChild(card);
   });
-
-  if (totalElement) {
-    totalElement.textContent =
-      total.toLocaleString();
-  }
-
-  if (orderData) {
-    orderData.value = JSON.stringify(cart);
-  }
-
-  loadSuggestions(); // 🔥 important
 }
 
-/* =========================================
-   SUGGESTIONS
-========================================= */
+/* =========================
+   SUGGESTIONS (FIXED)
+========================= */
 
-async function loadSuggestions() {
+function renderSuggestions() {
 
   const suggestionList =
     document.getElementById("suggestionList");
 
   if (!suggestionList) return;
 
-  try {
+  suggestionList.innerHTML = "";
 
-    const snapshot =
-      await getDocs(collection(db, "products"));
+  products.forEach(product => {
 
-    suggestionList.innerHTML = "";
+    const isInCart =
+      cart.some(item => item.id === product.id);
 
-    const cartNames =
-      cart.map(item => item.name);
+    if (isInCart) return;
 
-    snapshot.forEach((docSnap) => {
+    const card = document.createElement("div");
+    card.className = "suggest-card";
 
-      const product = docSnap.data();
+    card.innerHTML = `
+      <img src="${product.coverImage || ""}">
+      <p>${product.emoji || "🧶"} ${product.name}</p>
+    `;
 
-      // skip if already in cart
-      if (cartNames.includes(product.name)) return;
+    card.onclick = () => {
+      addItem(product);
+    };
 
-      const card =
-        document.createElement("div");
-
-      card.className = "suggest-card";
-
-      card.innerHTML = `
-        <img src="${product.coverImage || ""}">
-        <h4>${product.emoji || "🧶"} ${product.name}</h4>
-        <p>${Number(product.price || 0).toLocaleString()} VND</p>
-        <button class="suggest-add">+ Add</button>
-      `;
-
-      // CLICK CARD → PRODUCT PAGE
-      card.addEventListener("click", () => {
-        window.location.href =
-          `product.html?id=${docSnap.id}`;
-      });
-
-      // ADD BUTTON
-      const addBtn =
-        card.querySelector(".suggest-add");
-
-      addBtn.addEventListener("click", (e) => {
-        e.stopPropagation();
-        addToCart(product);
-      });
-
-      suggestionList.appendChild(card);
-    });
-
-  } catch (error) {
-    console.error("❌ Suggestion error:", error);
-  }
+    suggestionList.appendChild(card);
+  });
 }
 
-/* =========================================
-   REMOVE / CLEAR
-========================================= */
+/* =========================
+   CART RENDER
+========================= */
 
-window.removeFromCart = function(index) {
-  cart.splice(index, 1);
+function renderCart() {
+
+  const cartList = document.getElementById("cart");
+  if (!cartList) return;
+
+  cartList.innerHTML = "";
+
+  let total = 0;
+
+  cart.forEach(item => {
+
+    total += item.price * item.quantity;
+
+    const li = document.createElement("li");
+
+    li.innerHTML = `
+      <div class="cart-left">
+        <img class="cart-img" src="${item.coverImage}">
+        <span>${item.name}</span>
+      </div>
+
+      <div class="cart-controls">
+        <button>-</button>
+        <span>${item.quantity}</span>
+        <button>+</button>
+      </div>
+    `;
+
+    const [minus, plus] =
+      li.querySelectorAll("button");
+
+    minus.onclick = () => removeItem(item.id);
+    plus.onclick = () => addItem(item);
+
+    cartList.appendChild(li);
+  });
+
+  const totalEl = document.getElementById("total");
+  if (totalEl) {
+    totalEl.innerText = total.toLocaleString();
+  }
+
   saveCart();
-  renderCart();
-};
+}
 
-window.clearCart = function() {
-  cart.length = 0;
-  saveCart();
-  renderCart();
-};
-
-/* =========================================
+/* =========================
    START
-========================================= */
+========================= */
 
-loadProducts();
 renderCart();
