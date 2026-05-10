@@ -1,12 +1,12 @@
 import {
   initializeApp
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+} from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
 
 import {
   getFirestore,
   collection,
   getDocs
-} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+} from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
 /* =========================================
    FIREBASE
@@ -14,17 +14,26 @@ import {
 
 const firebaseConfig = {
 
-  apiKey: "YOUR_API_KEY",
+  apiKey:
+    "AIzaSyDDuQmK13GmmTLFu09GVSghOXjPLJTvS7c",
 
-  authDomain: "YOUR_AUTH_DOMAIN",
+  authDomain:
+    "crafsty.firebaseapp.com",
 
-  projectId: "YOUR_PROJECT_ID",
+  projectId:
+    "crafsty",
 
-  storageBucket: "YOUR_STORAGE_BUCKET",
+  storageBucket:
+    "crafsty.firebasestorage.app",
 
-  messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+  messagingSenderId:
+    "147789746977",
 
-  appId: "YOUR_APP_ID"
+  appId:
+    "1:147789746977:web:307f39520d85f242c56460",
+
+  measurementId:
+    "G-CPPGL2H68W"
 };
 
 const app =
@@ -40,7 +49,7 @@ const db =
 const cart = [];
 
 const catalog =
-  document.querySelector(".catalog");
+  document.getElementById("products");
 
 const cartElement =
   document.getElementById("cart");
@@ -76,7 +85,7 @@ window.changeBackground =
 window.showSection =
   function(section) {
 
-    const shop =
+    const shopSection =
       document.getElementById("shopSection");
 
     const catalogSection =
@@ -84,15 +93,19 @@ window.showSection =
 
     if (section === "shop") {
 
-      shop.style.display = "block";
+      shopSection.style.display =
+        "block";
 
-      catalogSection.style.display = "none";
+      catalogSection.style.display =
+        "none";
 
     } else {
 
-      shop.style.display = "none";
+      shopSection.style.display =
+        "none";
 
-      catalogSection.style.display = "block";
+      catalogSection.style.display =
+        "block";
     }
   };
 
@@ -102,59 +115,111 @@ window.showSection =
 
 async function loadProducts() {
 
-  catalog.innerHTML = "";
+  try {
 
-  const querySnapshot =
-    await getDocs(
-      collection(db, "products")
-    );
+    catalog.innerHTML = `
 
-  querySnapshot.forEach((doc) => {
+      <p style="color:white;">
 
-    const product = doc.data();
+        Loading products...
 
-    const card =
-      document.createElement("div");
-
-    card.className =
-      "catalog-card";
-
-    card.innerHTML = `
-
-      <img
-        src="${product.coverImage}"
-        alt="${product.name}">
-
-      <div class="catalog-info">
-
-        <h3>
-          ${product.name}
-        </h3>
-
-        <p>
-          ${product.price} VND
-        </p>
-
-        <button
-          class="add-btn">
-
-          Add To Cart
-
-        </button>
-
-      </div>
+      </p>
     `;
 
-    const addButton =
-      card.querySelector(".add-btn");
+    const snapshot =
+      await getDocs(
+        collection(db, "products")
+      );
 
-    addButton.addEventListener(
-      "click",
-      () => addToCart(product)
+    catalog.innerHTML = "";
+
+    if (snapshot.empty) {
+
+      catalog.innerHTML = `
+
+        <p style="color:white;">
+
+          No products found.
+
+        </p>
+      `;
+
+      return;
+    }
+
+    snapshot.forEach((doc) => {
+
+      const product =
+        doc.data();
+
+      const card =
+        document.createElement("div");
+
+      card.className =
+        "catalog-card";
+
+      card.innerHTML = `
+
+        <img
+          src="${
+            product.coverImage ||
+            'https://placehold.co/500x500?text=No+Image'
+          }"
+          alt="${product.name}">
+
+        <div class="catalog-info">
+
+          <h3>
+
+            ${product.name || "Unnamed Product"}
+
+          </h3>
+
+          <p>
+
+            ${
+              Number(product.price || 0)
+              .toLocaleString()
+            } VND
+
+          </p>
+
+          <button class="add-btn">
+
+            Add To Cart
+
+          </button>
+
+        </div>
+      `;
+
+      const addButton =
+        card.querySelector(".add-btn");
+
+      addButton.addEventListener(
+        "click",
+        () => addToCart(product)
+      );
+
+      catalog.appendChild(card);
+    });
+
+  } catch (error) {
+
+    console.error(
+      "Firestore error:",
+      error
     );
 
-    catalog.appendChild(card);
-  });
+    catalog.innerHTML = `
+
+      <p style="color:white;">
+
+        Failed to load products.
+
+      </p>
+    `;
+  }
 }
 
 /* =========================================
@@ -191,7 +256,7 @@ function renderCart() {
 
   cart.forEach((item, index) => {
 
-    total += Number(item.price);
+    total += Number(item.price || 0);
 
     const li =
       document.createElement("li");
@@ -202,10 +267,15 @@ function renderCart() {
 
         <img
           class="cart-img"
-          src="${item.coverImage}">
+          src="${
+            item.coverImage ||
+            'https://placehold.co/100x100?text=?'
+          }">
 
         <span>
-          ${item.name}
+
+          ${item.name || "Product"}
+
         </span>
 
       </div>
@@ -213,13 +283,19 @@ function renderCart() {
       <div class="cart-controls">
 
         <span>
-          ${item.price}
+
+          ${
+            Number(item.price || 0)
+            .toLocaleString()
+          }
+
         </span>
 
         <button
           onclick="removeFromCart(${index})">
 
           ✕
+
         </button>
 
       </div>
@@ -229,14 +305,14 @@ function renderCart() {
   });
 
   totalElement.textContent =
-    total;
+    total.toLocaleString();
 
   orderData.value =
     JSON.stringify(cart);
 }
 
 /* =========================================
-   REMOVE ITEM
+   REMOVE FROM CART
 ========================================= */
 
 window.removeFromCart =
@@ -260,7 +336,7 @@ window.clearCart =
   };
 
 /* =========================================
-   COLOR CHANGER
+   COLOR SELECTOR
 ========================================= */
 
 window.changeSelectedColor =
@@ -272,7 +348,7 @@ window.changeSelectedColor =
   };
 
 /* =========================================
-   LOAD EVERYTHING
+   START
 ========================================= */
 
 loadProducts();
