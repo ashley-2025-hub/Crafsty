@@ -1,64 +1,78 @@
+// admin.js
+
 import { db } from "./firebase-config.js";
 
 import {
   collection,
   addDoc,
-  getDocs,
   deleteDoc,
-  doc
-} from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+  doc,
+  onSnapshot
+}
+from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
-/* =========================
-   ELEMENTS
-========================= */
-
-const form = document.getElementById("productForm");
+// ===== ELEMENT =====
 
 const productList =
   document.getElementById("productList");
 
-/* =========================
-   ADD PRODUCT
-========================= */
+// ===== ADD PRODUCT =====
 
-form.addEventListener("submit", async (e) => {
-
-  e.preventDefault();
-
-  const name =
-    document.getElementById("name").value.trim();
-
-  const price =
-    Number(
-      document.getElementById("price").value
-    );
-
-  const emoji =
-    document.getElementById("emoji").value.trim();
-
-  const coverImage =
-    document.getElementById("coverImage").value.trim();
-
-  const description =
-    document.getElementById("description").value.trim();
-
-  const displayImagesText =
-    document.getElementById("displayImages").value;
-
-  const displayImages =
-    displayImagesText
-      .split("\n")
-      .map(url => url.trim())
-      .filter(url => url !== "");
-
-  /* VALIDATION */
-
-  if (!name || !price) {
-    alert("Please fill required fields");
-    return;
-  }
+async function addProduct() {
 
   try {
+
+    const name =
+      document.getElementById("name")
+      .value
+      .trim();
+
+    const price =
+      Number(
+        document.getElementById("price")
+        .value
+      );
+
+    const emoji =
+      document.getElementById("emoji")
+      .value
+      .trim();
+
+    const coverImage =
+      document.getElementById("coverImage")
+      .value
+      .trim();
+
+    const description =
+      document.getElementById("description")
+      .value
+      .trim();
+
+    // DISPLAY IMAGES
+
+    const displayImages =
+      document.getElementById("displayImages")
+      .value
+      .split("\n")
+      .map(img => img.trim())
+      .filter(Boolean);
+
+    // VALIDATION
+
+    if (
+      !name ||
+      !price ||
+      !coverImage
+    ) {
+
+      alert(
+        "Please fill required fields"
+      );
+
+      return;
+    }
+
+    // FIREBASE
 
     await addDoc(
       collection(db, "products"),
@@ -73,11 +87,27 @@ form.addEventListener("submit", async (e) => {
       }
     );
 
-    alert("Product added!");
+    // CLEAR FORM
 
-    form.reset();
+    document.getElementById("name")
+      .value = "";
 
-    loadProducts();
+    document.getElementById("price")
+      .value = "";
+
+    document.getElementById("emoji")
+      .value = "";
+
+    document.getElementById("coverImage")
+      .value = "";
+
+    document.getElementById("description")
+      .value = "";
+
+    document.getElementById("displayImages")
+      .value = "";
+
+    alert("Product Added 🧶");
 
   } catch (error) {
 
@@ -85,109 +115,102 @@ form.addEventListener("submit", async (e) => {
 
     alert("Failed to add product");
   }
+}
 
-});
+// ===== LIVE PRODUCTS =====
 
-/* =========================
-   LOAD PRODUCTS
-========================= */
+onSnapshot(
+  collection(db, "products"),
+  (snapshot) => {
 
-async function loadProducts() {
+    productList.innerHTML = "";
 
-  if (!productList) return;
+    snapshot.forEach((docSnap) => {
 
-  productList.innerHTML = "";
+      const product =
+        docSnap.data();
 
-  try {
+      const card =
+        document.createElement("div");
 
-    const snapshot = await getDocs(
-      collection(db, "products")
-    );
-
-    snapshot.forEach((productDoc) => {
-
-      const product = productDoc.data();
-
-      const card = document.createElement("div");
-
-      card.className = "product-card";
+      card.className =
+        "product-card";
 
       card.innerHTML = `
+
         <img
-          src="${product.coverImage || '1.png'}"
-          class="product-image"
+          src="${
+            product.coverImage
+          }"
+          alt="${
+            product.name
+          }"
         >
 
         <h3>
-          ${product.emoji || "🧸"}
-          ${product.name || "Unnamed"}
+          ${
+            product.emoji || "🧶"
+          }
+          ${product.name}
         </h3>
 
         <p>
-          ${(product.price || 0).toLocaleString()} VND
+          ${Number(product.price)
+            .toLocaleString()}
+          VND
         </p>
 
         <p>
-          ${(product.displayImages || []).length}
+          ${
+            product.displayImages
+              ?.length || 0
+          }
           display images
         </p>
 
-        <button class="delete-btn">
+        <button
+          onclick="deleteProduct(
+            '${docSnap.id}'
+          )"
+        >
           Delete
         </button>
       `;
 
-      const deleteBtn =
-        card.querySelector(".delete-btn");
-
-      deleteBtn.addEventListener(
-        "click",
-        async () => {
-
-          const confirmDelete =
-            confirm("Delete product?");
-
-          if (!confirmDelete) return;
-
-          try {
-
-            await deleteDoc(
-              doc(
-                db,
-                "products",
-                productDoc.id
-              )
-            );
-
-            loadProducts();
-
-          } catch (error) {
-
-            console.error(error);
-
-            alert("Delete failed");
-          }
-
-        }
-      );
-
       productList.appendChild(card);
-
     });
+  }
+);
+
+// ===== DELETE =====
+
+async function deleteProduct(id) {
+
+  const confirmDelete =
+    confirm(
+      "Delete this product?"
+    );
+
+  if (!confirmDelete) return;
+
+  try {
+
+    await deleteDoc(
+      doc(db, "products", id)
+    );
 
   } catch (error) {
 
     console.error(error);
 
-    productList.innerHTML = `
-      <h2>Failed to load products</h2>
-    `;
+    alert("Delete failed");
   }
-
 }
 
-/* =========================
-   START
-========================= */
+// ===== WINDOW =====
 
-loadProducts();
+window.addProduct =
+  addProduct;
+
+window.deleteProduct =
+  deleteProduct;
