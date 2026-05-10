@@ -723,52 +723,6 @@ textarea:focus {
   font-size: 32px;
 }
 
-.admin-box input,
-.admin-box textarea {
-  width: 100%;
-
-  margin-top: 14px;
-  padding: 15px;
-
-  border: none;
-  border-radius: 18px;
-
-  font-size: 15px;
-  font-family: inherit;
-
-  background:
-    rgba(255, 255, 255, 0.94);
-
-  transition: 0.2s;
-}
-
-.admin-box input:focus,
-.admin-box textarea:focus {
-  outline: none;
-
-  transform: scale(1.01);
-
-  box-shadow:
-    0 0 0 4px rgba(255, 182, 217, 0.25);
-}
-
-.admin-box textarea {
-  min-height: 120px;
-
-  resize: vertical;
-}
-
-.admin-box button {
-  width: 100%;
-
-  margin-top: 20px;
-  padding: 16px;
-
-  font-size: 16px;
-
-  border-radius: 20px;
-}
-
 #productList {
   width: 100%;
 
@@ -778,93 +732,6 @@ textarea:focus {
     repeat(auto-fit, minmax(260px, 1fr));
 
   gap: 24px;
-
-  align-items: start;
-}
-
-.product-card {
-  display: flex;
-  flex-direction: column;
-
-  padding: 18px;
-
-  border:
-    1px solid rgba(255, 255, 255, 0.2);
-
-  border-radius: 28px;
-
-  background:
-    rgba(255, 255, 255, 0.14);
-
-  backdrop-filter: blur(18px);
-
-  box-shadow:
-    0 12px 28px rgba(0, 0, 0, 0.12);
-
-  transition: 0.22s;
-}
-
-.product-card:hover {
-  transform: translateY(-6px);
-}
-
-.product-card img {
-  width: 100%;
-
-  aspect-ratio: 1 / 1;
-
-  margin-bottom: 16px;
-
-  object-fit: cover;
-
-  border-radius: 20px;
-
-  background: white;
-}
-
-.product-card h3 {
-  margin: 0 0 10px;
-
-  color: white;
-  font-size: 24px;
-}
-
-.product-card p {
-  margin: 0;
-
-  color:
-    rgba(255, 255, 255, 0.9);
-
-  line-height: 1.6;
-}
-
-.display-preview {
-  display: grid;
-
-  grid-template-columns:
-    repeat(3, 1fr);
-
-  gap: 8px;
-
-  margin-top: 14px;
-}
-
-.display-preview img {
-  width: 100%;
-
-  aspect-ratio: 1 / 1;
-
-  object-fit: cover;
-
-  border-radius: 12px;
-
-  background: white;
-}
-
-.product-card button {
-  width: 100%;
-
-  margin-top: auto;
 }
 
 /* =========================================
@@ -915,13 +782,9 @@ textarea:focus {
 }
 
 /* =========================================
-   GLOBAL IMAGE FIX
+   SECTION DEFAULTS
 ========================================= */
 
-img {
-  max-width: 100%;
-  display: block;
-}
 #shopSection {
   display: block;
 }
