@@ -170,33 +170,3 @@ window.clearCart = function() {
 
 loadProducts();
 renderCart(); // 🔥 important
-
-/* =========================
-   ADD TO CART
-========================= */
-
-const addBtn = document.getElementById("addToCartBtn");
-
-if (addBtn) {
-
-  addBtn.addEventListener("click", async () => {
-
-    const snapshot = await getDoc(
-      doc(db, "products", productId)
-    );
-
-    if (!snapshot.exists()) return;
-
-    const product = snapshot.data();
-
-    const cart =
-      JSON.parse(localStorage.getItem("cart")) || [];
-
-    cart.push(product);
-
-    localStorage.setItem("cart", JSON.stringify(cart));
-
-    alert("Added to cart 🛒");
-  });
-
-}
