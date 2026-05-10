@@ -1,28 +1,114 @@
-console.log("catalog working");
+import { db } from "./firebase-config.js";
+
+import {
+  collection,
+  getDocs
+} from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
 const productContainer =
   document.getElementById("productContainer");
 
-if (productContainer) {
+const totalElement =
+  document.getElementById("total");
 
-  productContainer.innerHTML = `
+let total = 0;
 
-    <div class="catalog-card">
+/* =========================
+   LOAD PRODUCTS
+========================= */
 
-      <img
-        src="https://placehold.co/300"
-        class="catalog-image"
-      >
+async function loadProducts() {
 
-      <h3>🧸 Test Product</h3>
+  if (!productContainer) return;
 
-      <p>100,000 VND</p>
+  productContainer.innerHTML = "Loading products...";
 
-      <button class="add-btn">
-        Add to Cart
-      </button>
+  try {
 
-    </div>
+    const snapshot = await getDocs(
+      collection(db, "products")
+    );
 
-  `;
+    productContainer.innerHTML = "";
+
+    if (snapshot.empty) {
+
+      productContainer.innerHTML = `
+        <h2>No products found</h2>
+      `;
+
+      return;
+    }
+
+    snapshot.forEach((docSnap) => {
+
+      const product = docSnap.data();
+
+      const card = document.createElement("div");
+
+      card.className = "catalog-card";
+
+      card.innerHTML = `
+        <img
+          src="${product.coverImage || "1.png"}"
+          class="catalog-image"
+        >
+
+        <h3>
+          ${product.emoji || "🧶"}
+          ${product.name || "Unnamed"}
+        </h3>
+
+        <p>
+          ${(product.price || 0).toLocaleString()} VND
+        </p>
+
+        <button class="add-btn">
+          Add to Cart
+        </button>
+      `;
+
+      const addButton =
+        card.querySelector(".add-btn");
+
+      addButton.addEventListener("click", () => {
+        addToCart(product);
+      });
+
+      productContainer.appendChild(card);
+
+    });
+
+  } catch (error) {
+
+    console.error(error);
+
+    productContainer.innerHTML = `
+      <h2>Failed to load products</h2>
+      <p>${error.message}</p>
+    `;
+  }
 }
+
+/* =========================
+   CART
+========================= */
+
+function addToCart(product) {
+
+  total += Number(product.price || 0);
+
+  if (totalElement) {
+
+    totalElement.textContent =
+      total.toLocaleString() + " VND";
+  }
+
+  alert(`${product.name} added to cart!`);
+}
+
+/* =========================
+   START
+========================= */
+
+loadProducts();
