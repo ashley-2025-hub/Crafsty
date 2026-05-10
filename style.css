@@ -3,12 +3,10 @@
 ========================================= */
 
 * {
-
   box-sizing: border-box;
 }
 
 body {
-
   font-family:
     "Comic Sans MS",
     cursive;
@@ -32,7 +30,6 @@ body {
 }
 
 h1 {
-
   color: white;
 
   font-size: 52px;
@@ -45,13 +42,11 @@ h1 {
 
 h2,
 h3 {
-
   color: #5d4358;
 }
 
 p,
 span {
-
   color: #644f5f;
 }
 
@@ -60,7 +55,6 @@ span {
 ========================================= */
 
 .theme-picker {
-
   display: flex;
 
   justify-content: center;
@@ -75,7 +69,6 @@ span {
 }
 
 .theme-picker p {
-
   color: white;
 
   margin: 0;
@@ -84,7 +77,6 @@ span {
 }
 
 .theme-btn {
-
   width: 36px;
 
   height: 36px;
@@ -100,13 +92,11 @@ span {
 }
 
 .theme-btn:hover {
-
   transform:
     scale(1.12);
 }
 
 .theme-btn.pink {
-
   background:
     linear-gradient(
       135deg,
@@ -116,7 +106,6 @@ span {
 }
 
 .theme-btn.blue {
-
   background:
     linear-gradient(
       135deg,
@@ -126,7 +115,6 @@ span {
 }
 
 .theme-btn.yellow {
-
   background:
     linear-gradient(
       135deg,
@@ -136,7 +124,6 @@ span {
 }
 
 .theme-btn.purple {
-
   background:
     linear-gradient(
       135deg,
@@ -150,7 +137,6 @@ span {
 ========================================= */
 
 .nav {
-
   display: flex;
 
   justify-content: center;
@@ -169,7 +155,6 @@ span {
 ========================================= */
 
 button {
-
   background:
     linear-gradient(
       135deg,
@@ -198,7 +183,6 @@ button {
 }
 
 button:hover {
-
   transform:
     translateY(-2px)
     scale(1.03);
@@ -209,7 +193,6 @@ button:hover {
 ========================================= */
 
 .container {
-
   width: 100%;
 
   max-width: 1400px;
@@ -229,7 +212,6 @@ button:hover {
 
 .products,
 .box {
-
   width: 320px;
 
   background:
@@ -253,7 +235,6 @@ button:hover {
 ========================================= */
 
 .catalog {
-
   width: 100%;
 
   max-width: 1300px;
@@ -271,7 +252,6 @@ button:hover {
 }
 
 .catalog-card {
-
   width: 100%;
 
   max-width: 280px;
@@ -299,14 +279,12 @@ button:hover {
 }
 
 .catalog-card:hover {
-
   transform:
     translateY(-6px)
     scale(1.02);
 }
 
 .catalog-card img {
-
   width: 100%;
 
   height: 240px;
@@ -319,12 +297,10 @@ button:hover {
 }
 
 .catalog-info {
-
   padding: 18px;
 }
 
 .catalog-info h3 {
-
   color: white;
 
   margin-top: 0;
@@ -335,7 +311,6 @@ button:hover {
 }
 
 .catalog-info p {
-
   color:
     rgba(255,255,255,0.9);
 
@@ -349,7 +324,6 @@ button:hover {
 ========================================= */
 
 #cart {
-
   list-style: none;
 
   padding: 0;
@@ -358,7 +332,6 @@ button:hover {
 }
 
 #cart li {
-
   display: flex;
 
   justify-content: space-between;
@@ -378,7 +351,6 @@ button:hover {
 }
 
 .cart-left {
-
   display: flex;
 
   align-items: center;
@@ -389,7 +361,6 @@ button:hover {
 }
 
 .cart-img {
-
   width: 52px;
 
   height: 52px;
@@ -402,7 +373,6 @@ button:hover {
 }
 
 .cart-controls {
-
   display: flex;
 
   align-items: center;
@@ -415,12 +385,10 @@ button:hover {
 ========================================= */
 
 #suggestions {
-
   margin-top: 26px;
 }
 
 #suggestionList {
-
   display: flex;
 
   flex-direction: column;
@@ -429,7 +397,6 @@ button:hover {
 }
 
 .suggest-card {
-
   background:
     rgba(255,255,255,0.92);
 
@@ -443,13 +410,11 @@ button:hover {
 }
 
 .suggest-card:hover {
-
   transform:
     translateY(-3px);
 }
 
 .suggest-card img {
-
   width: 100%;
 
   height: 160px;
@@ -466,7 +431,6 @@ button:hover {
 ========================================= */
 
 .box-layout {
-
   display: flex;
 
   justify-content: center;
@@ -479,7 +443,6 @@ button:hover {
 }
 
 #canvas {
-
   position: relative;
 
   width: 240px;
@@ -502,7 +465,6 @@ button:hover {
 }
 
 .sticker {
-
   position: absolute;
 
   font-size: 42px;
@@ -513,7 +475,6 @@ button:hover {
 }
 
 .selected {
-
   outline:
     3px dashed #ff6fa5;
 
@@ -521,7 +482,6 @@ button:hover {
 }
 
 #bin {
-
   width: 60px;
 
   height: 60px;
@@ -547,7 +507,6 @@ button:hover {
 }
 
 #bin:hover {
-
   transform:
     scale(1.08);
 }
@@ -557,7 +516,6 @@ button:hover {
 ========================================= */
 
 .color-panel {
-
   display: flex;
 
   flex-direction: column;
@@ -568,12 +526,10 @@ button:hover {
 }
 
 .color-panel h3 {
-
   margin-bottom: 8px;
 }
 
 .color-circle {
-
   width: 34px;
 
   height: 34px;
@@ -589,28 +545,23 @@ button:hover {
 }
 
 .color-circle:hover {
-
   transform:
     scale(1.12);
 }
 
 .color-circle.pink {
-
   background: pink;
 }
 
 .color-circle.blue {
-
   background: #8ec5ff;
 }
 
 .color-circle.white {
-
   background: white;
 }
 
 .color-circle.brown {
-
   background: #9c6b3d;
 }
 
@@ -620,7 +571,6 @@ button:hover {
 
 input,
 textarea {
-
   width: 100%;
 
   box-sizing: border-box;
@@ -642,7 +592,6 @@ textarea {
 }
 
 textarea {
-
   min-height: 120px;
 
   resize: vertical;
@@ -650,7 +599,6 @@ textarea {
 
 input:focus,
 textarea:focus {
-
   outline: none;
 }
 
@@ -659,7 +607,6 @@ textarea:focus {
 ========================================= */
 
 .back-btn {
-
   position: fixed;
 
   top: 20px;
@@ -670,7 +617,6 @@ textarea:focus {
 }
 
 .product-page {
-
   max-width: 1250px;
 
   margin: 90px auto 0;
@@ -687,7 +633,6 @@ textarea:focus {
 
 .product-gallery,
 .product-info-panel {
-
   background:
     rgba(255,255,255,0.16);
 
@@ -709,7 +654,6 @@ textarea:focus {
 ========================================= */
 
 .main-product-image {
-
   width: 100%;
 
   aspect-ratio: 1 / 1;
@@ -726,7 +670,6 @@ textarea:focus {
 ========================================= */
 
 .thumbnail-row {
-
   display: grid;
 
   grid-template-columns:
@@ -738,7 +681,6 @@ textarea:focus {
 }
 
 .thumbnail-image {
-
   width: 100%;
 
   aspect-ratio: 1 / 1;
@@ -755,7 +697,6 @@ textarea:focus {
 }
 
 .thumbnail-image:hover {
-
   transform:
     scale(1.04);
 }
@@ -765,21 +706,18 @@ textarea:focus {
 ========================================= */
 
 .product-info-panel {
-
   text-align: left;
 
   color: white;
 }
 
 #productTitle {
-
   color: white;
 
   margin-top: 0;
 }
 
 .product-price {
-
   font-size: 38px;
 
   font-weight: bold;
@@ -788,7 +726,6 @@ textarea:focus {
 }
 
 .product-description {
-
   line-height: 1.8;
 
   margin-top: 18px;
@@ -797,7 +734,6 @@ textarea:focus {
 }
 
 .big-add-btn {
-
   width: 100%;
 
   margin-top: 28px;
@@ -812,7 +748,6 @@ textarea:focus {
 ========================================= */
 
 .admin-wrapper {
-
   width: 100%;
 
   max-width: 1400px;
@@ -830,7 +765,6 @@ textarea:focus {
 }
 
 .admin-box {
-
   position: sticky;
 
   top: 20px;
@@ -852,7 +786,6 @@ textarea:focus {
 }
 
 .admin-box h2 {
-
   margin-top: 0;
 
   margin-bottom: 20px;
@@ -864,7 +797,6 @@ textarea:focus {
 
 .admin-box input,
 .admin-box textarea {
-
   width: 100%;
 
   padding: 15px;
@@ -889,7 +821,6 @@ textarea:focus {
 
 .admin-box input:focus,
 .admin-box textarea:focus {
-
   outline: none;
 
   transform: scale(1.01);
@@ -899,14 +830,12 @@ textarea:focus {
 }
 
 .admin-box textarea {
-
   min-height: 120px;
 
   resize: vertical;
 }
 
 .admin-box button {
-
   width: 100%;
 
   margin-top: 20px;
@@ -919,7 +848,6 @@ textarea:focus {
 }
 
 #productList {
-
   width: 100%;
 
   display: grid;
@@ -933,7 +861,6 @@ textarea:focus {
 }
 
 .product-card {
-
   display: flex;
 
   flex-direction: column;
@@ -961,13 +888,11 @@ textarea:focus {
 }
 
 .product-card:hover {
-
   transform:
     translateY(-6px);
 }
 
 .product-card img {
-
   width: 100%;
 
   aspect-ratio: 1 / 1;
@@ -982,7 +907,6 @@ textarea:focus {
 }
 
 .product-card h3 {
-
   margin: 0 0 10px;
 
   color: white;
@@ -991,7 +915,6 @@ textarea:focus {
 }
 
 .product-card p {
-
   margin: 0;
 
   color:
@@ -1001,7 +924,6 @@ textarea:focus {
 }
 
 .display-preview {
-
   display: grid;
 
   grid-template-columns:
@@ -1013,7 +935,6 @@ textarea:focus {
 }
 
 .display-preview img {
-
   width: 100%;
 
   aspect-ratio: 1 / 1;
@@ -1026,7 +947,6 @@ textarea:focus {
 }
 
 .product-card button {
-
   margin-top: auto;
 
   width: 100%;
@@ -1039,51 +959,42 @@ textarea:focus {
 @media (max-width: 950px) {
 
   body {
-
     padding: 18px;
   }
 
   h1 {
-
     font-size: 40px;
   }
 
   .product-page {
-
     grid-template-columns: 1fr;
   }
 
   .admin-wrapper {
-
     grid-template-columns: 1fr;
   }
 
   .admin-box {
-
     position: static;
   }
 
   .container {
-
     flex-direction: column;
 
     align-items: center;
   }
 
   .catalog {
-
     grid-template-columns: 1fr;
   }
 
   .box-layout {
-
     flex-direction: column;
 
     align-items: center;
   }
 
   .color-panel {
-
     flex-direction: row;
 
     flex-wrap: wrap;
