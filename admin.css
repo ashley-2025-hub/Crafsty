@@ -1,7 +1,3 @@
-/* =========================================
-   GOOGLE FONT
-========================================= */
-
 @import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;500;600;700&display=swap');
 
 /* =========================================
@@ -16,10 +12,11 @@
 
 body{
     font-family:'Baloo 2', cursive;
-    background: linear-gradient(135deg,#c06c9f,#a678d1);
+    background:linear-gradient(135deg,#c06c9f,#a678d1);
     min-height:100vh;
     color:white;
     overflow-x:hidden;
+    padding:40px;
 }
 
 /* =========================================
@@ -29,36 +26,34 @@ body{
 .admin-title{
     text-align:center;
     font-size:72px;
-    margin-top:30px;
-    margin-bottom:40px;
     color:white;
+    margin-bottom:40px;
     line-height:1;
 }
 
 /* =========================================
-   ADMIN LAYOUT
+   MAIN LAYOUT
 ========================================= */
 
 .admin-wrapper{
-    width:min(1400px,92%);
-    margin:40px auto;
+    max-width:1400px;
+    margin:auto;
+
     display:grid;
-    grid-template-columns:420px 1fr;
+    grid-template-columns:520px 1fr;
+
     gap:40px;
     align-items:start;
 }
 
 /* =========================================
-   LEFT FORM
+   FORM BOX
 ========================================= */
 
 .admin-box{
-    position:sticky;
-    top:20px;
+    padding:34px;
 
-    padding:40px;
-
-    border-radius:32px;
+    border-radius:34px;
 
     background:rgba(255,255,255,0.14);
 
@@ -71,8 +66,8 @@ body{
 
 .admin-box h2{
     text-align:center;
-    margin-bottom:28px;
-    font-size:34px;
+    font-size:36px;
+    margin-bottom:30px;
     color:white;
 }
 
@@ -85,7 +80,7 @@ body{
 
     width:100%;
 
-    padding:18px 20px;
+    padding:18px 22px;
 
     margin-bottom:18px;
 
@@ -95,13 +90,13 @@ body{
 
     background:rgba(255,255,255,0.88);
 
-    color:#444;
+    color:#555;
 
     font-size:20px;
 
-    font-family:'Baloo 2', cursive;
-
     outline:none;
+
+    font-family:'Baloo 2', cursive;
 }
 
 .admin-box textarea{
@@ -115,13 +110,13 @@ body{
 
 .admin-box button{
 
-    width:100%;
+    width:160px;
 
-    padding:18px;
+    height:58px;
 
     border:none;
 
-    border-radius:22px;
+    border-radius:20px;
 
     background:#f5a9cb;
 
@@ -133,6 +128,10 @@ body{
 
     cursor:pointer;
 
+    display:block;
+
+    margin:12px auto 0;
+
     transition:0.25s;
 }
 
@@ -142,20 +141,17 @@ body{
 }
 
 /* =========================================
-   PRODUCT GRID
+   PRODUCT LIST
 ========================================= */
 
 #productList{
 
-    width:100%;
-
     display:grid;
 
-    grid-template-columns:repeat(auto-fill,minmax(270px,1fr));
+    grid-template-columns:
+    repeat(auto-fill,minmax(320px,1fr));
 
-    gap:26px;
-
-    align-items:start;
+    gap:30px;
 }
 
 /* =========================================
@@ -164,17 +160,15 @@ body{
 
 .product-card{
 
-    width:100%;
+    padding:20px;
 
-    padding:18px;
-
-    border-radius:28px;
+    border-radius:30px;
 
     background:rgba(255,255,255,0.14);
 
     backdrop-filter:blur(18px);
 
-    border:1px solid rgba(255,255,255,0.16);
+    border:1px solid rgba(255,255,255,0.18);
 
     box-shadow:0 10px 24px rgba(0,0,0,0.12);
 
@@ -189,24 +183,22 @@ body{
 
     width:100%;
 
-    height:250px;
+    height:290px;
 
     object-fit:cover;
 
-    border-radius:22px;
+    border-radius:24px;
 
-    margin-bottom:14px;
+    margin-bottom:16px;
 }
 
 .product-card h3{
 
-    color:white;
-
     font-size:28px;
 
-    margin-bottom:8px;
+    color:white;
 
-    line-height:1.2;
+    margin-bottom:10px;
 }
 
 .product-card p{
@@ -217,25 +209,7 @@ body{
 
     margin-bottom:8px;
 
-    line-height:1.5;
-}
-
-/* =========================================
-   DISPLAY IMAGES PREVIEW
-========================================= */
-
-.display-preview{
-    display:grid;
-    grid-template-columns:repeat(3,1fr);
-    gap:10px;
-    margin-top:12px;
-}
-
-.display-preview img{
-    width:100%;
-    aspect-ratio:1/1;
-    object-fit:cover;
-    border-radius:16px;
+    line-height:1.4;
 }
 
 /* =========================================
@@ -244,11 +218,9 @@ body{
 
 .product-card button{
 
-    width:100%;
+    width:120px;
 
-    margin-top:14px;
-
-    padding:14px;
+    height:52px;
 
     border:none;
 
@@ -258,11 +230,13 @@ body{
 
     color:white;
 
-    font-size:18px;
+    font-size:20px;
 
     font-weight:700;
 
     cursor:pointer;
+
+    margin-top:14px;
 
     transition:0.25s;
 }
@@ -272,58 +246,46 @@ body{
 }
 
 /* =========================================
-   EMPTY STATE
-========================================= */
-
-.empty-message{
-    color:white;
-    font-size:24px;
-    opacity:0.8;
-}
-
-/* =========================================
    MOBILE
 ========================================= */
 
-@media (max-width:950px){
-
-    .admin-title{
-        font-size:54px;
-    }
+@media (max-width:1100px){
 
     .admin-wrapper{
         grid-template-columns:1fr;
     }
 
-    .admin-box{
-        position:static;
-    }
-
     #productList{
-        grid-template-columns:1fr;
+        grid-template-columns:
+        repeat(auto-fill,minmax(280px,1fr));
     }
 }
 
-@media (max-width:600px){
+@media (max-width:700px){
+
+    body{
+        padding:20px;
+    }
 
     .admin-title{
-        font-size:42px;
+        font-size:52px;
     }
 
     .admin-box{
-        padding:28px;
+        padding:24px;
+    }
+
+    .admin-box h2{
+        font-size:30px;
     }
 
     .admin-box input,
     .admin-box textarea{
         font-size:18px;
+        padding:16px 18px;
     }
 
-    .product-card h3{
-        font-size:24px;
-    }
-
-    .product-card p{
-        font-size:18px;
+    .product-card img{
+        height:240px;
     }
 }
