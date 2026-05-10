@@ -5,8 +5,12 @@ import {
   getDocs
 } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
-const productContainer =
-  document.getElementById("productContainer");
+/* =========================
+   ELEMENTS
+========================= */
+
+const recommendationContainer =
+  document.getElementById("recommendationContainer");
 
 const totalElement =
   document.getElementById("total");
@@ -14,15 +18,12 @@ const totalElement =
 let total = 0;
 
 /* =========================
-   LOAD PRODUCTS
+   LOAD RECOMMENDATIONS
 ========================= */
 
-async function loadProducts() {
+async function loadRecommendations() {
 
-  if (!productContainer) return;
-
-  productContainer.innerHTML =
-    "<p>Loading products...</p>";
+  if (!recommendationContainer) return;
 
   try {
 
@@ -30,80 +31,35 @@ async function loadProducts() {
       collection(db, "products")
     );
 
-    productContainer.innerHTML = "";
-
-    if (snapshot.empty) {
-
-      productContainer.innerHTML = `
-        <h2>No products found</h2>
-      `;
-
-      return;
-    }
+    recommendationContainer.innerHTML = "";
 
     snapshot.forEach((docSnap) => {
 
       const product = docSnap.data();
 
-      const card =
+      const item =
         document.createElement("div");
 
-      card.className = "catalog-card";
+      item.className =
+        "recommendation-item";
 
-      card.innerHTML = `
+      item.innerHTML = `
         <img
-          src="${product.coverImage || 'https://placehold.co/500'}"
-          class="catalog-image"
+          src="${product.coverImage}"
+          class="recommendation-image"
         >
 
-        <h3>
+        <span>
           ${product.emoji || "🧶"}
-          ${product.name || "Unnamed"}
-        </h3>
-
-        <p>
-          ${Number(product.price || 0).toLocaleString()}
-          VND
-        </p>
-
-        <button class="add-btn">
-          Add To Cart
-        </button>
+          ${product.name}
+        </span>
       `;
-
-      /* =========================
-         ADD TO CART
-      ========================= */
-
-      const addButton =
-        card.querySelector(".add-btn");
-
-      addButton.addEventListener(
-        "click",
-        (event) => {
-
-          event.stopPropagation();
-
-          total += Number(product.price || 0);
-
-          if (totalElement) {
-
-            totalElement.textContent =
-              total.toLocaleString() +
-              " VND";
-          }
-
-          alert(
-            `${product.name} added to cart!`
-          );
-        }
-      );
 
       /* =========================
          OPEN PRODUCT PAGE
       ========================= */
 
-      card.addEventListener(
+      item.addEventListener(
         "click",
         () => {
 
@@ -112,25 +68,70 @@ async function loadProducts() {
         }
       );
 
-      productContainer.appendChild(card);
+      recommendationContainer
+        .appendChild(item);
 
     });
 
   } catch (error) {
 
-    console.error(
-      "Load products error:",
-      error
-    );
-
-    productContainer.innerHTML = `
-      <h2>Failed to load products</h2>
-    `;
+    console.error(error);
   }
 }
+
+/* =========================
+   BACKGROUND COLORS
+========================= */
+
+window.setBackground = function(color1, color2) {
+
+  document.body.style.background =
+    `linear-gradient(135deg, ${color1}, ${color2})`;
+};
+
+/* =========================
+   CLEAR CART
+========================= */
+
+window.clearCart = function() {
+
+  total = 0;
+
+  if (totalElement) {
+
+    totalElement.textContent =
+      "0 VND";
+  }
+
+  alert("Cart cleared!");
+};
+
+/* =========================
+   PLACE ORDER
+========================= */
+
+window.placeOrder = function() {
+
+  const name =
+    document.getElementById("customerName").value;
+
+  const contact =
+    document.getElementById("customerContact").value;
+
+  if (!name || !contact) {
+
+    alert("Please fill your info!");
+
+    return;
+  }
+
+  alert(
+    `Thank you ${name}! 🧶`
+  );
+};
 
 /* =========================
    START
 ========================= */
 
-loadProducts();
+loadRecommendations();
