@@ -23,7 +23,7 @@
     My Crochet Shop 🧶
   </h1>
 
-  <!-- THEME PICKER -->
+  <!-- THEME -->
 
   <div class="theme-picker">
 
@@ -57,25 +57,38 @@
 
     <button
       type="button"
-      onclick="showSection('shop')">
-
-      🧾 Order
-
-    </button>
-
-    <button
-      type="button"
       onclick="showSection('catalog')">
 
       🧸 Catalog
 
     </button>
 
+    <button
+      type="button"
+      onclick="showSection('shop')">
+
+      🧾 Order
+
+    </button>
+
   </div>
 
-  <!-- SHOP SECTION -->
+  <!-- CATALOG -->
 
-  <section id="shopSection">
+  <section id="catalogSection">
+
+    <div
+      id="products"
+      class="catalog">
+    </div>
+
+  </section>
+
+  <!-- SHOP -->
+
+  <section
+    id="shopSection"
+    style="display:none;">
 
     <div class="container">
 
@@ -90,6 +103,16 @@
         <p id="empty">
           Your cart is empty 🧺
         </p>
+
+        <div id="suggestions">
+
+          <h3>
+            ✨ You may also like
+          </h3>
+
+          <div id="suggestionList"></div>
+
+        </div>
 
       </div>
 
@@ -108,25 +131,21 @@
             <h3>Colors</h3>
 
             <button
-              type="button"
               class="color-circle pink"
               onclick="changeSelectedColor('Pink')">
             </button>
 
             <button
-              type="button"
               class="color-circle blue"
               onclick="changeSelectedColor('Blue')">
             </button>
 
             <button
-              type="button"
               class="color-circle white"
               onclick="changeSelectedColor('White')">
             </button>
 
             <button
-              type="button"
               class="color-circle brown"
               onclick="changeSelectedColor('Brown')">
             </button>
@@ -153,7 +172,7 @@
 
       </div>
 
-      <!-- ORDER FORM -->
+      <!-- FORM -->
 
       <div class="products">
 
@@ -182,28 +201,13 @@
             id="orderData">
 
           <button type="submit">
-
             Place Order
-
           </button>
 
         </form>
 
       </div>
 
-    </div>
-
-  </section>
-
-  <!-- CATALOG -->
-
-  <section
-    id="catalogSection"
-    style="display:none;">
-
-    <div
-      id="products"
-      class="catalog">
     </div>
 
   </section>
