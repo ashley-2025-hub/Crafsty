@@ -1,64 +1,140 @@
 import { db } from "./firebase-config.js";
 
 import {
-  doc,
-  getDoc,
   collection,
-  getDocs
-}
-from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+  addDoc,
+  getDocs,
+  deleteDoc,
+  doc
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-const params =
-  new URLSearchParams(window.location.search);
+const form = document.getElementById("productForm");
+const productList = document.getElementById("productList");
 
-const productId =
-  params.get("id");
+const productsCollection = collection(db, "products");
 
-async function loadProduct() {
+/* =========================
+   LOAD PRODUCTS
+========================= */
+async function loadProducts() {
+  productList.innerHTML = "";
 
   try {
+    const snapshot = await getDocs(productsCollection);
 
-    if (!productId) {
+    snapshot.forEach((docSnap) => {
+      const product = docSnap.data();
 
-      document.body.innerHTML = `
-        <h1>Product not found</h1>
+      const card = document.createElement("div");
+      card.className = "product-card";
+
+      card.innerHTML = `
+        <img src="${product.coverImage}" class="product-cover">
+
+        <h3>${product.emoji || ""} ${product.name}</h3>
+
+        <p>${product.price.toLocaleString()} VND</p>
+
+        <p>${product.displayImages?.length || 0} display images</p>
+
+        <button class="delete-btn" data-id="${docSnap.id}">
+          Delete
+        </button>
       `;
 
-      return;
-    }
+      productList.appendChild(card);
+    });
 
-    const productRef =
-      doc(db, "products", productId);
+    addDeleteEvents();
 
-    const productSnap =
-      await getDoc(productRef);
+  } catch (error) {
+    console.error("Load error:", error);
+  }
+}
 
-    if (!productSnap.exists()) {
+/* =========================
+   ADD PRODUCT
+========================= */
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
 
-      document.body.innerHTML = `
-        <h1>Product not found</h1>
-      `;
+  const name = document.getElementById("name").value.trim();
 
-      return;
-    }
+  const price = Number(
+    document.getElementById("price").value
+  );
 
-    const product = productSnap.data();
+  const emoji = document.getElementById("emoji").value.trim();
 
-    document.getElementById("productTitle")
-      .textContent = product.name;
+  const coverImage = document
+    .getElementById("coverImage")
+    .value.trim();
 
-    document.getElementById("productName")
-      .textContent = `${product.emoji || "🧸"} ${product.name}`;
+  const description = document
+    .getElementById("description")
+    .value.trim();
 
-    document.getElementById("productPrice")
-      .textContent = `${product.price.toLocaleString()} VND`;
+  const displayImagesRaw = document
+    .getElementById("displayImages")
+    .value;
 
-    document.getElementById("productDescription")
-      .textContent = product.description;
+  const displayImages = displayImagesRaw
+    .split("\n")
+    .map((img) => img.trim())
+    .filter((img) => img !== "");
 
-    const mainImage =
-      document.getElementById("mainImage");
+  if (!name || !price || !coverImage) {
+    alert("Please fill all required fields.");
+    return;
+  }
 
-    mainImage.src =
-      product.displayImages?.[0]
-loadProduct();
+  try {
+    await addDoc(productsCollection, {
+      name,
+      price,
+      emoji,
+      coverImage,
+      description,
+      displayImages,
+      createdAt: Date.now()
+    });
+
+    alert("Product added!");
+
+    form.reset();
+
+    loadProducts();
+
+  } catch (error) {
+    console.error("Add product error:", error);
+    alert("Failed to add product.");
+  }
+});
+
+/* =========================
+   DELETE PRODUCT
+========================= */
+function addDeleteEvents() {
+  const deleteButtons =
+    document.querySelectorAll(".delete-btn");
+
+  deleteButtons.forEach((button) => {
+    button.addEventListener("click", async () => {
+      const id = button.dataset.id;
+
+      try {
+        await deleteDoc(doc(db, "products", id));
+
+        loadProducts();
+
+      } catch (error) {
+        console.error("Delete error:", error);
+      }
+    });
+  });
+}
+
+/* =========================
+   START
+========================= */
+loadProducts();
