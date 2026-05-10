@@ -521,3 +521,10 @@ form button,
     flex-wrap:wrap;
   }
 }
+
+.page-title{
+  text-align:center;
+  font-size:64px;
+  margin-bottom:40px;
+  color:white;
+}
