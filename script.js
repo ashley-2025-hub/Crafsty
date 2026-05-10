@@ -1,4 +1,4 @@
-import { db } from "./firebase.js";
+import { db } from "./firebase-config.js";
 
 import {
   collection,
@@ -6,10 +6,8 @@ import {
 } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
 /* =========================================
-   GLOBALS
+   ELEMENTS
 ========================================= */
-
-const cart = [];
 
 const catalog =
   document.getElementById("products");
@@ -25,6 +23,12 @@ const emptyText =
 
 const orderData =
   document.getElementById("orderData");
+
+/* =========================================
+   STATE
+========================================= */
+
+const cart = [];
 
 /* =========================================
    BACKGROUND THEMES
@@ -51,23 +55,34 @@ window.changeBackground =
 window.showSection =
   function(section) {
 
-    const shop =
+    const shopSection =
       document.getElementById("shopSection");
 
     const catalogSection =
       document.getElementById("catalogSection");
 
+    if (
+      !shopSection ||
+      !catalogSection
+    ) {
+      return;
+    }
+
     if (section === "shop") {
 
-      shop.style.display = "block";
+      shopSection.style.display =
+        "block";
 
-      catalogSection.style.display = "none";
+      catalogSection.style.display =
+        "none";
 
     } else {
 
-      shop.style.display = "none";
+      shopSection.style.display =
+        "none";
 
-      catalogSection.style.display = "block";
+      catalogSection.style.display =
+        "block";
     }
   };
 
@@ -77,14 +92,27 @@ window.showSection =
 
 async function loadProducts() {
 
+  if (!catalog) {
+    console.error(
+      "Missing #products element"
+    );
+    return;
+  }
+
   try {
 
-    catalog.innerHTML = "";
+    catalog.innerHTML = `
+      <p style="color:white;">
+        Loading products...
+      </p>
+    `;
 
     const querySnapshot =
       await getDocs(
         collection(db, "products")
       );
+
+    catalog.innerHTML = "";
 
     if (querySnapshot.empty) {
 
@@ -99,7 +127,8 @@ async function loadProducts() {
 
     querySnapshot.forEach((doc) => {
 
-      const product = doc.data();
+      const product =
+        doc.data();
 
       const card =
         document.createElement("div");
@@ -110,21 +139,28 @@ async function loadProducts() {
       card.innerHTML = `
 
         <img
-          src="${product.coverImage}"
-          alt="${product.name}">
+          src="${
+            product.coverImage ||
+            "https://placehold.co/600x600?text=No+Image"
+          }"
+          alt="${product.name || "Product"}">
 
         <div class="catalog-info">
 
           <h3>
-            ${product.name}
+            ${product.name || "Unnamed Product"}
           </h3>
 
           <p>
-            ${product.price} VND
+            ${product.price || 0} VND
           </p>
 
-          <button class="add-btn">
+          <button
+            class="add-btn"
+            type="button">
+
             Add To Cart
+
           </button>
 
         </div>
@@ -143,7 +179,10 @@ async function loadProducts() {
 
   } catch (error) {
 
-    console.error(error);
+    console.error(
+      "LOAD PRODUCT ERROR:",
+      error
+    );
 
     catalog.innerHTML = `
       <p style="color:white;">
@@ -170,6 +209,14 @@ function addToCart(product) {
 
 function renderCart() {
 
+  if (
+    !cartElement ||
+    !totalElement ||
+    !emptyText
+  ) {
+    return;
+  }
+
   cartElement.innerHTML = "";
 
   if (cart.length === 0) {
@@ -187,7 +234,8 @@ function renderCart() {
 
   cart.forEach((item, index) => {
 
-    total += Number(item.price);
+    total +=
+      Number(item.price) || 0;
 
     const li =
       document.createElement("li");
@@ -198,7 +246,11 @@ function renderCart() {
 
         <img
           class="cart-img"
-          src="${item.coverImage}">
+          src="${
+            item.coverImage ||
+            "https://placehold.co/100x100"
+          }"
+          alt="${item.name}">
 
         <span>
           ${item.name}
@@ -209,10 +261,11 @@ function renderCart() {
       <div class="cart-controls">
 
         <span>
-          ${item.price}
+          ${item.price} VND
         </span>
 
         <button
+          type="button"
           onclick="removeFromCart(${index})">
 
           ✕
@@ -227,8 +280,11 @@ function renderCart() {
   totalElement.textContent =
     total;
 
-  orderData.value =
-    JSON.stringify(cart);
+  if (orderData) {
+
+    orderData.value =
+      JSON.stringify(cart);
+  }
 }
 
 /* =========================================
@@ -262,8 +318,9 @@ window.clearCart =
 window.changeSelectedColor =
   function(color) {
 
-    alert(
-      "Selected color: " + color
+    console.log(
+      "Selected color:",
+      color
     );
   };
 
@@ -271,4 +328,12 @@ window.changeSelectedColor =
    START
 ========================================= */
 
-loadProducts();
+document.addEventListener(
+  "DOMContentLoaded",
+  () => {
+
+    renderCart();
+
+    loadProducts();
+  }
+);
