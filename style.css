@@ -922,3 +922,10 @@ img {
   max-width: 100%;
   display: block;
 }
+#shopSection {
+  display: block;
+}
+
+#catalogSection {
+  display: none;
+}
