@@ -43,7 +43,123 @@
         <br><br>
 
         <input
+          id="emoji"<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>
+    Admin Panel
+  </title>
+
+  <link
+    rel="stylesheet"
+    href="style.css"
+  >
+
+  <link
+    rel="stylesheet"
+    href="admin.css"
+  >
+
+</head>
+
+<body>
+
+  <h1>
+    Admin Panel 🧶
+  </h1>
+
+  <div class="admin-wrapper">
+
+    <!-- LEFT -->
+
+    <div class="admin-box">
+
+      <h2>
+        Add Product
+      </h2>
+
+      <form id="productForm">
+
+        <input
+          id="name"
+          type="text"
+          placeholder="Product Name"
+        >
+
+        <br><br>
+
+        <input
+          id="price"
+          type="number"
+          placeholder="Price"
+        >
+
+        <br><br>
+
+        <input
           id="emoji"
+          type="text"
+          placeholder="Emoji"
+        >
+
+        <br><br>
+
+        <input
+          id="coverImage"
+          type="text"
+          placeholder="Cover Image URL"
+        >
+
+        <br><br>
+
+        <textarea
+          id="displayImages"
+          placeholder="Display Images URLs (one per line)"
+        ></textarea>
+
+        <br><br>
+
+        <textarea
+          id="description"
+          placeholder="Description"
+        ></textarea>
+
+        <br><br>
+
+        <button
+          type="button"
+          onclick="addProduct()"
+        >
+          Add Product
+        </button>
+
+      </form>
+
+    </div>
+
+    <!-- RIGHT -->
+
+    <div id="productList"></div>
+
+  </div>
+
+  <script
+    type="module"
+    src="./admin.js"
+  ></script>
+
+</body>
+
+</html>
           placeholder="Emoji">
 
         <br><br>
