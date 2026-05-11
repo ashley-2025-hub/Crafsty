@@ -14,8 +14,6 @@ let products = [];
 let cart =
   JSON.parse(localStorage.getItem("cart")) || [];
 
-let selectedItem = null;
-
 /* =========================================
    ELEMENTS
 ========================================= */
@@ -35,6 +33,12 @@ const suggestionList =
 const emptyText =
   document.getElementById("empty");
 
+const orderData =
+  document.getElementById("orderData");
+
+const canvas =
+  document.getElementById("canvas");
+
 /* =========================================
    SAVE CART
 ========================================= */
@@ -48,18 +52,14 @@ function saveCart() {
 }
 
 /* =========================================
-   BACKGROUND
+   BACKGROUND CHANGE
 ========================================= */
 
 window.changeBackground =
   function(color1, color2) {
 
     document.body.style.background =
-      `linear-gradient(
-        135deg,
-        ${color1},
-        ${color2}
-      )`;
+      `linear-gradient(135deg, ${color1}, ${color2})`;
 
     document.body.style.backgroundAttachment =
       "fixed";
@@ -78,10 +78,7 @@ window.showSection =
     const catalogSection =
       document.getElementById("catalogSection");
 
-    if (
-      !shopSection ||
-      !catalogSection
-    ) return;
+    if (!shopSection || !catalogSection) return;
 
     if (section === "shop") {
 
@@ -113,15 +110,13 @@ onSnapshot(
       snapshot.docs.map(doc => ({
 
         id: doc.id,
-
         ...doc.data()
       }));
 
     renderCatalog();
-
     renderSuggestions();
-
     renderCart();
+    renderBox();
   }
 );
 
@@ -138,11 +133,8 @@ function addItem(product, button = null) {
 
   const sticker = {
 
-    color: "None",
-
-    x: Math.random() * 120,
-
-    y: Math.random() * 120
+    x: Math.random() * 170,
+    y: Math.random() * 170
   };
 
   if (existing) {
@@ -153,19 +145,25 @@ function addItem(product, button = null) {
 
   } else {
 
-cart.push({
-  id: product.id,
-  name: product.name,
-  price: Number(product.price),
-  coverImage: product.coverImage,
-  emoji: product.emoji || "🧶",
-  quantity: 1,
-  stickers: [newSticker]
-});
-    
-  }
+    cart.push({
 
-  selectedItem = sticker;
+      id: product.id,
+
+      name: product.name,
+
+      price: Number(product.price) || 0,
+
+      coverImage:
+        product.coverImage || "",
+
+      emoji:
+        product.emoji || "🧶",
+
+      quantity: 1,
+
+      stickers: [sticker]
+    });
+  }
 
   saveCart();
 
@@ -173,11 +171,13 @@ cart.push({
 
   renderSuggestions();
 
+  renderBox();
+
   /* BUTTON TEXT */
 
   if (button) {
 
-    const original =
+    const originalText =
       button.innerText;
 
     button.innerText =
@@ -188,7 +188,7 @@ cart.push({
     setTimeout(() => {
 
       button.innerText =
-        original;
+        originalText;
 
       button.disabled = false;
 
@@ -226,6 +226,8 @@ function removeItem(id) {
   renderCart();
 
   renderSuggestions();
+
+  renderBox();
 }
 
 /* =========================================
@@ -242,6 +244,8 @@ window.clearCart =
     renderCart();
 
     renderSuggestions();
+
+    renderBox();
   };
 
 /* =========================================
@@ -257,7 +261,6 @@ function renderCatalog() {
   if (products.length === 0) {
 
     catalog.innerHTML = `
-
       <p style="color:white;">
         No products found 🧶
       </p>
@@ -274,9 +277,6 @@ function renderCatalog() {
     card.className =
       "catalog-card";
 
-    const price =
-      Number(product.price) || 0;
-
     card.innerHTML = `
 
       <img
@@ -292,7 +292,7 @@ function renderCatalog() {
         </h3>
 
         <p>
-          ${price.toLocaleString()} VND
+          ${Number(product.price || 0).toLocaleString()} VND
         </p>
 
         <button class="add-btn">
@@ -305,6 +305,8 @@ function renderCatalog() {
     const addBtn =
       card.querySelector(".add-btn");
 
+    /* BUTTON CLICK */
+
     addBtn.onclick = (e) => {
 
       e.stopPropagation();
@@ -312,10 +314,16 @@ function renderCatalog() {
       addItem(product, addBtn);
     };
 
+    /* WHOLE CARD CLICK */
+
+    card.style.cursor =
+      "pointer";
+
     card.onclick = () => {
 
-      window.location.href =
-        `product.html?id=${product.id}`;
+      addItem(product);
+
+      window.showSection("shop");
     };
 
     catalog.appendChild(card);
@@ -323,7 +331,7 @@ function renderCatalog() {
 }
 
 /* =========================================
-   SUGGESTIONS
+   RENDER SUGGESTIONS
 ========================================= */
 
 function renderSuggestions() {
@@ -340,111 +348,140 @@ function renderSuggestions() {
       );
     });
 
-  filtered.slice(0, 4).forEach(product => {
+  filtered
+    .slice(0, 4)
+    .forEach(product => {
 
-    const card =
-      document.createElement("div");
+      const card =
+        document.createElement("div");
 
-    card.className =
-      "suggest-card";
+      card.className =
+        "suggest-card";
 
-    card.innerHTML = `
+      card.innerHTML = `
 
-      <img
-        src="${product.coverImage || ""}"
-        alt="${product.name || ""}"
-      >
+        <img
+          src="${product.coverImage || ""}"
+          alt="${product.name || ""}"
+        >
 
-      <p>
-        ${product.emoji || "🧶"}
-        ${product.name || ""}
-      </p>
-    `;
+        <p>
+          ${product.emoji || "🧶"}
+          ${product.name || ""}
+        </p>
+      `;
 
-    card.onclick = () => {
+      card.onclick = () => {
 
-      addItem(product);
-    };
+        addItem(product);
+      };
 
-    suggestionList.appendChild(card);
-  });
+      suggestionList.appendChild(card);
+    });
 }
 
 /* =========================================
    RENDER CART
 ========================================= */
 
-function renderCatalog() {
+function renderCart() {
 
-  const catalog =
-    document.querySelector(".catalog");
+  if (!cartList) return;
 
-  if (!catalog) return;
+  cartList.innerHTML = "";
 
-  catalog.innerHTML = "";
+  if (cart.length === 0) {
 
-  products.forEach(product => {
+    if (emptyText) {
 
-    const card =
-      document.createElement("div");
+      emptyText.style.display =
+        "block";
+    }
 
-    card.className =
-      "catalog-card";
+  } else {
 
-    card.innerHTML = `
+    if (emptyText) {
 
-      <img
-        src="${product.coverImage || ""}"
-      >
+      emptyText.style.display =
+        "none";
+    }
+  }
 
-      <div class="catalog-info">
+  let total = 0;
 
-        <h3>
-          ${product.emoji || "🧶"} ${product.name}
-        </h3>
+  cart.forEach(item => {
 
-        <p>
-          ${Number(product.price).toLocaleString()} VND
-        </p>
+    total +=
+      item.price * item.quantity;
 
-        <button class="add-btn">
-          Add To Cart
+    const li =
+      document.createElement("li");
+
+    li.innerHTML = `
+
+      <div class="cart-left">
+
+        <img
+          class="cart-img"
+          src="${item.coverImage}"
+        >
+
+        <span>
+          ${item.name}
+        </span>
+
+      </div>
+
+      <div class="cart-controls">
+
+        <button class="minus-btn">
+          −
+        </button>
+
+        <span>
+          ${item.quantity}
+        </span>
+
+        <button class="plus-btn">
+          +
         </button>
 
       </div>
     `;
 
-    /* CLICK WHOLE CARD */
+    const minusBtn =
+      li.querySelector(".minus-btn");
 
-    card.onclick = () => {
+    const plusBtn =
+      li.querySelector(".plus-btn");
 
-      addItem(product);
+    minusBtn.onclick = () =>
+      removeItem(item.id);
 
-      const btn =
-        card.querySelector(".add-btn");
+    plusBtn.onclick = () =>
+      addItem(item);
 
-      btn.innerText =
-        "Added To Cart ✓";
-
-      setTimeout(() => {
-
-        btn.innerText =
-          "Add To Cart";
-
-      }, 1200);
-    };
-
-    catalog.appendChild(card);
+    cartList.appendChild(li);
   });
-renderBox();
+
+  if (totalEl) {
+
+    totalEl.innerText =
+      total.toLocaleString();
+  }
+
+  if (orderData) {
+
+    orderData.value =
+      JSON.stringify(cart);
+  }
 }
 
-
+/* =========================================
+   RENDER BOX
+========================================= */
 
 function renderBox() {
-
-  const canvas =
-    document.getElementById("canvas");
 
   if (!canvas) return;
 
@@ -473,32 +510,33 @@ function renderBox() {
     });
   });
 }
+
 /* =========================================
-   COLOR SELECT
+   COLOR CHANGE
 ========================================= */
 
 window.changeSelectedColor =
   function(color) {
 
-    const canvas =
-      document.getElementById("canvas");
-
     if (!canvas) return;
 
     const colors = {
 
-      Pink: "#ffd1dc",
+      Pink:
+        "linear-gradient(180deg,#ffd1dc,#ffb6c1)",
 
-      Blue: "#8ec5ff",
+      Blue:
+        "linear-gradient(180deg,#8ec5ff,#6ea8ff)",
 
-      White: "#ffffff",
+      White:
+        "linear-gradient(180deg,#ffffff,#eeeeee)",
 
-      Brown: "#9c6b3d"
+      Brown:
+        "linear-gradient(180deg,#c28d4f,#9c6b3d)"
     };
 
     canvas.style.background =
-      colors[color] ||
-      "#f0d0a1";
+      colors[color];
   };
 
 /* =========================================
@@ -506,4 +544,7 @@ window.changeSelectedColor =
 ========================================= */
 
 renderCart();
+
 renderSuggestions();
+
+renderBox();
