@@ -153,23 +153,16 @@ function addItem(product, button = null) {
 
   } else {
 
-    cart.push({
-
-      id: product.id,
-
-      name:
-        product.name || "Unnamed",
-
-      price:
-        Number(product.price) || 0,
-
-      coverImage:
-        product.coverImage || "",
-
-      quantity: 1,
-
-      stickers: [sticker]
-    });
+cart.push({
+  id: product.id,
+  name: product.name,
+  price: Number(product.price),
+  coverImage: product.coverImage,
+  emoji: product.emoji || "🧶",
+  quantity: 1,
+  stickers: [newSticker]
+});
+    
   }
 
   selectedItem = sticker;
@@ -381,104 +374,105 @@ function renderSuggestions() {
    RENDER CART
 ========================================= */
 
-function renderCart() {
+function renderCatalog() {
 
-  if (!cartList) return;
+  const catalog =
+    document.querySelector(".catalog");
 
-  cartList.innerHTML = "";
+  if (!catalog) return;
 
-  let total = 0;
+  catalog.innerHTML = "";
 
-  if (cart.length === 0) {
+  products.forEach(product => {
 
-    if (emptyText) {
+    const card =
+      document.createElement("div");
 
-      emptyText.style.display =
-        "block";
-    }
+    card.className =
+      "catalog-card";
 
-  } else {
+    card.innerHTML = `
 
-    if (emptyText) {
+      <img
+        src="${product.coverImage || ""}"
+      >
 
-      emptyText.style.display =
-        "none";
-    }
-  }
+      <div class="catalog-info">
 
-  cart.forEach(item => {
+        <h3>
+          ${product.emoji || "🧶"} ${product.name}
+        </h3>
 
-    const itemPrice =
-      Number(item.price) || 0;
+        <p>
+          ${Number(product.price).toLocaleString()} VND
+        </p>
 
-    const itemQuantity =
-      Number(item.quantity) || 0;
-
-    total +=
-      itemPrice * itemQuantity;
-
-    const li =
-      document.createElement("li");
-
-    li.innerHTML = `
-
-      <div class="cart-left">
-
-        <img
-          class="cart-img"
-          src="${item.coverImage || ""}"
-          alt="${item.name || ""}"
-        >
-
-        <span>
-          ${item.name || "Unnamed"}
-        </span>
-
-      </div>
-
-      <div class="cart-controls">
-
-        <button class="minus-btn">
-          −
-        </button>
-
-        <span>
-          ${itemQuantity}
-        </span>
-
-        <button class="plus-btn">
-          +
+        <button class="add-btn">
+          Add To Cart
         </button>
 
       </div>
     `;
 
-    const minusBtn =
-      li.querySelector(".minus-btn");
+    /* CLICK WHOLE CARD */
 
-    const plusBtn =
-      li.querySelector(".plus-btn");
+    card.onclick = () => {
 
-    minusBtn.onclick = () => {
+      addItem(product);
 
-      removeItem(item.id);
+      const btn =
+        card.querySelector(".add-btn");
+
+      btn.innerText =
+        "Added To Cart ✓";
+
+      setTimeout(() => {
+
+        btn.innerText =
+          "Add To Cart";
+
+      }, 1200);
     };
 
-    plusBtn.onclick = () => {
-
-      addItem(item);
-    };
-
-    cartList.appendChild(li);
+    catalog.appendChild(card);
   });
-
-  if (totalEl) {
-
-    totalEl.innerText =
-      `${total.toLocaleString()}`;
-  }
+renderBox();
 }
 
+
+
+function renderBox() {
+
+  const canvas =
+    document.getElementById("canvas");
+
+  if (!canvas) return;
+
+  canvas.innerHTML = "";
+
+  cart.forEach(item => {
+
+    item.stickers.forEach(sticker => {
+
+      const div =
+        document.createElement("div");
+
+      div.className =
+        "sticker";
+
+      div.innerText =
+        item.emoji || "🧶";
+
+      div.style.left =
+        sticker.x + "px";
+
+      div.style.top =
+        sticker.y + "px";
+
+      canvas.appendChild(div);
+    });
+  });
+}
 /* =========================================
    COLOR SELECT
 ========================================= */
