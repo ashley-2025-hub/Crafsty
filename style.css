@@ -255,8 +255,7 @@ button:hover {
 
 .catalog-card img {
   width: 100%;
-
-  aspect-ratio: 1 / 1;
+  height: 260px;
 
   object-fit: cover;
 
@@ -393,19 +392,23 @@ button:hover {
 .box-layout {
   display: flex;
   justify-content: center;
-  align-items: flex-start;
+  align-items: center;
 
   gap: 20px;
   margin-bottom: 20px;
+
+  width: 100%;
 }
 
 #canvas {
   position: relative;
 
-  width: 240px;
-  aspect-ratio: 1 / 1;
+  width: 220px;
+  height: 220px;
 
   overflow: hidden;
+
+  flex-shrink: 0;
 
   border: 3px solid #c28d4f;
   border-radius: 20px;
@@ -416,8 +419,6 @@ button:hover {
       #f0d0a1,
       #d9ae73
     );
-
-  flex-shrink: 0;
 }
 
 .sticker {
@@ -576,6 +577,11 @@ textarea:focus {
     flex-direction: row;
     flex-wrap: wrap;
     justify-content: center;
+  }
+
+  #canvas {
+    width: 200px;
+    height: 200px;
   }
 }
 
