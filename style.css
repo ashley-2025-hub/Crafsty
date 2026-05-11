@@ -402,8 +402,8 @@ button:hover {
 #canvas {
   position: relative;
 
-  width: 240px;
-  height: 280px;
+  width: 260px;
+  aspect-ratio: 1 / 1;
 
   overflow: hidden;
 
@@ -545,196 +545,6 @@ textarea:focus {
 }
 
 /* =========================================
-   PRODUCT PAGE
-========================================= */
-
-.back-btn {
-  position: fixed;
-
-  top: 20px;
-  left: 20px;
-
-  z-index: 999;
-}
-
-.product-page {
-  max-width: 1250px;
-
-  margin: 90px auto 0;
-
-  display: grid;
-
-  grid-template-columns:
-    1fr 420px;
-
-  gap: 35px;
-
-  align-items: start;
-}
-
-.product-gallery,
-.product-info-panel {
-  padding: 28px;
-
-  border:
-    1px solid rgba(255, 255, 255, 0.22);
-
-  border-radius: 32px;
-
-  background:
-    rgba(255, 255, 255, 0.16);
-
-  backdrop-filter: blur(18px);
-
-  box-shadow:
-    0 18px 45px rgba(0, 0, 0, 0.12);
-}
-
-.main-product-image {
-  width: 100%;
-
-  aspect-ratio: 1 / 1;
-
-  object-fit: cover;
-
-  border-radius: 26px;
-
-  background: white;
-}
-
-/* =========================================
-   THUMBNAILS
-========================================= */
-
-.thumbnail-row {
-  display: grid;
-
-  grid-template-columns:
-    repeat(3, 1fr);
-
-  gap: 12px;
-  margin-bottom: 20px;
-}
-
-.thumbnail-image {
-  width: 100%;
-
-  aspect-ratio: 1 / 1;
-
-  object-fit: cover;
-
-  border-radius: 18px;
-
-  background: white;
-
-  cursor: pointer;
-
-  transition: 0.2s;
-}
-
-.thumbnail-image:hover {
-  transform: scale(1.04);
-}
-
-/* =========================================
-   PRODUCT INFO
-========================================= */
-
-.product-info-panel {
-  text-align: left;
-
-  color: white;
-}
-
-#productTitle {
-  margin-top: 0;
-
-  color: white;
-}
-
-.product-price {
-  color: #ffd0e5;
-  font-size: 38px;
-  font-weight: bold;
-}
-
-.product-description {
-  margin-top: 18px;
-
-  color: white;
-
-  line-height: 1.8;
-}
-
-.big-add-btn {
-  width: 100%;
-
-  margin-top: 28px;
-  padding: 18px;
-
-  font-size: 18px;
-}
-
-/* =========================================
-   ADMIN PAGE
-========================================= */
-
-.admin-wrapper {
-  width: 100%;
-  max-width: 1400px;
-
-  margin: 40px auto;
-
-  display: grid;
-
-  grid-template-columns:
-    420px 1fr;
-
-  gap: 40px;
-
-  align-items: start;
-}
-
-.admin-box {
-  position: sticky;
-
-  top: 20px;
-
-  padding: 30px;
-
-  border:
-    1px solid rgba(255, 255, 255, 0.22);
-
-  border-radius: 32px;
-
-  background:
-    rgba(255, 255, 255, 0.14);
-
-  backdrop-filter: blur(18px);
-
-  box-shadow:
-    0 18px 45px rgba(0, 0, 0, 0.14);
-}
-
-.admin-box h2 {
-  margin: 0 0 20px;
-
-  color: white;
-  font-size: 32px;
-}
-
-#productList {
-  width: 100%;
-
-  display: grid;
-
-  grid-template-columns:
-    repeat(auto-fit, minmax(260px, 1fr));
-
-  gap: 24px;
-}
-
-/* =========================================
    MOBILE
 ========================================= */
 
@@ -746,18 +556,6 @@ textarea:focus {
 
   h1 {
     font-size: 40px;
-  }
-
-  .product-page {
-    grid-template-columns: 1fr;
-  }
-
-  .admin-wrapper {
-    grid-template-columns: 1fr;
-  }
-
-  .admin-box {
-    position: static;
   }
 
   .container {
