@@ -596,3 +596,23 @@ textarea:focus {
 #catalogSection {
   display: none;
 }
+/* =========================================
+   CLICKABLE PRODUCT CARD
+========================================= */
+
+.catalog-card {
+  cursor: pointer;
+}
+
+.catalog-card:active {
+  transform: scale(0.98);
+}
+
+/* =========================================
+   ADD BUTTON DISABLED
+========================================= */
+
+.add-btn:disabled {
+  opacity: 0.7;
+  cursor: default;
+}
