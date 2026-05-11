@@ -402,14 +402,12 @@ button:hover {
 #canvas {
   position: relative;
 
-  width: 260px;
+  width: 240px;
   aspect-ratio: 1 / 1;
 
   overflow: hidden;
 
-  border:
-    3px solid #c28d4f;
-
+  border: 3px solid #c28d4f;
   border-radius: 20px;
 
   background:
@@ -418,6 +416,8 @@ button:hover {
       #f0d0a1,
       #d9ae73
     );
+
+  flex-shrink: 0;
 }
 
 .sticker {
