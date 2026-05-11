@@ -12,7 +12,9 @@ import {
 let products = [];
 
 let cart =
-  JSON.parse(localStorage.getItem("cart")) || [];
+  JSON.parse(
+    localStorage.getItem("cart")
+  ) || [];
 
 /* =========================================
    ELEMENTS
@@ -59,7 +61,11 @@ window.changeBackground =
   function(color1, color2) {
 
     document.body.style.background =
-      `linear-gradient(135deg, ${color1}, ${color2})`;
+      `linear-gradient(
+        135deg,
+        ${color1},
+        ${color2}
+      )`;
 
     document.body.style.backgroundAttachment =
       "fixed";
@@ -78,7 +84,8 @@ window.showSection =
     const catalogSection =
       document.getElementById("catalogSection");
 
-    if (!shopSection || !catalogSection) return;
+    if (!shopSection || !catalogSection)
+      return;
 
     if (section === "shop") {
 
@@ -110,12 +117,16 @@ onSnapshot(
       snapshot.docs.map(doc => ({
 
         id: doc.id,
+
         ...doc.data()
       }));
 
     renderCatalog();
+
     renderSuggestions();
+
     renderCart();
+
     renderBox();
   }
 );
@@ -124,7 +135,10 @@ onSnapshot(
    ADD ITEM
 ========================================= */
 
-function addItem(product, button = null) {
+function addItem(
+  product,
+  button = null
+) {
 
   const existing =
     cart.find(
@@ -133,8 +147,9 @@ function addItem(product, button = null) {
 
   const sticker = {
 
-    x: Math.random() * 170,
-    y: Math.random() * 170
+    x: Math.random() * 160,
+
+    y: Math.random() * 160
   };
 
   if (existing) {
@@ -149,9 +164,11 @@ function addItem(product, button = null) {
 
       id: product.id,
 
-      name: product.name,
+      name:
+        product.name || "Unnamed",
 
-      price: Number(product.price) || 0,
+      price:
+        Number(product.price) || 0,
 
       coverImage:
         product.coverImage || "",
@@ -173,7 +190,7 @@ function addItem(product, button = null) {
 
   renderBox();
 
-  /* BUTTON TEXT */
+  /* BUTTON ANIMATION */
 
   if (button) {
 
@@ -261,6 +278,7 @@ function renderCatalog() {
   if (products.length === 0) {
 
     catalog.innerHTML = `
+
       <p style="color:white;">
         No products found 🧶
       </p>
@@ -292,7 +310,9 @@ function renderCatalog() {
         </h3>
 
         <p>
-          ${Number(product.price || 0).toLocaleString()} VND
+          ${Number(
+            product.price || 0
+          ).toLocaleString()} VND
         </p>
 
         <button class="add-btn">
@@ -316,14 +336,11 @@ function renderCatalog() {
 
     /* WHOLE CARD CLICK */
 
-    card.style.cursor =
-      "pointer";
-
     card.onclick = () => {
 
       addItem(product);
 
-      window.showSection("shop");
+      showSection("shop");
     };
 
     catalog.appendChild(card);
@@ -489,6 +506,8 @@ function renderBox() {
 
   cart.forEach(item => {
 
+    if (!item.stickers) return;
+
     item.stickers.forEach(sticker => {
 
       const div =
@@ -512,7 +531,7 @@ function renderBox() {
 }
 
 /* =========================================
-   COLOR CHANGE
+   BOX COLOR CHANGE
 ========================================= */
 
 window.changeSelectedColor =
@@ -536,7 +555,8 @@ window.changeSelectedColor =
     };
 
     canvas.style.background =
-      colors[color];
+      colors[color] ||
+      "linear-gradient(180deg,#f0d0a1,#d9ae73)";
   };
 
 /* =========================================
