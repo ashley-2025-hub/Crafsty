@@ -11,6 +11,10 @@ img {
   display: block;
 }
 
+/* =========================================
+   BODY BACKGROUND
+========================================= */
+
 body {
   margin: 0;
   padding: 24px;
@@ -19,11 +23,14 @@ body {
   font-family: "Comic Sans MS", cursive;
   text-align: center;
 
-  background-image: linear-gradient(
-    135deg,
-    #c86d98,
-    #8d72c9
-  );
+  /* DARKER MAIN COLOR */
+  background: #D9AEB5;
+
+  background-attachment: fixed;
+
+  transition:
+    background 0.35s ease;
+}
 
   background-repeat: no-repeat;
   background-size: cover;
@@ -94,35 +101,19 @@ span {
 /* NEW THEME COLORS */
 
 .theme-btn.brown {
-  background: linear-gradient(
-    135deg,
-    #B4977E,
-    #EFE3D3
-  );
+  background: #9E8067;
 }
 
 .theme-btn.blue {
-  background: linear-gradient(
-    135deg,
-    #5D799B,
-    #EBF0F6
-  );
+  background: #496887;
 }
 
 .theme-btn.pink {
-  background: linear-gradient(
-    135deg,
-    #F2C4CB,
-    #FFF9F9
-  );
+  background: #D9AEB5;
 }
 
 .theme-btn.purple {
-  background: linear-gradient(
-    135deg,
-    #E5DCED,
-    #FAFAFC
-  );
+  background: #CFC3DB;
 }
 
 /* =========================================
@@ -181,20 +172,6 @@ button:active {
    SHOP LAYOUT
 ========================================= */
 
-.container {
-  width: 100%;
-  max-width: 1400px;
-
-  margin: auto;
-
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: flex-start;
-
-  gap: 28px;
-}
-
 .products,
 .box {
   width: 320px;
@@ -203,16 +180,14 @@ button:active {
 
   border-radius: 30px;
 
-  background:
-    rgba(255, 255, 255, 0.16);
-
-  backdrop-filter: blur(18px);
+  /* LIGHTER COLOR */
+  background: #FFF9F9;
 
   border:
-    1px solid rgba(255, 255, 255, 0.22);
+    1px solid rgba(255, 255, 255, 0.7);
 
   box-shadow:
-    0 18px 45px rgba(0, 0, 0, 0.12);
+    0 18px 45px rgba(0, 0, 0, 0.10);
 }
 
 /* =========================================
@@ -234,21 +209,22 @@ button:active {
   gap: 26px;
 }
 
+/* =========================================
+   CATALOG CARD
+========================================= */
+
 .catalog-card {
   overflow: hidden;
 
   border-radius: 28px;
 
-  background:
-    rgba(255, 255, 255, 0.16);
-
-  backdrop-filter: blur(18px);
+  background: #FFF9F9;
 
   border:
-    1px solid rgba(255, 255, 255, 0.22);
+    1px solid rgba(255, 255, 255, 0.7);
 
   box-shadow:
-    0 12px 30px rgba(0, 0, 0, 0.12);
+    0 12px 30px rgba(0, 0, 0, 0.10);
 
   cursor: pointer;
 
@@ -415,15 +391,10 @@ button:active {
 
   overflow: hidden;
 
-  border: 3px solid #c28d4f;
+  border: 3px solid #D9AEB5;
   border-radius: 20px;
 
-  background:
-    linear-gradient(
-      180deg,
-      #f0d0a1,
-      #d9ae73
-    );
+  background: #FFF9F9;
 
   flex-shrink: 0;
 
@@ -535,35 +506,19 @@ button:active {
 /* NEW COLOR CIRCLES */
 
 .color-circle.pink {
-  background: linear-gradient(
-    135deg,
-    #F2C4CB,
-    #FFF9F9
-  );
+  background: #D9AEB5;
 }
 
 .color-circle.blue {
-  background: linear-gradient(
-    135deg,
-    #5D799B,
-    #EBF0F6
-  );
+  background: #496887;
 }
 
 .color-circle.white {
-  background: linear-gradient(
-    135deg,
-    #E5DCED,
-    #FAFAFC
-  );
+  background: #CFC3DB;
 }
 
 .color-circle.brown {
-  background: linear-gradient(
-    135deg,
-    #B4977E,
-    #EFE3D3
-  );
+  background: #9E8067;
 }
 
 /* =========================================
