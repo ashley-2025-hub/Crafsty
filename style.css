@@ -1,612 +1,423 @@
-/* =========================================
-   GLOBAL
-========================================= */
-
-* {
-  box-sizing: border-box;
-}
-
-img {
-  max-width: 100%;
-  display: block;
-}
-
-body {
-  margin: 0;
-  padding: 24px;
-  min-height: 100vh;
-
-  font-family: "Comic Sans MS", cursive;
-  text-align: center;
-
-  /* NO GRADIENT */
-  background: #DDACB4;
-
-  background-attachment: fixed;
-
-  transition: background 0.3s ease;
-}
-
-h1 {
-  margin-bottom: 22px;
-
-  color: white;
-  font-size: 52px;
-
-  text-shadow:
-    0 6px 16px rgba(0, 0, 0, 0.15);
-}
-
-h2,
-h3 {
-  color: #5d4358;
-}
-
-p,
-span {
-  color: #644f5f;
-}
-
-/* =========================================
-   THEME PICKER
-========================================= */
-
-.theme-picker {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: wrap;
-
-  gap: 14px;
-  margin-bottom: 22px;
-}
-
-.theme-picker p {
-  margin: 0;
-
-  color: white;
-  font-weight: bold;
-}
-
-/* CIRCLE BUTTONS */
-
-.theme-btn {
-  width: 38px;
-  height: 38px;
-
-  border-radius: 50%;
-  border: 3px solid white;
-
-  cursor: pointer;
-
-  transition: 0.2s;
-}
-
-.theme-btn:hover {
-  transform: scale(1.12);
-}
-
-/* DARK COLORS ONLY */
-
-.theme-btn.brown {
-  background: #9E7E63;
-}
-
-.theme-btn.blue {
-  background: #4A6382;
-}
-
-.theme-btn.pink {
-  background: #DDACB4;
-}
-
-.theme-btn.purple {
-  background: #B6A4C6;
-}
-
-/* =========================================
-   NAVIGATION
-========================================= */
-
-.nav {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: wrap;
-
-  gap: 16px;
-  margin-bottom: 40px;
-}
-
-/* =========================================
-   NORMAL BUTTONS
-========================================= */
-
-button {
-  padding: 12px 20px;
-
-  border: none;
-  border-radius: 18px;
-
-  color: white;
-  font-size: 15px;
-  font-weight: bold;
-
-  cursor: pointer;
-
-  background: #DDACB4;
-
-  box-shadow:
-    0 6px 14px rgba(0, 0, 0, 0.10);
-
-  transition: 0.2s;
-}
-
-button:hover {
-  transform:
-    translateY(-2px)
-    scale(1.03);
-}
-
-button:active {
-  transform: scale(0.98);
-}
-
-/* =========================================
-   SHOP LAYOUT
-========================================= */
-
-.container {
-  width: 100%;
-  max-width: 1400px;
-
-  margin: auto;
-
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: flex-start;
-
-  gap: 28px;
-}
-
-/* LIGHT COLOR BOXES */
-
-.products,
-.box {
-  width: 320px;
-
-  padding: 24px;
-
-  border-radius: 30px;
-
-  background: #FFF9F9;
-
-  border:
-    1px solid rgba(255, 255, 255, 0.7);
-
-  box-shadow:
-    0 18px 45px rgba(0, 0, 0, 0.08);
-}
-
-/* =========================================
-   CATALOG
-========================================= */
-
-.catalog {
-  width: 100%;
-  max-width: 1300px;
-
-  margin: 10px auto 40px;
-  padding: 10px;
-
-  display: grid;
-
-  grid-template-columns:
-    repeat(auto-fit, minmax(240px, 1fr));
-
-  gap: 26px;
-}
-
-/* LIGHT CARDS */
-
-.catalog-card {
-  overflow: hidden;
-
-  border-radius: 28px;
-
-  background: #FFF9F9;
-
-  border:
-    1px solid rgba(255, 255, 255, 0.7);
-
-  box-shadow:
-    0 12px 30px rgba(0, 0, 0, 0.08);
-
-  cursor: pointer;
-
-  transition: 0.25s;
-}
-
-.catalog-card:hover {
-  transform:
-    translateY(-6px)
-    scale(1.02);
-}
-
-.catalog-card:active {
-  transform: scale(0.98);
-}
-
-.catalog-card img {
-  width: 100%;
-  height: 260px;
-
-  object-fit: cover;
-
-  background: white;
-}
-
-.catalog-info {
-  padding: 18px;
-}
-
-.catalog-info h3 {
-  margin: 0 0 10px;
-
-  color: #5d4358;
-  font-size: 24px;
-}
-
-.catalog-info p {
-  margin-bottom: 0;
-
-  color: #7a6672;
-}
-
-/* =========================================
-   CART
-========================================= */
-
-#cart {
-  list-style: none;
-
-  padding: 0;
-  margin: 0;
-}
-
-#cart li {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-
-  gap: 12px;
-  margin-bottom: 14px;
-  padding: 12px;
-
-  border-radius: 18px;
-
-  background: #ffffff;
-}
-
-.cart-left {
-  display: flex;
-  align-items: center;
-
-  gap: 10px;
-
-  text-align: left;
-}
-
-.cart-img {
-  width: 52px;
-  height: 52px;
-
-  object-fit: cover;
-
-  border-radius: 14px;
-}
-
-.cart-controls {
-  display: flex;
-  align-items: center;
-
-  gap: 8px;
-}
-
-.cart-controls button {
-  padding: 6px 10px;
-
-  border-radius: 12px;
-}
-
-/* =========================================
-   SUGGESTIONS
-========================================= */
-
-#suggestions {
-  margin-top: 26px;
-}
-
-#suggestionList {
-  display: flex;
-  flex-direction: column;
-
-  gap: 14px;
-}
-
-.suggest-card {
-  padding: 14px;
-
-  border-radius: 20px;
-
-  background: white;
-
-  cursor: pointer;
-
-  transition: 0.2s;
-}
-
-.suggest-card:hover {
-  transform: translateY(-3px);
-}
-
-.suggest-card img {
-  width: 100%;
-  height: 160px;
-
-  object-fit: cover;
-
-  border-radius: 18px;
-
-  margin-bottom: 10px;
-}
-
-/* =========================================
-   BOX
-========================================= */
-
-.box-layout {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  gap: 20px;
-  margin-bottom: 20px;
-
-  width: 100%;
-}
-
-/* LIGHT BOX */
-
-#canvas {
-  position: relative;
-
-  width: 220px;
-  height: 220px;
-
-  overflow: hidden;
-
-  border: 3px solid #DDACB4;
-  border-radius: 20px;
-
-  background: #FFF9F9;
-
-  flex-shrink: 0;
-
-  touch-action: none;
-
-  transition:
-    background 0.25s ease;
-}
-
-/* =========================================
-   STICKERS
-========================================= */
-
-.sticker {
-  position: absolute;
-
-  width: 48px;
-  height: 48px;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  font-size: 42px;
-  line-height: 1;
-
-  user-select: none;
-  touch-action: none;
-
-  cursor: grab;
-
-  z-index: 10;
-
-  transition:
-    transform 0.15s ease;
-}
-
-.sticker:hover {
-  transform: scale(1.08);
-}
-
-.sticker:active {
-  cursor: grabbing;
-  transform: scale(1.12);
-}
-
-/* =========================================
-   BIN
-========================================= */
-
-#bin {
-  width: 60px;
-  height: 60px;
-
-  margin: 18px auto 0;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  border-radius: 50%;
-
-  background: #DDACB4;
-
-  color: white;
-
-  font-size: 28px;
-
-  cursor: pointer;
-
-  transition: 0.2s;
-}
-
-#bin:hover {
-  transform: scale(1.08);
-}
-
-/* =========================================
-   COLOR PANEL
-========================================= */
-
-.color-panel {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-
-  gap: 12px;
-}
-
-.color-panel h3 {
-  margin-bottom: 8px;
-}
-
-/* REAL CIRCLES */
-
-.color-circle {
-  width: 34px;
-  height: 34px;
-
-  border-radius: 50%;
-  border: 2px solid white;
-
-  padding: 0;
-
-  cursor: pointer;
-
-  transition: 0.2s;
-}
-
-.color-circle:hover {
-  transform: scale(1.12);
-}
-
-/* DARK COLORS */
-
-.color-circle.pink {
-  background: #DDACB4;
-}
-
-.color-circle.blue {
-  background: #4A6382;
-}
-
-.color-circle.white {
-  background: #B6A4C6;
-}
-
-.color-circle.brown {
-  background: #9E7E63;
-}
-
-/* =========================================
-   INPUTS
-========================================= */
-
-input,
-textarea {
-  width: 100%;
-
-  padding: 14px;
-  margin-top: 12px;
-
-  border: none;
-  border-radius: 18px;
-
-  font-size: 15px;
-  font-family: inherit;
-
-  background: white;
-}
-
-textarea {
-  min-height: 120px;
-  resize: vertical;
-}
-
-input:focus,
-textarea:focus {
-  outline: none;
-}
-
-/* =========================================
-   EMPTY TEXT
-========================================= */
-
-#empty {
-  color: #7a6672;
-}
-
-/* =========================================
-   MOBILE
-========================================= */
-
-@media (max-width: 950px) {
-
-  body {
-    padding: 18px;
-  }
-
-  h1 {
-    font-size: 40px;
-  }
-
-  .container {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .catalog {
-    grid-template-columns: 1fr;
-  }
-
-  .box-layout {
-    flex-direction: column;
-  }
-
-  .color-panel {
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-
-  #canvas {
-    width: 200px;
-    height: 200px;
-  }
-}
-
-/* =========================================
-   SECTION DEFAULTS
-========================================= */
-
-#shopSection {
-  display: block;
-}
-
-#catalogSection {
-  display: none;
+/* ========================================= GLOBAL ========================================= */ 
+* { 
+    box-sizing: border-box; 
+} 
+
+img { 
+    max-width: 100%; 
+    display: block; 
+} 
+
+body { 
+    margin: 0; 
+    padding: 24px; 
+    min-height: 100vh; 
+    font-family: "Comic Sans MS", cursive; 
+    text-align: center; 
+    /* NO GRADIENT - Đặt mặc định là Hồng Tro */ 
+    background: #DDACB4; 
+    background-attachment: fixed; 
+    transition: background 0.3s ease; 
+} 
+
+h1 { 
+    margin-bottom: 22px; 
+    color: white; 
+    font-size: 52px; 
+    text-shadow: 0 6px 16px rgba(0, 0, 0, 0.15); 
+} 
+
+h2, h3 { 
+    color: #5d4358; 
+} 
+
+p, span { 
+    color: #644f5f; 
+} 
+
+/* ========================================= THEME PICKER ========================================= */ 
+.theme-picker { 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    flex-wrap: wrap; 
+    gap: 14px; 
+    margin-bottom: 22px; 
+} 
+
+.theme-picker p { 
+    margin: 0; 
+    color: white; 
+    font-weight: bold; 
+} 
+
+/* PERFECT CIRCLE BUTTONS */ 
+.theme-btn { 
+    width: 38px; 
+    height: 38px; 
+    border-radius: 50%; 
+    border: 3px solid white; 
+    cursor: pointer; 
+    transition: 0.2s; 
+    flex-shrink: 0; /* Giữ nút luôn tròn, không bị biến dạng thành hình bầu dục */
+} 
+
+.theme-btn:hover { 
+    transform: scale(1.12); 
+} 
+
+/* DARK COLORS FOR BACKGROUND PICKER BUTTONS */ 
+.theme-btn.brown { background: #9E7E63; } 
+.theme-btn.blue { background: #4A6382; } 
+.theme-btn.pink { background: #DDACB4; } 
+.theme-btn.purple { background: #B6A4C6; } 
+
+/* ========================================= NAVIGATION ========================================= */ 
+.nav { 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    flex-wrap: wrap; 
+    gap: 16px; 
+    margin-bottom: 40px; 
+} 
+
+/* ========================================= NORMAL BUTTONS ========================================= */ 
+button { 
+    padding: 12px 20px; 
+    border: none; 
+    border-radius: 18px; 
+    color: white; 
+    font-size: 15px; 
+    font-weight: bold; 
+    cursor: pointer; 
+    /* Đồng bộ nút bấm hệ thống theo màu nền hiện tại (Hồng Tro) */ 
+    background: #DDACB4; 
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.10); 
+    transition: 0.2s; 
+} 
+
+button:hover { 
+    transform: translateY(-2px) scale(1.03); 
+} 
+
+button:active { 
+    transform: scale(0.98); 
+} 
+
+/* ========================================= SHOP LAYOUT ========================================= */ 
+.container { 
+    width: 100%; 
+    max-width: 1400px; 
+    margin: auto; 
+    display: flex; 
+    flex-wrap: wrap; 
+    justify-content: center; 
+    align-items: flex-start; 
+    gap: 28px; 
+} 
+
+/* LIGHT COLOR BOXES (Mặc định là Trắng Sữa đi với Hồng Tro) */ 
+.products, .box { 
+    width: 320px; 
+    padding: 24px; 
+    border-radius: 30px; 
+    background: #FFF9F9; 
+    border: 1px solid rgba(255, 255, 255, 0.7); 
+    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.08); 
+} 
+
+/* ========================================= CATALOG ========================================= */ 
+.catalog { 
+    width: 100%; 
+    max-width: 1300px; 
+    margin: 10px auto 40px; 
+    padding: 10px; 
+    display: grid; 
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); 
+    gap: 26px; 
+} 
+
+/* LIGHT CARDS */ 
+.catalog-card { 
+    overflow: hidden; 
+    border-radius: 28px; 
+    background: #FFF9F9; 
+    border: 1px solid rgba(255, 255, 255, 0.7); 
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08); 
+    cursor: pointer; 
+    transition: 0.25s; 
+} 
+
+.catalog-card:hover { 
+    transform: translateY(-6px) scale(1.02); 
+} 
+
+.catalog-card:active { 
+    transform: scale(0.98); 
+} 
+
+.catalog-card img { 
+    width: 100%; 
+    height: 260px; 
+    object-fit: cover; 
+    background: white; 
+} 
+
+.catalog-info { 
+    padding: 18px; 
+} 
+
+.catalog-info h3 { 
+    margin: 0 0 10px; 
+    color: #5d4358; 
+    font-size: 24px; 
+} 
+
+.catalog-info p { 
+    margin-bottom: 0; 
+    color: #7a6672; 
+} 
+
+/* ========================================= CART ========================================= */ 
+#cart { 
+    list-style: none; 
+    padding: 0; 
+    margin: 0; 
+} 
+
+#cart li { 
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center; 
+    gap: 12px; 
+    margin-bottom: 14px; 
+    padding: 12px; 
+    border-radius: 18px; 
+    background: #ffffff; 
+} 
+
+.cart-left { 
+    display: flex; 
+    align-items: center; 
+    gap: 10px; 
+    text-align: left; 
+} 
+
+.cart-img { 
+    width: 52px; 
+    height: 52px; 
+    object-fit: cover; 
+    border-radius: 14px; 
+} 
+
+.cart-controls { 
+    display: flex; 
+    align-items: center; 
+    gap: 8px; 
+} 
+
+.cart-controls button { 
+    padding: 6px 10px; 
+    border-radius: 12px; 
+} 
+
+/* ========================================= SUGGESTIONS ========================================= */ 
+#suggestions { 
+    margin-top: 26px; 
+} 
+
+#suggestionList { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 14px; 
+} 
+
+.suggest-card { 
+    padding: 14px; 
+    border-radius: 20px; 
+    background: white; 
+    cursor: pointer; 
+    transition: 0.2s; 
+} 
+
+.suggest-card:hover { 
+    transform: translateY(-3px); 
+} 
+
+.suggest-card img { 
+    width: 100%; 
+    height: 160px; 
+    object-fit: cover; 
+    border-radius: 18px; 
+    margin-bottom: 10px; 
+} 
+
+/* ========================================= BOX ========================================= */ 
+.box-layout { 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    gap: 20px; 
+    margin-bottom: 20px; 
+    width: 100%; 
+} 
+
+/* LIGHT BOX */ 
+#canvas { 
+    position: relative; 
+    width: 220px; 
+    height: 220px; 
+    overflow: hidden; 
+    border: 3px solid #DDACB4; 
+    border-radius: 20px; 
+    background: #FFF9F9; 
+    flex-shrink: 0; 
+    touch-action: none; 
+    transition: background 0.25s ease; 
+} 
+
+/* ========================================= STICKERS ========================================= */ 
+.sticker { 
+    position: absolute; 
+    width: 48px; 
+    height: 48px; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    font-size: 42px; 
+    line-height: 1; 
+    user-select: none; 
+    touch-action: none; 
+    cursor: grab; 
+    z-index: 10; 
+    transition: transform 0.15s ease; 
+} 
+
+.sticker:hover { 
+    transform: scale(1.08); 
+} 
+
+.sticker:active { 
+    cursor: grabbing; 
+    transform: scale(1.12); 
+} 
+
+/* ========================================= BIN ========================================= */ 
+#bin { 
+    width: 60px; 
+    height: 60px; 
+    margin: 18px auto 0; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    border-radius: 50%; 
+    background: #DDACB4; 
+    color: white; 
+    font-size: 28px; 
+    cursor: pointer; 
+    transition: 0.2s; 
+    flex-shrink: 0; /* Đảm bảo thùng rác luôn tròn */
+} 
+
+#bin:hover { 
+    transform: scale(1.08); 
+} 
+
+/* ========================================= COLOR PANEL ========================================= */ 
+.color-panel { 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    gap: 12px; 
+} 
+
+.color-panel h3 { 
+    margin-bottom: 8px; 
+} 
+
+/* PERFECT CIRCLES FOR LOWER PANEL */ 
+.color-circle { 
+    width: 34px; 
+    height: 34px; 
+    border-radius: 50%; 
+    border: 2px solid white; 
+    padding: 0; 
+    cursor: pointer; 
+    transition: 0.2s; 
+    flex-shrink: 0; /* Giữ vòng tròn màu không bị méo */
+} 
+
+.color-circle:hover { 
+    transform: scale(1.12); 
+} 
+
+/* FIXED MAPPING TO MATCH YOUR ACCENT REPLACEMENTS */ 
+.color-circle.brown { background: #9E7E63; } 
+.color-circle.blue { background: #4A6382; } 
+.color-circle.pink { background: #DDACB4; } 
+.color-circle.white { background: #B6A4C6; } /* Tên class giữ nguyên theo HTML cũ nhưng gán màu Tím Thẫm */ 
+
+/* ========================================= INPUTS ========================================= */ 
+input, textarea { 
+    width: 100%; 
+    padding: 14px; 
+    margin-top: 12px; 
+    border: none; 
+    border-radius: 18px; 
+    font-size: 15px; 
+    font-family: inherit; 
+    background: white; 
+} 
+
+textarea { 
+    min-height: 120px; 
+    resize: vertical; 
+} 
+
+input:focus, textarea:focus { 
+    outline: none; 
+} 
+
+/* ========================================= EMPTY TEXT ========================================= */ 
+#empty { 
+    color: #7a6672; 
+} 
+
+/* ========================================= MOBILE ========================================= */ 
+@media (max-width: 950px) { 
+    body { 
+        padding: 18px; 
+    } 
+    h1 { 
+        font-size: 40px; 
+    } 
+    .container { 
+        flex-direction: column; 
+        align-items: center; 
+    } 
+    .catalog { 
+        grid-template-columns: 1fr; 
+    } 
+    .box-layout { 
+        flex-direction: column; 
+    } 
+    .color-panel { 
+        flex-direction: row; 
+        flex-wrap: wrap; 
+        justify-content: center; 
+    } 
+    #canvas { 
+        width: 200px; 
+        height: 200px; 
+    } 
+} 
+
+/* ========================================= SECTION DEFAULTS ========================================= */ 
+#shopSection { 
+    display: block; 
+} 
+
+#catalogSection { 
+    display: none; 
 }
