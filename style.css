@@ -19,7 +19,7 @@ body {
   font-family: "Comic Sans MS", cursive;
   text-align: center;
 
-  /* DEFAULT THEME = ROSE */
+  /* DEFAULT THEME */
   background: #ddacac;
 
   transition: background 0.3s ease;
@@ -88,7 +88,7 @@ span {
   transform: scale(1.12);
 }
 
-/* THEME COLORS */
+/* MAIN COLORS */
 
 .theme-btn.brown {
   background: #a37e5e;
@@ -172,7 +172,7 @@ button:active {
   gap: 28px;
 }
 
-/* LIGHT PANELS */
+/* LIGHT COLOR FOR EVERYTHING */
 
 .products,
 .box {
@@ -481,6 +481,8 @@ button:active {
   margin-bottom: 8px;
 }
 
+/* PERFECT CIRCLES */
+
 .color-circle {
   width: 34px;
   height: 34px;
@@ -503,7 +505,7 @@ button:active {
   transform: scale(1.12);
 }
 
-/* NEW COLORS */
+/* COLORS */
 
 .color-circle.brown {
   background: #a37e5e;
@@ -553,7 +555,7 @@ textarea:focus {
 }
 
 /* =========================================
-   EMPTY
+   EMPTY TEXT
 ========================================= */
 
 #empty {
