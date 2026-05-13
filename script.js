@@ -75,15 +75,48 @@ window.showSection = function(section) {
   }
 };
 
+/* =========================================
+   BACKGROUND FIXED
+========================================= */
+
 window.changeBackground = function(c1, c2) {
 
   document.body.style.backgroundImage =
     `linear-gradient(135deg, ${c1}, ${c2})`;
+
+  document.body.style.backgroundSize =
+    "cover";
+
+  document.body.style.backgroundRepeat =
+    "no-repeat";
+
+  document.body.style.backgroundAttachment =
+    "fixed";
 };
+
+/* =========================================
+   BOX COLOR
+========================================= */
 
 window.changeSelectedColor = function(color) {
 
-  canvas.style.background = color.toLowerCase();
+  const colors = {
+
+    Pink:
+      "linear-gradient(180deg,#ffd4e5,#ffb7d2)",
+
+    Blue:
+      "linear-gradient(180deg,#cfe7ff,#9bc7ff)",
+
+    White:
+      "linear-gradient(180deg,#ffffff,#ececec)",
+
+    Brown:
+      "linear-gradient(180deg,#c99662,#9c6b3d)"
+  };
+
+  canvas.style.background =
+    colors[color];
 };
 
 /* =========================================
@@ -117,8 +150,10 @@ function addItem(product) {
     cart.find(i => i.id === product.id);
 
   const sticker = {
-    x: 80 + Math.random() * 80,
-    y: 80 + Math.random() * 80
+
+    x: 80 + Math.random() * 60,
+
+    y: 80 + Math.random() * 60
   };
 
   if (existing) {
@@ -130,12 +165,19 @@ function addItem(product) {
   } else {
 
     cart.push({
+
       id: product.id,
+
       name: product.name,
+
       price: Number(product.price),
+
       coverImage: product.coverImage,
+
       emoji: product.emoji || "🧶",
+
       quantity: 1,
+
       stickers: [sticker]
     });
   }
@@ -143,7 +185,9 @@ function addItem(product) {
   saveCart();
 
   renderCart();
+
   renderSuggestions();
+
   renderBox();
 }
 
@@ -171,7 +215,9 @@ function removeItem(id) {
   saveCart();
 
   renderCart();
+
   renderSuggestions();
+
   renderBox();
 }
 
@@ -186,7 +232,9 @@ window.clearCart = function() {
   saveCart();
 
   renderCart();
+
   renderSuggestions();
+
   renderBox();
 };
 
@@ -203,17 +251,25 @@ function renderCatalog() {
     const card =
       document.createElement("div");
 
-    card.className = "catalog-card";
+    card.className =
+      "catalog-card";
 
     card.innerHTML = `
+
       <img src="${product.coverImage}">
+
       <div class="catalog-info">
+
         <h3>
-          ${product.emoji || "🧶"} ${product.name}
+          ${product.emoji || "🧶"}
+          ${product.name}
         </h3>
+
         <p>
-          ${Number(product.price).toLocaleString()} VND
+          ${Number(product.price)
+            .toLocaleString()} VND
         </p>
+
       </div>
     `;
 
@@ -246,12 +302,16 @@ function renderSuggestions() {
       const div =
         document.createElement("div");
 
-      div.className = "suggest-card";
+      div.className =
+        "suggest-card";
 
       div.innerHTML = `
+
         <img src="${product.coverImage}">
+
         <p>
-          ${product.emoji || "🧶"} ${product.name}
+          ${product.emoji || "🧶"}
+          ${product.name}
         </p>
       `;
 
@@ -271,6 +331,7 @@ function renderCart() {
   cartList.innerHTML = "";
 
   emptyText.style.display =
+
     cart.length === 0
       ? "block"
       : "none";
@@ -286,6 +347,7 @@ function renderCart() {
       document.createElement("li");
 
     li.innerHTML = `
+
       <div class="cart-left">
 
         <img
@@ -347,9 +409,11 @@ function renderBox() {
       const el =
         document.createElement("div");
 
-      el.className = "sticker";
+      el.className =
+        "sticker";
 
-      el.innerText = item.emoji;
+      el.innerText =
+        item.emoji;
 
       el.style.left =
         sticker.x + "px";
@@ -359,8 +423,7 @@ function renderBox() {
 
       enableDragging(
         el,
-        sticker,
-        item
+        sticker
       );
 
       canvas.appendChild(el);
@@ -374,8 +437,7 @@ function renderBox() {
 
 function enableDragging(
   el,
-  sticker,
-  item
+  sticker
 ) {
 
   let isDragging = false;
@@ -424,23 +486,23 @@ function enableDragging(
       let newY =
         initialY + dy;
 
+      const padding = 24;
+
       const maxX =
-        canvas.clientWidth - 30;
+        canvas.clientWidth - padding;
 
       const maxY =
-        canvas.clientHeight - 30;
+        canvas.clientHeight - padding;
 
-      newX =
-        Math.max(
-          20,
-          Math.min(maxX, newX)
-        );
+      newX = Math.max(
+        padding,
+        Math.min(maxX, newX)
+      );
 
-      newY =
-        Math.max(
-          20,
-          Math.min(maxY, newY)
-        );
+      newY = Math.max(
+        padding,
+        Math.min(maxY, newY)
+      );
 
       sticker.x = newX;
       sticker.y = newY;
@@ -477,5 +539,7 @@ function enableDragging(
 ========================================= */
 
 renderCart();
+
 renderSuggestions();
+
 renderBox();
