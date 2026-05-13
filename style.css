@@ -21,8 +21,8 @@ body {
 
   background-image: linear-gradient(
     135deg,
-    #c86d98,
-    #8d72c9
+    #F2C4CB,
+    #FFF9F9
   );
 
   background-repeat: no-repeat;
@@ -76,50 +76,61 @@ span {
 }
 
 .theme-btn {
-  width: 36px;
-  height: 36px;
+  width: 40px;
+  height: 40px;
 
-  border: 3px solid white;
+  border: 3px solid rgba(255,255,255,0.95);
   border-radius: 50%;
 
   cursor: pointer;
 
-  transition: 0.2s;
+  box-shadow:
+    0 4px 12px rgba(0,0,0,0.12);
+
+  transition: 0.22s;
 }
 
 .theme-btn:hover {
   transform: scale(1.12);
 }
 
+/* TAUPE + CREAM */
+
 .theme-btn.brown {
   background: linear-gradient(
     135deg,
-    #B4977E,
-    #EFE3D3
+    #B4977E 0%,
+    #EFE3D3 100%
   );
 }
+
+/* SLATE BLUE + FROST */
 
 .theme-btn.blue {
   background: linear-gradient(
     135deg,
-    #5D799B,
-    #EBF0F6
+    #5D799B 0%,
+    #EBF0F6 100%
   );
 }
+
+/* PASTEL ROSE */
 
 .theme-btn.pink {
   background: linear-gradient(
     135deg,
-    #F2C4CB,
-    #FFF9F9
+    #F2C4CB 0%,
+    #FFF9F9 100%
   );
 }
+
+/* SOFT LILAC */
 
 .theme-btn.purple {
   background: linear-gradient(
     135deg,
-    #E5DCED,
-    #FAFAFC
+    #E5DCED 0%,
+    #FAFAFC 100%
   );
 }
 
@@ -413,14 +424,14 @@ button:active {
 
   overflow: hidden;
 
-  border: 3px solid #c28d4f;
+  border: 3px solid #d9bca2;
   border-radius: 20px;
 
   background:
     linear-gradient(
       180deg,
-      #f0d0a1,
-      #d9ae73
+      #F2C4CB,
+      #FFF9F9
     );
 
   flex-shrink: 0;
@@ -515,13 +526,16 @@ button:active {
 }
 
 .color-circle {
-  width: 34px;
-  height: 34px;
+  width: 36px;
+  height: 36px;
 
   border-radius: 50%;
   border: 2px solid white;
 
   cursor: pointer;
+
+  box-shadow:
+    0 4px 10px rgba(0,0,0,0.1);
 
   transition: 0.2s;
 }
@@ -530,20 +544,38 @@ button:active {
   transform: scale(1.12);
 }
 
+/* BOX COLORS */
+
 .color-circle.pink {
-  background: pink;
+  background: linear-gradient(
+    135deg,
+    #F2C4CB,
+    #FFF9F9
+  );
 }
 
 .color-circle.blue {
-  background: #8ec5ff;
+  background: linear-gradient(
+    135deg,
+    #5D799B,
+    #EBF0F6
+  );
 }
 
 .color-circle.white {
-  background: white;
+  background: linear-gradient(
+    135deg,
+    #E5DCED,
+    #FAFAFC
+  );
 }
 
 .color-circle.brown {
-  background: #9c6b3d;
+  background: linear-gradient(
+    135deg,
+    #B4977E,
+    #EFE3D3
+  );
 }
 
 /* =========================================
