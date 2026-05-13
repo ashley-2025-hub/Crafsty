@@ -77,8 +77,11 @@ window.showSection = function(section) {
 
 window.changeBackground = function(c1, c2) {
 
-  document.body.style.background =
+  document.body.style.backgroundImage =
     `linear-gradient(135deg, ${c1}, ${c2})`;
+
+  document.body.style.backgroundAttachment =
+    "fixed";
 };
 
 window.changeSelectedColor = function(color) {
