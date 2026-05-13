@@ -91,35 +91,35 @@ span {
   transform: scale(1.12);
 }
 
-.theme-btn.pink {
+.theme-btn.brown {
   background: linear-gradient(
     135deg,
-    #c86d98,
-    #8d72c9
+    #B4977E,
+    #EFE3D3
   );
 }
 
 .theme-btn.blue {
   background: linear-gradient(
     135deg,
-    #5f87b8,
-    #7b9ec7
+    #5D799B,
+    #EBF0F6
   );
 }
 
-.theme-btn.yellow {
+.theme-btn.pink {
   background: linear-gradient(
     135deg,
-    #b79035,
-    #d6b867
+    #F2C4CB,
+    #FFF9F9
   );
 }
 
 .theme-btn.purple {
   background: linear-gradient(
     135deg,
-    #7f5fc0,
-    #ab8ce0
+    #E5DCED,
+    #FAFAFC
   );
 }
 
