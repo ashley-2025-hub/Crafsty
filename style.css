@@ -11,10 +11,6 @@ img {
   display: block;
 }
 
-/* =========================================
-   BODY BACKGROUND
-========================================= */
-
 body {
   margin: 0;
   padding: 24px;
@@ -23,22 +19,12 @@ body {
   font-family: "Comic Sans MS", cursive;
   text-align: center;
 
-  /* DARKER MAIN COLOR */
-  background: #D9AEB5;
+  /* NO GRADIENT */
+  background: #DDACB4;
 
   background-attachment: fixed;
 
-  transition:
-    background 0.35s ease;
-}
-
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-attachment: fixed;
-
-  transition:
-    background-image 0.35s ease,
-    background 0.35s ease;
+  transition: background 0.3s ease;
 }
 
 h1 {
@@ -48,7 +34,7 @@ h1 {
   font-size: 52px;
 
   text-shadow:
-    0 6px 16px rgba(0, 0, 0, 0.2);
+    0 6px 16px rgba(0, 0, 0, 0.15);
 }
 
 h2,
@@ -82,12 +68,14 @@ span {
   font-weight: bold;
 }
 
-.theme-btn {
-  width: 36px;
-  height: 36px;
+/* CIRCLE BUTTONS */
 
-  border: 3px solid white;
+.theme-btn {
+  width: 38px;
+  height: 38px;
+
   border-radius: 50%;
+  border: 3px solid white;
 
   cursor: pointer;
 
@@ -98,22 +86,22 @@ span {
   transform: scale(1.12);
 }
 
-/* NEW THEME COLORS */
+/* DARK COLORS ONLY */
 
 .theme-btn.brown {
-  background: #9E8067;
+  background: #9E7E63;
 }
 
 .theme-btn.blue {
-  background: #496887;
+  background: #4A6382;
 }
 
 .theme-btn.pink {
-  background: #D9AEB5;
+  background: #DDACB4;
 }
 
 .theme-btn.purple {
-  background: #CFC3DB;
+  background: #B6A4C6;
 }
 
 /* =========================================
@@ -131,7 +119,7 @@ span {
 }
 
 /* =========================================
-   BUTTONS
+   NORMAL BUTTONS
 ========================================= */
 
 button {
@@ -146,14 +134,10 @@ button {
 
   cursor: pointer;
 
-  background: linear-gradient(
-    135deg,
-    #ff9fc8,
-    #ffbfdc
-  );
+  background: #DDACB4;
 
   box-shadow:
-    0 6px 14px rgba(0, 0, 0, 0.12);
+    0 6px 14px rgba(0, 0, 0, 0.10);
 
   transition: 0.2s;
 }
@@ -172,6 +156,22 @@ button:active {
    SHOP LAYOUT
 ========================================= */
 
+.container {
+  width: 100%;
+  max-width: 1400px;
+
+  margin: auto;
+
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+
+  gap: 28px;
+}
+
+/* LIGHT COLOR BOXES */
+
 .products,
 .box {
   width: 320px;
@@ -180,14 +180,13 @@ button:active {
 
   border-radius: 30px;
 
-  /* LIGHTER COLOR */
   background: #FFF9F9;
 
   border:
     1px solid rgba(255, 255, 255, 0.7);
 
   box-shadow:
-    0 18px 45px rgba(0, 0, 0, 0.10);
+    0 18px 45px rgba(0, 0, 0, 0.08);
 }
 
 /* =========================================
@@ -209,9 +208,7 @@ button:active {
   gap: 26px;
 }
 
-/* =========================================
-   CATALOG CARD
-========================================= */
+/* LIGHT CARDS */
 
 .catalog-card {
   overflow: hidden;
@@ -224,7 +221,7 @@ button:active {
     1px solid rgba(255, 255, 255, 0.7);
 
   box-shadow:
-    0 12px 30px rgba(0, 0, 0, 0.10);
+    0 12px 30px rgba(0, 0, 0, 0.08);
 
   cursor: pointer;
 
@@ -257,15 +254,14 @@ button:active {
 .catalog-info h3 {
   margin: 0 0 10px;
 
-  color: white;
+  color: #5d4358;
   font-size: 24px;
 }
 
 .catalog-info p {
   margin-bottom: 0;
 
-  color:
-    rgba(255,255,255,0.9);
+  color: #7a6672;
 }
 
 /* =========================================
@@ -290,8 +286,7 @@ button:active {
 
   border-radius: 18px;
 
-  background:
-    rgba(255, 255, 255, 0.9);
+  background: #ffffff;
 }
 
 .cart-left {
@@ -345,8 +340,7 @@ button:active {
 
   border-radius: 20px;
 
-  background:
-    rgba(255, 255, 255, 0.92);
+  background: white;
 
   cursor: pointer;
 
@@ -383,6 +377,8 @@ button:active {
   width: 100%;
 }
 
+/* LIGHT BOX */
+
 #canvas {
   position: relative;
 
@@ -391,7 +387,7 @@ button:active {
 
   overflow: hidden;
 
-  border: 3px solid #D9AEB5;
+  border: 3px solid #DDACB4;
   border-radius: 20px;
 
   background: #FFF9F9;
@@ -457,8 +453,9 @@ button:active {
 
   border-radius: 50%;
 
-  background:
-    rgba(255, 255, 255, 0.2);
+  background: #DDACB4;
+
+  color: white;
 
   font-size: 28px;
 
@@ -487,12 +484,16 @@ button:active {
   margin-bottom: 8px;
 }
 
+/* REAL CIRCLES */
+
 .color-circle {
   width: 34px;
   height: 34px;
 
   border-radius: 50%;
   border: 2px solid white;
+
+  padding: 0;
 
   cursor: pointer;
 
@@ -503,22 +504,22 @@ button:active {
   transform: scale(1.12);
 }
 
-/* NEW COLOR CIRCLES */
+/* DARK COLORS */
 
 .color-circle.pink {
-  background: #D9AEB5;
+  background: #DDACB4;
 }
 
 .color-circle.blue {
-  background: #496887;
+  background: #4A6382;
 }
 
 .color-circle.white {
-  background: #CFC3DB;
+  background: #B6A4C6;
 }
 
 .color-circle.brown {
-  background: #9E8067;
+  background: #9E7E63;
 }
 
 /* =========================================
@@ -538,8 +539,7 @@ textarea {
   font-size: 15px;
   font-family: inherit;
 
-  background:
-    rgba(255,255,255,0.92);
+  background: white;
 }
 
 textarea {
@@ -557,8 +557,7 @@ textarea:focus {
 ========================================= */
 
 #empty {
-  color: white;
-  opacity: 0.9;
+  color: #7a6672;
 }
 
 /* =========================================
