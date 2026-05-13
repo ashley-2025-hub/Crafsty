@@ -5,18 +5,14 @@ import {
   onSnapshot
 } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
-/* =========================================
-   DATA
-========================================= */
+/* ================= DATA ================= */
 
 let products = [];
 
 let cart =
   JSON.parse(localStorage.getItem("cart")) || [];
 
-/* =========================================
-   ELEMENTS
-========================================= */
+/* ================= ELEMENTS ================= */
 
 const catalog = document.querySelector(".catalog");
 const cartList = document.getElementById("cart");
@@ -26,26 +22,13 @@ const emptyText = document.getElementById("empty");
 const orderData = document.getElementById("orderData");
 const canvas = document.getElementById("canvas");
 
-/* =========================================
-   SAVE CART
-========================================= */
+/* ================= SAVE ================= */
 
 function saveCart() {
   localStorage.setItem("cart", JSON.stringify(cart));
 }
 
-/* =========================================
-   BACKGROUND
-========================================= */
-
-window.changeBackground = function(c1, c2) {
-  document.body.style.background =
-    `linear-gradient(135deg, ${c1}, ${c2})`;
-};
-
-/* =========================================
-   SECTION SWITCH
-========================================= */
+/* ================= UI ================= */
 
 window.showSection = function(section) {
 
@@ -61,9 +44,7 @@ window.showSection = function(section) {
   }
 };
 
-/* =========================================
-   FIREBASE LIVE
-========================================= */
+/* ================= FIREBASE ================= */
 
 onSnapshot(
   collection(db, "products"),
@@ -82,27 +63,22 @@ onSnapshot(
   }
 );
 
-/* =========================================
-   ADD ITEM
-========================================= */
+/* ================= ADD ================= */
 
-function addItem(product, button = null) {
+function addItem(product) {
 
   const existing =
-    cart.find(item => item.id === product.id);
+    cart.find(i => i.id === product.id);
 
   const sticker = {
-    x: Math.random() * 150,
-    y: Math.random() * 150
+    x: 50 + Math.random() * 120,
+    y: 50 + Math.random() * 120
   };
 
   if (existing) {
-
-    existing.quantity += 1;
+    existing.quantity++;
     existing.stickers.push(sticker);
-
   } else {
-
     cart.push({
       id: product.id,
       name: product.name,
@@ -115,33 +91,19 @@ function addItem(product, button = null) {
   }
 
   saveCart();
-
   renderCart();
   renderSuggestions();
   renderBox();
-
-  if (button) {
-    const txt = button.innerText;
-    button.innerText = "Added ✓";
-    button.disabled = true;
-
-    setTimeout(() => {
-      button.innerText = txt;
-      button.disabled = false;
-    }, 1000);
-  }
 }
 
-/* =========================================
-   REMOVE ITEM
-========================================= */
+/* ================= REMOVE ================= */
 
 function removeItem(id) {
 
   const item = cart.find(i => i.id === id);
   if (!item) return;
 
-  item.quantity -= 1;
+  item.quantity--;
   item.stickers.pop();
 
   if (item.quantity <= 0) {
@@ -149,15 +111,12 @@ function removeItem(id) {
   }
 
   saveCart();
-
   renderCart();
   renderSuggestions();
   renderBox();
 }
 
-/* =========================================
-   CLEAR CART
-========================================= */
+/* ================= CLEAR ================= */
 
 window.clearCart = function() {
   cart = [];
@@ -167,34 +126,23 @@ window.clearCart = function() {
   renderBox();
 };
 
-/* =========================================
-   CATALOG
-========================================= */
+/* ================= CATALOG ================= */
 
 function renderCatalog() {
-
-  if (!catalog) return;
 
   catalog.innerHTML = "";
 
   products.forEach(product => {
 
     const card = document.createElement("div");
+
     card.className = "catalog-card";
 
     card.innerHTML = `
       <img src="${product.coverImage}">
       <h3>${product.emoji || "🧶"} ${product.name}</h3>
       <p>${Number(product.price).toLocaleString()} VND</p>
-      <button class="add-btn">Add</button>
     `;
-
-    const btn = card.querySelector(".add-btn");
-
-    btn.onclick = (e) => {
-      e.stopPropagation();
-      addItem(product, btn);
-    };
 
     card.onclick = () => {
       addItem(product);
@@ -205,50 +153,42 @@ function renderCatalog() {
   });
 }
 
-/* =========================================
-   SUGGESTIONS
-========================================= */
+/* ================= SUGGESTIONS ================= */
 
 function renderSuggestions() {
 
-  if (!suggestionList) return;
-
   suggestionList.innerHTML = "";
 
-  const filtered =
-    products.filter(p =>
+  products
+    .filter(p =>
       !cart.some(c => c.id === p.id)
-    );
+    )
+    .slice(0, 4)
+    .forEach(product => {
 
-  filtered.slice(0, 4).forEach(product => {
+      const div = document.createElement("div");
 
-    const card = document.createElement("div");
-    card.className = "suggest-card";
+      div.className = "suggest-card";
 
-    card.innerHTML = `
-      <img src="${product.coverImage}">
-      <p>${product.emoji || "🧶"} ${product.name}</p>
-    `;
+      div.innerHTML = `
+        <img src="${product.coverImage}">
+        <p>${product.emoji || "🧶"} ${product.name}</p>
+      `;
 
-    card.onclick = () => addItem(product);
+      div.onclick = () => addItem(product);
 
-    suggestionList.appendChild(card);
-  });
+      suggestionList.appendChild(div);
+    });
 }
 
-/* =========================================
-   CART
-========================================= */
+/* ================= CART ================= */
 
 function renderCart() {
 
   cartList.innerHTML = "";
 
-  if (cart.length === 0) {
-    emptyText.style.display = "block";
-  } else {
-    emptyText.style.display = "none";
-  }
+  emptyText.style.display =
+    cart.length === 0 ? "block" : "none";
 
   let total = 0;
 
@@ -281,13 +221,10 @@ function renderCart() {
   });
 
   totalEl.innerText = total.toLocaleString();
-
   orderData.value = JSON.stringify(cart);
 }
 
-/* =========================================
-   BOX (WITH DRAG)
-========================================= */
+/* ================= BOX ================= */
 
 function renderBox() {
 
@@ -312,24 +249,22 @@ function renderBox() {
   });
 }
 
-/* =========================================
-   DRAG SYSTEM
-========================================= */
+/* ================= DRAG FIXED ================= */
 
 function enableDragging(el, sticker, item) {
 
-  let offsetX, offsetY, dragging = false;
+  let offsetX, offsetY;
 
   el.onpointerdown = function(e) {
 
-    dragging = true;
+    e.preventDefault();
+
+    el.setPointerCapture(e.pointerId);
 
     offsetX = e.clientX - el.offsetLeft;
     offsetY = e.clientY - el.offsetTop;
 
-    document.onpointermove = function(e) {
-
-      if (!dragging) return;
+    function move(e) {
 
       let x = e.clientX - offsetX;
       let y = e.clientY - offsetY;
@@ -339,14 +274,14 @@ function enableDragging(el, sticker, item) {
 
       sticker.x = x;
       sticker.y = y;
-    };
+    }
 
-    document.onpointerup = function() {
+    function up(e) {
 
-      dragging = false;
+      el.releasePointerCapture(e.pointerId);
 
-      document.onpointermove = null;
-      document.onpointerup = null;
+      document.removeEventListener("pointermove", move);
+      document.removeEventListener("pointerup", up);
 
       const box = canvas.getBoundingClientRect();
       const rect = el.getBoundingClientRect();
@@ -360,30 +295,14 @@ function enableDragging(el, sticker, item) {
       if (outside) {
         removeItem(item.id);
       }
-    };
+    }
+
+    document.addEventListener("pointermove", move);
+    document.addEventListener("pointerup", up);
   };
 }
 
-/* =========================================
-   BOX COLOR
-========================================= */
-
-window.changeSelectedColor = function(color) {
-
-  const map = {
-    Pink: "linear-gradient(#ffd1dc,#ffb6c1)",
-    Blue: "linear-gradient(#8ec5ff,#6ea8ff)",
-    White: "linear-gradient(#fff,#eee)",
-    Brown: "linear-gradient(#c28d4f,#9c6b3d)"
-  };
-
-  canvas.style.background =
-    map[color] || canvas.style.background;
-};
-
-/* =========================================
-   START
-========================================= */
+/* ================= START ================= */
 
 renderCart();
 renderSuggestions();
