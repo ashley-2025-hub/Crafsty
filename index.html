@@ -27,35 +27,57 @@
     My Crochet Shop 🧶
   </h1>
 
-  <!-- THEME PICKER -->
+  <!-- =====================================
+       THEME PICKER
+  ====================================== -->
 
-<div class="theme-picker">
+  <div class="theme-picker">
 
-  <p>Theme:</p>
+    <p>
+      Theme:
+    </p>
 
-  <div
-    class="theme-btn brown"
-    onclick="changeBackground('#B4977E','#EFE3D3')">
+    <!-- Soft Taupe -->
+
+    <button
+      type="button"
+      class="theme-btn taupe"
+      onclick="changeBackground('#B4977E','#EFE3D3')"
+      aria-label="Taupe Theme"
+    ></button>
+
+    <!-- Dusty Denim -->
+
+    <button
+      type="button"
+      class="theme-btn denim"
+      onclick="changeBackground('#5D799B','#EBF0F6')"
+      aria-label="Denim Theme"
+    ></button>
+
+    <!-- Pastel Rose -->
+
+    <button
+      type="button"
+      class="theme-btn rose"
+      onclick="changeBackground('#F2C4CB','#FFF9F9')"
+      aria-label="Rose Theme"
+    ></button>
+
+    <!-- Soft Lilac -->
+
+    <button
+      type="button"
+      class="theme-btn lilac"
+      onclick="changeBackground('#E5DCED','#FAFAFC')"
+      aria-label="Lilac Theme"
+    ></button>
+
   </div>
 
-  <div
-    class="theme-btn blue"
-    onclick="changeBackground('#5D799B','#EBF0F6')">
-  </div>
-
-  <div
-    class="theme-btn pink"
-    onclick="changeBackground('#F2C4CB','#FFF9F9')">
-  </div>
-
-  <div
-    class="theme-btn purple"
-    onclick="changeBackground('#E5DCED','#FAFAFC')">
-  </div>
-
-</div>
-
-  <!-- NAVIGATION -->
+  <!-- =====================================
+       NAVIGATION
+  ====================================== -->
 
   <div class="nav">
 
@@ -75,13 +97,17 @@
 
   </div>
 
-  <!-- SHOP SECTION -->
+  <!-- =====================================
+       SHOP SECTION
+  ====================================== -->
 
   <section id="shopSection">
 
     <div class="container">
 
-      <!-- CART -->
+      <!-- =================================
+           CART
+      ================================== -->
 
       <div class="products">
 
@@ -109,7 +135,9 @@
 
       </div>
 
-      <!-- BOX -->
+      <!-- =================================
+           BOX
+      ================================== -->
 
       <div class="box">
 
@@ -135,24 +163,28 @@
               type="button"
               class="color-circle pink"
               onclick="changeSelectedColor('Pink')"
+              aria-label="Pink Box"
             ></button>
 
             <button
               type="button"
               class="color-circle blue"
               onclick="changeSelectedColor('Blue')"
+              aria-label="Blue Box"
             ></button>
 
             <button
               type="button"
               class="color-circle white"
               onclick="changeSelectedColor('White')"
+              aria-label="White Box"
             ></button>
 
             <button
               type="button"
               class="color-circle brown"
               onclick="changeSelectedColor('Brown')"
+              aria-label="Brown Box"
             ></button>
 
           </div>
@@ -172,13 +204,16 @@
         <div
           id="bin"
           onclick="clearCart()"
+          title="Clear Cart"
         >
           🗑️
         </div>
 
       </div>
 
-      <!-- ORDER FORM -->
+      <!-- =================================
+           ORDER FORM
+      ================================== -->
 
       <div class="products">
 
@@ -224,7 +259,9 @@
 
   </section>
 
-  <!-- CATALOG -->
+  <!-- =====================================
+       CATALOG SECTION
+  ====================================== -->
 
   <section id="catalogSection">
 
@@ -234,6 +271,10 @@
     ></div>
 
   </section>
+
+  <!-- =====================================
+       SCRIPT
+  ====================================== -->
 
   <script
     type="module"
