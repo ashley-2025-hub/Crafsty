@@ -12,98 +12,54 @@ import {
 let products = [];
 
 let cart =
-  JSON.parse(
-    localStorage.getItem("cart")
-  ) || [];
+  JSON.parse(localStorage.getItem("cart")) || [];
 
 /* =========================================
    ELEMENTS
 ========================================= */
 
-const catalog =
-  document.querySelector(".catalog");
-
-const cartList =
-  document.getElementById("cart");
-
-const totalEl =
-  document.getElementById("total");
-
-const suggestionList =
-  document.getElementById("suggestionList");
-
-const emptyText =
-  document.getElementById("empty");
-
-const orderData =
-  document.getElementById("orderData");
-
-const canvas =
-  document.getElementById("canvas");
+const catalog = document.querySelector(".catalog");
+const cartList = document.getElementById("cart");
+const totalEl = document.getElementById("total");
+const suggestionList = document.getElementById("suggestionList");
+const emptyText = document.getElementById("empty");
+const orderData = document.getElementById("orderData");
+const canvas = document.getElementById("canvas");
 
 /* =========================================
    SAVE CART
 ========================================= */
 
 function saveCart() {
-
-  localStorage.setItem(
-    "cart",
-    JSON.stringify(cart)
-  );
+  localStorage.setItem("cart", JSON.stringify(cart));
 }
 
 /* =========================================
-   BACKGROUND CHANGE
+   BACKGROUND
 ========================================= */
 
-window.changeBackground =
-  function(color1, color2) {
-
-    document.body.style.background =
-      `linear-gradient(
-        135deg,
-        ${color1},
-        ${color2}
-      )`;
-
-    document.body.style.backgroundAttachment =
-      "fixed";
-  };
+window.changeBackground = function(c1, c2) {
+  document.body.style.background =
+    `linear-gradient(135deg, ${c1}, ${c2})`;
+};
 
 /* =========================================
    SECTION SWITCH
 ========================================= */
 
-window.showSection =
-  function(section) {
+window.showSection = function(section) {
 
-    const shopSection =
-      document.getElementById("shopSection");
+  const shop = document.getElementById("shopSection");
+  const catalogSec = document.getElementById("catalogSection");
 
-    const catalogSection =
-      document.getElementById("catalogSection");
-
-    if (!shopSection || !catalogSection)
-      return;
-
-    if (section === "shop") {
-
-      shopSection.style.display =
-        "block";
-
-      catalogSection.style.display =
-        "none";
-
-    } else {
-
-      shopSection.style.display =
-        "none";
-
-      catalogSection.style.display =
-        "block";
-    }
-  };
+  if (section === "shop") {
+    shop.style.display = "block";
+    catalogSec.style.display = "none";
+  } else {
+    shop.style.display = "none";
+    catalogSec.style.display = "block";
+  }
+};
 
 /* =========================================
    FIREBASE LIVE
@@ -115,18 +71,13 @@ onSnapshot(
 
     products =
       snapshot.docs.map(doc => ({
-
         id: doc.id,
-
         ...doc.data()
       }));
 
     renderCatalog();
-
     renderSuggestions();
-
     renderCart();
-
     renderBox();
   }
 );
@@ -135,49 +86,30 @@ onSnapshot(
    ADD ITEM
 ========================================= */
 
-function addItem(
-  product,
-  button = null
-) {
+function addItem(product, button = null) {
 
   const existing =
-    cart.find(
-      item => item.id === product.id
-    );
+    cart.find(item => item.id === product.id);
 
   const sticker = {
-
-    x: Math.random() * 160,
-
-    y: Math.random() * 160
+    x: Math.random() * 150,
+    y: Math.random() * 150
   };
 
   if (existing) {
 
     existing.quantity += 1;
-
     existing.stickers.push(sticker);
 
   } else {
 
     cart.push({
-
       id: product.id,
-
-      name:
-        product.name || "Unnamed",
-
-      price:
-        Number(product.price) || 0,
-
-      coverImage:
-        product.coverImage || "",
-
-      emoji:
-        product.emoji || "🧶",
-
+      name: product.name,
+      price: Number(product.price),
+      coverImage: product.coverImage,
+      emoji: product.emoji || "🧶",
       quantity: 1,
-
       stickers: [sticker]
     });
   }
@@ -185,31 +117,18 @@ function addItem(
   saveCart();
 
   renderCart();
-
   renderSuggestions();
-
   renderBox();
 
-  /* BUTTON ANIMATION */
-
   if (button) {
-
-    const originalText =
-      button.innerText;
-
-    button.innerText =
-      "Added To Cart ✓";
-
+    const txt = button.innerText;
+    button.innerText = "Added ✓";
     button.disabled = true;
 
     setTimeout(() => {
-
-      button.innerText =
-        originalText;
-
+      button.innerText = txt;
       button.disabled = false;
-
-    }, 1200);
+    }, 1000);
   }
 }
 
@@ -219,31 +138,20 @@ function addItem(
 
 function removeItem(id) {
 
-  const item =
-    cart.find(
-      i => i.id === id
-    );
-
+  const item = cart.find(i => i.id === id);
   if (!item) return;
 
   item.quantity -= 1;
-
   item.stickers.pop();
 
   if (item.quantity <= 0) {
-
-    cart =
-      cart.filter(
-        i => i.id !== id
-      );
+    cart = cart.filter(i => i.id !== id);
   }
 
   saveCart();
 
   renderCart();
-
   renderSuggestions();
-
   renderBox();
 }
 
@@ -251,22 +159,16 @@ function removeItem(id) {
    CLEAR CART
 ========================================= */
 
-window.clearCart =
-  function() {
-
-    cart = [];
-
-    saveCart();
-
-    renderCart();
-
-    renderSuggestions();
-
-    renderBox();
-  };
+window.clearCart = function() {
+  cart = [];
+  saveCart();
+  renderCart();
+  renderSuggestions();
+  renderBox();
+};
 
 /* =========================================
-   RENDER CATALOG
+   CATALOG
 ========================================= */
 
 function renderCatalog() {
@@ -275,71 +177,27 @@ function renderCatalog() {
 
   catalog.innerHTML = "";
 
-  if (products.length === 0) {
-
-    catalog.innerHTML = `
-
-      <p style="color:white;">
-        No products found 🧶
-      </p>
-    `;
-
-    return;
-  }
-
   products.forEach(product => {
 
-    const card =
-      document.createElement("div");
-
-    card.className =
-      "catalog-card";
+    const card = document.createElement("div");
+    card.className = "catalog-card";
 
     card.innerHTML = `
-
-      <img
-        src="${product.coverImage || ""}"
-        alt="${product.name || ""}"
-      >
-
-      <div class="catalog-info">
-
-        <h3>
-          ${product.emoji || "🧶"}
-          ${product.name || "Unnamed"}
-        </h3>
-
-        <p>
-          ${Number(
-            product.price || 0
-          ).toLocaleString()} VND
-        </p>
-
-        <button class="add-btn">
-          Add To Cart
-        </button>
-
-      </div>
+      <img src="${product.coverImage}">
+      <h3>${product.emoji || "🧶"} ${product.name}</h3>
+      <p>${Number(product.price).toLocaleString()} VND</p>
+      <button class="add-btn">Add</button>
     `;
 
-    const addBtn =
-      card.querySelector(".add-btn");
+    const btn = card.querySelector(".add-btn");
 
-    /* BUTTON CLICK */
-
-    addBtn.onclick = (e) => {
-
+    btn.onclick = (e) => {
       e.stopPropagation();
-
-      addItem(product, addBtn);
+      addItem(product, btn);
     };
 
-    /* WHOLE CARD CLICK */
-
     card.onclick = () => {
-
       addItem(product);
-
       showSection("shop");
     };
 
@@ -348,7 +206,7 @@ function renderCatalog() {
 }
 
 /* =========================================
-   RENDER SUGGESTIONS
+   SUGGESTIONS
 ========================================= */
 
 function renderSuggestions() {
@@ -358,213 +216,175 @@ function renderSuggestions() {
   suggestionList.innerHTML = "";
 
   const filtered =
-    products.filter(product => {
+    products.filter(p =>
+      !cart.some(c => c.id === p.id)
+    );
 
-      return !cart.some(
-        item => item.id === product.id
-      );
-    });
+  filtered.slice(0, 4).forEach(product => {
 
-  filtered
-    .slice(0, 4)
-    .forEach(product => {
+    const card = document.createElement("div");
+    card.className = "suggest-card";
 
-      const card =
-        document.createElement("div");
+    card.innerHTML = `
+      <img src="${product.coverImage}">
+      <p>${product.emoji || "🧶"} ${product.name}</p>
+    `;
 
-      card.className =
-        "suggest-card";
+    card.onclick = () => addItem(product);
 
-      card.innerHTML = `
-
-        <img
-          src="${product.coverImage || ""}"
-          alt="${product.name || ""}"
-        >
-
-        <p>
-          ${product.emoji || "🧶"}
-          ${product.name || ""}
-        </p>
-      `;
-
-      card.onclick = () => {
-
-        addItem(product);
-      };
-
-      suggestionList.appendChild(card);
-    });
+    suggestionList.appendChild(card);
+  });
 }
 
 /* =========================================
-   RENDER CART
+   CART
 ========================================= */
 
 function renderCart() {
 
-  if (!cartList) return;
-
   cartList.innerHTML = "";
 
   if (cart.length === 0) {
-
-    if (emptyText) {
-
-      emptyText.style.display =
-        "block";
-    }
-
+    emptyText.style.display = "block";
   } else {
-
-    if (emptyText) {
-
-      emptyText.style.display =
-        "none";
-    }
+    emptyText.style.display = "none";
   }
 
   let total = 0;
 
   cart.forEach(item => {
 
-    total +=
-      item.price * item.quantity;
+    total += item.price * item.quantity;
 
-    const li =
-      document.createElement("li");
+    const li = document.createElement("li");
 
     li.innerHTML = `
-
       <div class="cart-left">
-
-        <img
-          class="cart-img"
-          src="${item.coverImage}"
-        >
-
-        <span>
-          ${item.name}
-        </span>
-
+        <img class="cart-img" src="${item.coverImage}">
+        <span>${item.name}</span>
       </div>
 
-      <div class="cart-controls">
-
-        <button class="minus-btn">
-          −
-        </button>
-
-        <span>
-          ${item.quantity}
-        </span>
-
-        <button class="plus-btn">
-          +
-        </button>
-
+      <div>
+        <button class="minus">−</button>
+        <span>${item.quantity}</span>
+        <button class="plus">+</button>
       </div>
     `;
 
-    const minusBtn =
-      li.querySelector(".minus-btn");
+    li.querySelector(".minus").onclick =
+      () => removeItem(item.id);
 
-    const plusBtn =
-      li.querySelector(".plus-btn");
-
-    minusBtn.onclick = () =>
-      removeItem(item.id);
-
-    plusBtn.onclick = () =>
-      addItem(item);
+    li.querySelector(".plus").onclick =
+      () => addItem(item);
 
     cartList.appendChild(li);
   });
 
-  if (totalEl) {
+  totalEl.innerText = total.toLocaleString();
 
-    totalEl.innerText =
-      total.toLocaleString();
-  }
-
-  if (orderData) {
-
-    orderData.value =
-      JSON.stringify(cart);
-  }
+  orderData.value = JSON.stringify(cart);
 }
 
 /* =========================================
-   RENDER BOX
+   BOX (WITH DRAG)
 ========================================= */
 
 function renderBox() {
-
-  if (!canvas) return;
 
   canvas.innerHTML = "";
 
   cart.forEach(item => {
 
-    if (!item.stickers) return;
-
     item.stickers.forEach(sticker => {
 
-      const div =
-        document.createElement("div");
+      const el = document.createElement("div");
 
-      div.className =
-        "sticker";
+      el.className = "sticker";
+      el.innerText = item.emoji;
 
-      div.innerText =
-        item.emoji || "🧶";
+      el.style.left = sticker.x + "px";
+      el.style.top = sticker.y + "px";
 
-      div.style.left =
-        sticker.x + "px";
+      enableDragging(el, sticker, item);
 
-      div.style.top =
-        sticker.y + "px";
-
-      canvas.appendChild(div);
+      canvas.appendChild(el);
     });
   });
 }
 
 /* =========================================
-   BOX COLOR CHANGE
+   DRAG SYSTEM
 ========================================= */
 
-window.changeSelectedColor =
-  function(color) {
+function enableDragging(el, sticker, item) {
 
-    if (!canvas) return;
+  let offsetX, offsetY, dragging = false;
 
-    const colors = {
+  el.onpointerdown = function(e) {
 
-      Pink:
-        "linear-gradient(180deg,#ffd1dc,#ffb6c1)",
+    dragging = true;
 
-      Blue:
-        "linear-gradient(180deg,#8ec5ff,#6ea8ff)",
+    offsetX = e.clientX - el.offsetLeft;
+    offsetY = e.clientY - el.offsetTop;
 
-      White:
-        "linear-gradient(180deg,#ffffff,#eeeeee)",
+    document.onpointermove = function(e) {
 
-      Brown:
-        "linear-gradient(180deg,#c28d4f,#9c6b3d)"
+      if (!dragging) return;
+
+      let x = e.clientX - offsetX;
+      let y = e.clientY - offsetY;
+
+      el.style.left = x + "px";
+      el.style.top = y + "px";
+
+      sticker.x = x;
+      sticker.y = y;
     };
 
-    canvas.style.background =
-      colors[color] ||
-      "linear-gradient(180deg,#f0d0a1,#d9ae73)";
+    document.onpointerup = function() {
+
+      dragging = false;
+
+      document.onpointermove = null;
+      document.onpointerup = null;
+
+      const box = canvas.getBoundingClientRect();
+      const rect = el.getBoundingClientRect();
+
+      const outside =
+        rect.right < box.left ||
+        rect.left > box.right ||
+        rect.bottom < box.top ||
+        rect.top > box.bottom;
+
+      if (outside) {
+        removeItem(item.id);
+      }
+    };
   };
+}
+
+/* =========================================
+   BOX COLOR
+========================================= */
+
+window.changeSelectedColor = function(color) {
+
+  const map = {
+    Pink: "linear-gradient(#ffd1dc,#ffb6c1)",
+    Blue: "linear-gradient(#8ec5ff,#6ea8ff)",
+    White: "linear-gradient(#fff,#eee)",
+    Brown: "linear-gradient(#c28d4f,#9c6b3d)"
+  };
+
+  canvas.style.background =
+    map[color] || canvas.style.background;
+};
 
 /* =========================================
    START
 ========================================= */
 
 renderCart();
-
 renderSuggestions();
-
 renderBox();
