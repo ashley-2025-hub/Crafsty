@@ -5,46 +5,90 @@ import {
   onSnapshot
 } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
-/* ================= DATA ================= */
+/* =========================================
+   DATA
+========================================= */
 
 let products = [];
 
 let cart =
   JSON.parse(localStorage.getItem("cart")) || [];
 
-/* ================= ELEMENTS ================= */
+/* =========================================
+   ELEMENTS
+========================================= */
 
-const catalog = document.querySelector(".catalog");
-const cartList = document.getElementById("cart");
-const totalEl = document.getElementById("total");
-const suggestionList = document.getElementById("suggestionList");
-const emptyText = document.getElementById("empty");
-const orderData = document.getElementById("orderData");
-const canvas = document.getElementById("canvas");
+const catalog =
+  document.querySelector(".catalog");
 
-/* ================= SAVE ================= */
+const cartList =
+  document.getElementById("cart");
+
+const totalEl =
+  document.getElementById("total");
+
+const suggestionList =
+  document.getElementById("suggestionList");
+
+const emptyText =
+  document.getElementById("empty");
+
+const orderData =
+  document.getElementById("orderData");
+
+const canvas =
+  document.getElementById("canvas");
+
+/* =========================================
+   SAVE
+========================================= */
 
 function saveCart() {
-  localStorage.setItem("cart", JSON.stringify(cart));
+
+  localStorage.setItem(
+    "cart",
+    JSON.stringify(cart)
+  );
 }
 
-/* ================= UI ================= */
+/* =========================================
+   UI
+========================================= */
 
 window.showSection = function(section) {
 
-  const shop = document.getElementById("shopSection");
-  const catalogSec = document.getElementById("catalogSection");
+  const shop =
+    document.getElementById("shopSection");
+
+  const catalogSec =
+    document.getElementById("catalogSection");
 
   if (section === "shop") {
+
     shop.style.display = "block";
     catalogSec.style.display = "none";
+
   } else {
+
     shop.style.display = "none";
     catalogSec.style.display = "block";
   }
 };
 
-/* ================= FIREBASE ================= */
+window.changeBackground = function(c1, c2) {
+
+  document.body.style.background =
+    `linear-gradient(135deg, ${c1}, ${c2})`;
+};
+
+window.changeSelectedColor = function(color) {
+
+  canvas.style.background = color.toLowerCase();
+};
+
+/* =========================================
+   FIREBASE
+========================================= */
 
 onSnapshot(
   collection(db, "products"),
@@ -63,7 +107,9 @@ onSnapshot(
   }
 );
 
-/* ================= ADD ================= */
+/* =========================================
+   ADD ITEM
+========================================= */
 
 function addItem(product) {
 
@@ -71,14 +117,18 @@ function addItem(product) {
     cart.find(i => i.id === product.id);
 
   const sticker = {
-    x: 50 + Math.random() * 120,
-    y: 50 + Math.random() * 120
+    x: 80 + Math.random() * 80,
+    y: 80 + Math.random() * 80
   };
 
   if (existing) {
+
     existing.quantity++;
+
     existing.stickers.push(sticker);
+
   } else {
+
     cart.push({
       id: product.id,
       name: product.name,
@@ -91,42 +141,58 @@ function addItem(product) {
   }
 
   saveCart();
+
   renderCart();
   renderSuggestions();
   renderBox();
 }
 
-/* ================= REMOVE ================= */
+/* =========================================
+   REMOVE ITEM
+========================================= */
 
 function removeItem(id) {
 
-  const item = cart.find(i => i.id === id);
+  const item =
+    cart.find(i => i.id === id);
+
   if (!item) return;
 
   item.quantity--;
+
   item.stickers.pop();
 
   if (item.quantity <= 0) {
-    cart = cart.filter(i => i.id !== id);
+
+    cart =
+      cart.filter(i => i.id !== id);
   }
 
   saveCart();
+
   renderCart();
   renderSuggestions();
   renderBox();
 }
 
-/* ================= CLEAR ================= */
+/* =========================================
+   CLEAR CART
+========================================= */
 
 window.clearCart = function() {
+
   cart = [];
+
   saveCart();
+
   renderCart();
   renderSuggestions();
   renderBox();
 };
 
-/* ================= CATALOG ================= */
+/* =========================================
+   CATALOG
+========================================= */
 
 function renderCatalog() {
 
@@ -134,18 +200,27 @@ function renderCatalog() {
 
   products.forEach(product => {
 
-    const card = document.createElement("div");
+    const card =
+      document.createElement("div");
 
     card.className = "catalog-card";
 
     card.innerHTML = `
       <img src="${product.coverImage}">
-      <h3>${product.emoji || "🧶"} ${product.name}</h3>
-      <p>${Number(product.price).toLocaleString()} VND</p>
+      <div class="catalog-info">
+        <h3>
+          ${product.emoji || "🧶"} ${product.name}
+        </h3>
+        <p>
+          ${Number(product.price).toLocaleString()} VND
+        </p>
+      </div>
     `;
 
     card.onclick = () => {
+
       addItem(product);
+
       showSection("shop");
     };
 
@@ -153,61 +228,91 @@ function renderCatalog() {
   });
 }
 
-/* ================= SUGGESTIONS ================= */
+/* =========================================
+   SUGGESTIONS
+========================================= */
 
 function renderSuggestions() {
 
   suggestionList.innerHTML = "";
 
   products
-    .filter(p =>
-      !cart.some(c => c.id === p.id)
+    .filter(product =>
+      !cart.some(c => c.id === product.id)
     )
     .slice(0, 4)
     .forEach(product => {
 
-      const div = document.createElement("div");
+      const div =
+        document.createElement("div");
 
       div.className = "suggest-card";
 
       div.innerHTML = `
         <img src="${product.coverImage}">
-        <p>${product.emoji || "🧶"} ${product.name}</p>
+        <p>
+          ${product.emoji || "🧶"} ${product.name}
+        </p>
       `;
 
-      div.onclick = () => addItem(product);
+      div.onclick =
+        () => addItem(product);
 
       suggestionList.appendChild(div);
     });
 }
 
-/* ================= CART ================= */
+/* =========================================
+   CART
+========================================= */
 
 function renderCart() {
 
   cartList.innerHTML = "";
 
   emptyText.style.display =
-    cart.length === 0 ? "block" : "none";
+    cart.length === 0
+      ? "block"
+      : "none";
 
   let total = 0;
 
   cart.forEach(item => {
 
-    total += item.price * item.quantity;
+    total +=
+      item.price * item.quantity;
 
-    const li = document.createElement("li");
+    const li =
+      document.createElement("li");
 
     li.innerHTML = `
       <div class="cart-left">
-        <img class="cart-img" src="${item.coverImage}">
-        <span>${item.name}</span>
+
+        <img
+          class="cart-img"
+          src="${item.coverImage}"
+        >
+
+        <span>
+          ${item.name}
+        </span>
+
       </div>
 
       <div>
-        <button class="minus">−</button>
-        <span>${item.quantity}</span>
-        <button class="plus">+</button>
+
+        <button class="minus">
+          −
+        </button>
+
+        <span>
+          ${item.quantity}
+        </span>
+
+        <button class="plus">
+          +
+        </button>
+
       </div>
     `;
 
@@ -220,11 +325,16 @@ function renderCart() {
     cartList.appendChild(li);
   });
 
-  totalEl.innerText = total.toLocaleString();
-  orderData.value = JSON.stringify(cart);
+  totalEl.innerText =
+    total.toLocaleString();
+
+  orderData.value =
+    JSON.stringify(cart);
 }
 
-/* ================= BOX ================= */
+/* =========================================
+   BOX
+========================================= */
 
 function renderBox() {
 
@@ -234,75 +344,137 @@ function renderBox() {
 
     item.stickers.forEach(sticker => {
 
-      const el = document.createElement("div");
+      const el =
+        document.createElement("div");
 
       el.className = "sticker";
+
       el.innerText = item.emoji;
 
-      el.style.left = sticker.x + "px";
-      el.style.top = sticker.y + "px";
+      el.style.left =
+        sticker.x + "px";
 
-      enableDragging(el, sticker, item);
+      el.style.top =
+        sticker.y + "px";
+
+      enableDragging(
+        el,
+        sticker,
+        item
+      );
 
       canvas.appendChild(el);
     });
   });
 }
 
-/* ================= DRAG FIXED ================= */
+/* =========================================
+   DRAGGING
+========================================= */
 
-function enableDragging(el, sticker, item) {
+function enableDragging(
+  el,
+  sticker,
+  item
+) {
 
-  let offsetX, offsetY;
+  let isDragging = false;
 
-  el.onpointerdown = function(e) {
+  let startX = 0;
+  let startY = 0;
 
-    e.preventDefault();
+  let initialX = 0;
+  let initialY = 0;
 
-    el.setPointerCapture(e.pointerId);
+  el.addEventListener(
+    "pointerdown",
+    (e) => {
 
-    offsetX = e.clientX - el.offsetLeft;
-    offsetY = e.clientY - el.offsetTop;
+      e.preventDefault();
 
-    function move(e) {
+      isDragging = true;
 
-      let x = e.clientX - offsetX;
-      let y = e.clientY - offsetY;
+      startX = e.clientX;
+      startY = e.clientY;
 
-      el.style.left = x + "px";
-      el.style.top = y + "px";
+      initialX = sticker.x;
+      initialY = sticker.y;
 
-      sticker.x = x;
-      sticker.y = y;
+      el.setPointerCapture(
+        e.pointerId
+      );
     }
+  );
 
-    function up(e) {
+  el.addEventListener(
+    "pointermove",
+    (e) => {
 
-      el.releasePointerCapture(e.pointerId);
+      if (!isDragging) return;
 
-      document.removeEventListener("pointermove", move);
-      document.removeEventListener("pointerup", up);
+      const dx =
+        e.clientX - startX;
 
-      const box = canvas.getBoundingClientRect();
-      const rect = el.getBoundingClientRect();
+      const dy =
+        e.clientY - startY;
 
-      const outside =
-        rect.right < box.left ||
-        rect.left > box.right ||
-        rect.bottom < box.top ||
-        rect.top > box.bottom;
+      let newX =
+        initialX + dx;
 
-      if (outside) {
-        removeItem(item.id);
-      }
+      let newY =
+        initialY + dy;
+
+      const maxX =
+        canvas.clientWidth - 30;
+
+      const maxY =
+        canvas.clientHeight - 30;
+
+      newX =
+        Math.max(
+          20,
+          Math.min(maxX, newX)
+        );
+
+      newY =
+        Math.max(
+          20,
+          Math.min(maxY, newY)
+        );
+
+      sticker.x = newX;
+      sticker.y = newY;
+
+      el.style.left =
+        newX + "px";
+
+      el.style.top =
+        newY + "px";
     }
+  );
 
-    document.addEventListener("pointermove", move);
-    document.addEventListener("pointerup", up);
-  };
+  el.addEventListener(
+    "pointerup",
+    () => {
+
+      isDragging = false;
+
+      saveCart();
+    }
+  );
+
+  el.addEventListener(
+    "pointercancel",
+    () => {
+
+      isDragging = false;
+    }
+  );
 }
 
-/* ================= START ================= */
+/* =========================================
+   START
+========================================= */
 
 renderCart();
 renderSuggestions();
