@@ -64,7 +64,6 @@ span {
 
 .theme-picker p {
   margin: 0;
-
   color: white;
   font-weight: bold;
 }
@@ -231,6 +230,7 @@ button:hover {
 .catalog-card img {
   width: 100%;
   height: 260px;
+
   object-fit: cover;
   background: white;
 }
@@ -286,11 +286,6 @@ button:hover {
   border-radius: 14px;
 }
 
-.cart-controls {
-  display: flex;
-  gap: 8px;
-}
-
 /* =========================================
    SUGGESTIONS
 ========================================= */
@@ -325,6 +320,7 @@ button:hover {
 .suggest-card img {
   width: 100%;
   height: 160px;
+
   object-fit: cover;
 
   border-radius: 18px;
@@ -359,21 +355,32 @@ button:hover {
       #f0d0a1,
       #d9ae73
     );
+
+  touch-action: none;
 }
 
-/* ✅ FIXED STICKER */
+/* =========================================
+   STICKERS
+========================================= */
 
 .sticker {
   position: absolute;
 
-  transform: translate(-50%, -50%);
+  width: 48px;
+  height: 48px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   font-size: 42px;
 
   user-select: none;
+  touch-action: none;
 
   cursor: grab;
-  pointer-events: auto; /* IMPORTANT FIX */
+
+  z-index: 10;
 }
 
 .sticker:active {
@@ -424,10 +431,21 @@ button:hover {
   cursor: pointer;
 }
 
-.color-circle.pink { background: pink; }
-.color-circle.blue { background: #8ec5ff; }
-.color-circle.white { background: white; }
-.color-circle.brown { background: #9c6b3d; }
+.color-circle.pink {
+  background: pink;
+}
+
+.color-circle.blue {
+  background: #8ec5ff;
+}
+
+.color-circle.white {
+  background: white;
+}
+
+.color-circle.brown {
+  background: #9c6b3d;
+}
 
 /* =========================================
    INPUTS
