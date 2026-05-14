@@ -20,7 +20,7 @@ body {
   text-align: center;
 
   /* DEFAULT THEME */
-  background: #9e7e63;
+  background: #9e7e67;
 
   transition:
     background 0.3s ease;
@@ -90,7 +90,7 @@ span {
 }
 
 .theme-btn.brown {
-  background: #a37e5e;
+  background: #9e7e67;
 }
 
 .theme-btn.blue {
