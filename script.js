@@ -1,126 +1,659 @@
 import { db } from "./firebase-config.js";
-import { collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+
+import {
+  collection,
+  onSnapshot
+} from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+
+/* =========================================
+   DATA
+========================================= */
 
 let products = [];
-let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-const catalog = document.querySelector(".catalog");
-const cartList = document.getElementById("cart");
-const totalEl = document.getElementById("total");
-const suggestionList = document.getElementById("suggestionList");
-const emptyText = document.getElementById("empty");
-const orderData = document.getElementById("orderData");
-const canvas = document.getElementById("canvas");
+let cart =
+  JSON.parse(localStorage.getItem("cart")) || [];
 
-function saveCart() { localStorage.setItem("cart", JSON.stringify(cart)); }
+/* =========================================
+   ELEMENTS
+========================================= */
 
-/* THEME & UI */
+const catalog =
+  document.querySelector(".catalog");
+
+const cartList =
+  document.getElementById("cart");
+
+const totalEl =
+  document.getElementById("total");
+
+const suggestionList =
+  document.getElementById("suggestionList");
+
+const emptyText =
+  document.getElementById("empty");
+
+const orderData =
+  document.getElementById("orderData");
+
+const canvas =
+  document.getElementById("canvas");
+
+/* =========================================
+   SAVE
+========================================= */
+
+function saveCart() {
+
+  localStorage.setItem(
+    "cart",
+    JSON.stringify(cart)
+  );
+}
+
+/* =========================================
+   SECTION SWITCH
+========================================= */
+
 window.showSection = function(section) {
-  document.getElementById("shopSection").style.display = section === "shop" ? "block" : "none";
-  document.getElementById("catalogSection").style.display = section === "catalog" ? "block" : "none";
+
+  const shop =
+    document.getElementById("shopSection");
+
+  const catalogSec =
+    document.getElementById("catalogSection");
+
+  if (section === "shop") {
+
+    shop.style.display = "block";
+    catalogSec.style.display = "none";
+
+  } else {
+
+    shop.style.display = "none";
+    catalogSec.style.display = "block";
+  }
 };
+
+/* =========================================
+   THEME SYSTEM
+========================================= */
 
 window.changeTheme = function(main, sub) {
-  const root = document.documentElement;
-  root.style.setProperty('--main-bg', main);
-  root.style.setProperty('--card-bg', sub);
-  document.body.style.background = main;
-  const bin = document.getElementById("bin");
-  if (bin) bin.style.background = main;
-};
 
-window.changeSelectedColor = function(color) {
-  const colors = { Pink: "#d4acb4", Blue: "#bbc8d8", White: "#ffffff", Brown: "#9e7e67" };
-  if (canvas) canvas.style.background = colors[color];
-};
+  const root =
+    document.documentElement;
 
-/* FIREBASE SYNC */
-onSnapshot(collection(db, "products"), (snapshot) => {
-  products = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-  renderCatalog(); renderSuggestions(); renderCart(); renderBox();
-});
+  root.style.setProperty(
+    "--main-bg",
+    main
+  );
 
-/* CART LOGIC */
-function addItem(product) {
-  const existing = cart.find(i => i.id === product.id);
-  const sticker = { x: 50 + Math.random() * 100, y: 50 + Math.random() * 100 };
-  if (existing) {
-    existing.quantity++;
-    existing.stickers.push(sticker);
-  } else {
-    cart.push({ ...product, quantity: 1, stickers: [sticker], price: Number(product.price) });
+  root.style.setProperty(
+    "--card-bg",
+    sub
+  );
+
+  root.style.setProperty(
+    "--button-bg",
+    main
+  );
+
+  document.body.style.background =
+    main;
+
+  /* BIN */
+
+  const bin =
+    document.getElementById("bin");
+
+  if (bin) {
+
+    bin.style.background =
+      main;
   }
-  saveCart(); renderCart(); renderSuggestions(); renderBox();
-}
 
-function removeItem(id) {
-  const item = cart.find(i => i.id === id);
-  if (!item) return;
-  item.quantity--;
-  item.stickers.pop();
-  if (item.quantity <= 0) cart = cart.filter(i => i.id !== id);
-  saveCart(); renderCart(); renderSuggestions(); renderBox();
-}
+  /* NAV BUTTONS */
 
-window.clearCart = function() {
-  cart = []; saveCart(); renderCart(); renderSuggestions(); renderBox();
+  document
+    .querySelectorAll(".nav button")
+    .forEach(btn => {
+
+      btn.style.background =
+        main;
+    });
+
+  /* FORM BUTTON */
+
+  const orderBtn =
+    document.querySelector(
+      "#orderForm button"
+    );
+
+  if (orderBtn) {
+
+    orderBtn.style.background =
+      main;
+  }
+
+  /* CART +/- BUTTONS */
+
+  document
+    .querySelectorAll(
+      ".cart-controls button"
+    )
+    .forEach(btn => {
+
+      btn.style.background =
+        main;
+    });
 };
 
-/* RENDERING */
+/* =========================================
+   BOX COLOR
+========================================= */
+
+window.changeSelectedColor =
+  function(color) {
+
+    const colors = {
+
+      Pink:
+        "#d4acb4",
+
+      Blue:
+        "#bbc8d8",
+
+      White:
+        "#ffffff",
+
+      Brown:
+        "#9e7e67"
+    };
+
+    canvas.style.background =
+      colors[color];
+  };
+
+/* =========================================
+   FIREBASE
+========================================= */
+
+onSnapshot(
+  collection(db, "products"),
+  (snapshot) => {
+
+    products =
+      snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+
+    renderCatalog();
+    renderSuggestions();
+    renderCart();
+    renderBox();
+  }
+);
+
+/* =========================================
+   ADD ITEM
+========================================= */
+
+function addItem(product) {
+
+  const existing =
+    cart.find(
+      i => i.id === product.id
+    );
+
+  const sticker = {
+
+    x:
+      60 + Math.random() * 90,
+
+    y:
+      60 + Math.random() * 90
+  };
+
+  if (existing) {
+
+    existing.quantity++;
+
+    existing.stickers.push(
+      sticker
+    );
+
+  } else {
+
+    cart.push({
+
+      id:
+        product.id,
+
+      name:
+        product.name,
+
+      price:
+        Number(product.price),
+
+      coverImage:
+        product.coverImage,
+
+      emoji:
+        product.emoji || "🧶",
+
+      quantity:
+        1,
+
+      stickers:
+        [sticker]
+    });
+  }
+
+  saveCart();
+
+  renderCart();
+
+  renderSuggestions();
+
+  renderBox();
+}
+
+/* =========================================
+   REMOVE ITEM
+========================================= */
+
+window.removeItem =
+  function(id) {
+
+    const item =
+      cart.find(
+        i => i.id === id
+      );
+
+    if (!item) return;
+
+    item.quantity--;
+
+    item.stickers.pop();
+
+    if (item.quantity <= 0) {
+
+      cart =
+        cart.filter(
+          i => i.id !== id
+        );
+    }
+
+    saveCart();
+
+    renderCart();
+
+    renderSuggestions();
+
+    renderBox();
+  };
+
+/* =========================================
+   ADD BY ID
+========================================= */
+
+window.addItemById =
+  function(id) {
+
+    const product =
+      products.find(
+        p => p.id === id
+      );
+
+    if (product) {
+
+      addItem(product);
+    }
+  };
+
+/* =========================================
+   CLEAR CART
+========================================= */
+
+window.clearCart =
+  function() {
+
+    cart = [];
+
+    saveCart();
+
+    renderCart();
+
+    renderSuggestions();
+
+    renderBox();
+  };
+
+/* =========================================
+   CATALOG
+========================================= */
+
+function renderCatalog() {
+
+  if (!catalog) return;
+
+  catalog.innerHTML = "";
+
+  products.forEach(product => {
+
+    const card =
+      document.createElement("div");
+
+    card.className =
+      "catalog-card";
+
+    card.innerHTML = `
+
+      <img
+        src="${product.coverImage}"
+        alt="${product.name}"
+      >
+
+      <div class="catalog-info">
+
+        <h3>
+          ${product.emoji || "🧶"}
+          ${product.name}
+        </h3>
+
+        <p>
+          ${Number(product.price)
+            .toLocaleString()} VND
+        </p>
+
+      </div>
+    `;
+
+    card.onclick = () => {
+
+      addItem(product);
+
+      showSection("shop");
+    };
+
+    catalog.appendChild(card);
+  });
+}
+
+/* =========================================
+   SUGGESTIONS
+========================================= */
+
+function renderSuggestions() {
+
+  if (!suggestionList) return;
+
+  suggestionList.innerHTML = "";
+
+  products
+    .filter(product =>
+      !cart.some(
+        c => c.id === product.id
+      )
+    )
+    .slice(0, 4)
+
+    .forEach(product => {
+
+      const div =
+        document.createElement("div");
+
+      div.className =
+        "suggest-card";
+
+      div.innerHTML = `
+
+        <img
+          src="${product.coverImage}"
+          alt="${product.name}"
+        >
+
+        <p>
+          ${product.emoji || "🧶"}
+          ${product.name}
+        </p>
+      `;
+
+      div.onclick =
+        () => addItem(product);
+
+      suggestionList.appendChild(div);
+    });
+}
+
+/* =========================================
+   CART
+========================================= */
+
 function renderCart() {
+
   if (!cartList) return;
+
   cartList.innerHTML = "";
-  emptyText.style.display = cart.length === 0 ? "block" : "none";
+
+  emptyText.style.display =
+
+    cart.length === 0
+      ? "block"
+      : "none";
+
   let total = 0;
+
   cart.forEach(item => {
-    total += item.price * item.quantity;
-    const li = document.createElement("li");
-    li.style.cssText = "display:flex; justify-content:space-between; margin-bottom:10px;";
-    li.innerHTML = `<span>${item.name} x${item.quantity}</span>
-                    <div><button onclick="addItemById('${item.id}')" style="border:none; background:none; cursor:pointer;">➕</button>
-                    <button onclick="removeItem('${item.id}')" style="border:none; background:none; cursor:pointer;">➖</button></div>`;
+
+    total +=
+      item.price *
+      item.quantity;
+
+    const li =
+      document.createElement("li");
+
+    li.innerHTML = `
+
+      <div class="cart-left">
+
+        <img
+          class="cart-img"
+          src="${item.coverImage}"
+          alt="${item.name}"
+        >
+
+        <span>
+          ${item.name}
+        </span>
+
+      </div>
+
+      <div class="cart-controls">
+
+        <button
+          onclick="removeItem('${item.id}')"
+        >
+          −
+        </button>
+
+        <span>
+          ${item.quantity}
+        </span>
+
+        <button
+          onclick="addItemById('${item.id}')"
+        >
+          +
+        </button>
+
+      </div>
+    `;
+
     cartList.appendChild(li);
   });
-  totalEl.innerText = total.toLocaleString();
-  if (orderData) orderData.value = JSON.stringify(cart);
+
+  totalEl.innerText =
+    total.toLocaleString();
+
+  orderData.value =
+    JSON.stringify(cart);
 }
 
-window.addItemById = (id) => { const p = products.find(p => p.id === id); if (p) addItem(p); };
+/* =========================================
+   BOX
+========================================= */
 
 function renderBox() {
+
   if (!canvas) return;
+
   canvas.innerHTML = "";
+
   cart.forEach(item => {
+
     item.stickers.forEach(sticker => {
-      const el = document.createElement("div");
-      el.innerText = item.emoji || "🧶";
-      el.style.cssText = `position:absolute; left:${sticker.x}px; top:${sticker.y}px; font-size:30px;`;
+
+      const el =
+        document.createElement("div");
+
+      el.className =
+        "sticker";
+
+      el.innerText =
+        item.emoji;
+
+      el.style.left =
+        sticker.x + "px";
+
+      el.style.top =
+        sticker.y + "px";
+
+      enableDragging(
+        el,
+        sticker
+      );
+
       canvas.appendChild(el);
     });
   });
 }
 
-function renderCatalog() {
-  if (!catalog) return;
-  catalog.innerHTML = "";
-  products.forEach(p => {
-    const div = document.createElement("div");
-    div.className = "catalog-card";
-    div.style.cursor = "pointer";
-    div.innerHTML = `<h3>${p.name}</h3><p>${Number(p.price).toLocaleString()} VND</p>`;
-    div.onclick = () => addItem(p);
-    catalog.appendChild(div);
-  });
+/* =========================================
+   DRAGGING
+========================================= */
+
+function enableDragging(
+  el,
+  sticker
+) {
+
+  let isDragging = false;
+
+  let startX = 0;
+  let startY = 0;
+
+  let initialX = 0;
+  let initialY = 0;
+
+  el.addEventListener(
+    "pointerdown",
+    (e) => {
+
+      e.preventDefault();
+
+      isDragging = true;
+
+      startX =
+        e.clientX;
+
+      startY =
+        e.clientY;
+
+      initialX =
+        sticker.x;
+
+      initialY =
+        sticker.y;
+
+      el.setPointerCapture(
+        e.pointerId
+      );
+    }
+  );
+
+  el.addEventListener(
+    "pointermove",
+    (e) => {
+
+      if (!isDragging) return;
+
+      const dx =
+        e.clientX - startX;
+
+      const dy =
+        e.clientY - startY;
+
+      let newX =
+        initialX + dx;
+
+      let newY =
+        initialY + dy;
+
+      const maxX =
+        canvas.clientWidth - 40;
+
+      const maxY =
+        canvas.clientHeight - 40;
+
+      newX = Math.max(
+        0,
+        Math.min(maxX, newX)
+      );
+
+      newY = Math.max(
+        0,
+        Math.min(maxY, newY)
+      );
+
+      sticker.x = newX;
+      sticker.y = newY;
+
+      el.style.left =
+        newX + "px";
+
+      el.style.top =
+        newY + "px";
+    }
+  );
+
+  el.addEventListener(
+    "pointerup",
+    () => {
+
+      isDragging = false;
+
+      saveCart();
+    }
+  );
+
+  el.addEventListener(
+    "pointercancel",
+    () => {
+
+      isDragging = false;
+    }
+  );
 }
 
-function renderSuggestions() {
-  if (!suggestionList) return;
-  suggestionList.innerHTML = "";
-  products.slice(0, 3).forEach(p => {
-    const div = document.createElement("div");
-    div.style.cursor = "pointer";
-    div.innerHTML = `<p>${p.emoji || "🧶"} ${p.name}</p>`;
-    div.onclick = () => addItem(p);
-    suggestionList.appendChild(div);
-  });
-}
+/* =========================================
+   START
+========================================= */
+
+renderCart();
+
+renderSuggestions();
+
+renderBox();
