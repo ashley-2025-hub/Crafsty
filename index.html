@@ -6,33 +6,24 @@
   <title>Crochet Shop 🧶</title>
   <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
   <h1>My Crochet Shop 🧶</h1>
 
-  <!-- =====================================
-       NAVIGATION (Now correctly on top)
-  ====================================== -->
   <div class="nav">
     <button type="button" onclick="showSection('shop')">🧾 Order</button>
     <button type="button" onclick="showSection('catalog')">🧸 Catalog</button>
   </div>
 
-  <!-- =====================================
-       THEME PICKER (Now correctly below Nav)
-  ====================================== -->
   <div class="theme-picker">
     <p>Theme:</p>
-    <div class="theme-btn brown" onclick="changeBackground('#9e7e67')"></div>
-    <div class="theme-btn blue" onclick="changeBackground('#bbc8d8')"></div>
-    <div class="theme-btn pink" onclick="changeBackground('#d4acb4')"></div>
-    <div class="theme-btn purple" onclick="changeBackground('#cfc2ff')"></div>
+    <!-- Updated to pass both main and sub colors -->
+    <div class="theme-btn brown" onclick="changeTheme('#9e7e67', '#efe3d3')"></div>
+    <div class="theme-btn blue" onclick="changeTheme('#bbc8d8', '#ebf0f6')"></div>
+    <div class="theme-btn pink" onclick="changeTheme('#d4acb4', '#fff9f9')"></div>
+    <div class="theme-btn purple" onclick="changeTheme('#cfc2ff', '#fafafc')"></div>
   </div>
 
-  <!-- =====================================
-       SHOP SECTION
-  ====================================== -->
   <section id="shopSection">
     <div class="container">
 
@@ -78,17 +69,13 @@
         </form>
       </div>
 
-    </div> <!-- End Container -->
+    </div>
   </section>
 
-  <!-- =====================================
-       CATALOG SECTION
-  ====================================== -->
   <section id="catalogSection" style="display: none;">
     <div id="products" class="catalog"></div>
   </section>
 
   <script type="module" src="./script.js"></script>
-
 </body>
 </html>
