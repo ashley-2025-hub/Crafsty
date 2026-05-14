@@ -92,6 +92,28 @@ window.changeBackground = function(c1, c2) {
 
   document.body.style.backgroundAttachment =
     "fixed";
+};window.changeBackground = function(color) {
+
+  document.body.style.background =
+    color;
+
+  /* OPTIONAL:
+     change buttons + bin color too
+  */
+
+  document.querySelectorAll("button")
+    .forEach(btn => {
+
+      btn.style.background = color;
+    });
+
+  const bin =
+    document.getElementById("bin");
+
+  if (bin) {
+
+    bin.style.background = color;
+  }
 };
 
 /* =========================================
