@@ -25,7 +25,7 @@ body {
 }
 
 h1 {
-  margin-bottom: 22px;
+  margin-bottom: 26px;
 
   color: white;
   font-size: 52px;
@@ -45,6 +45,55 @@ span {
 }
 
 /* =========================================
+   TOP CONTROLS
+========================================= */
+
+/* PUT NAV BETWEEN TITLE & THEME */
+
+.nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+
+  gap: 16px;
+
+  margin-bottom: 24px;
+}
+
+/* NAV BUTTONS */
+
+.nav button {
+  padding: 12px 24px;
+
+  border: none;
+  border-radius: 18px;
+
+  color: white;
+  font-size: 15px;
+  font-weight: bold;
+
+  cursor: pointer;
+
+  background: #c29b7d;
+
+  box-shadow:
+    0 6px 14px rgba(0, 0, 0, 0.12);
+
+  transition: 0.2s;
+}
+
+.nav button:hover {
+  transform:
+    translateY(-2px)
+    scale(1.03);
+}
+
+.nav button:active {
+  transform: scale(0.98);
+}
+
+/* =========================================
    THEME PICKER
 ========================================= */
 
@@ -55,7 +104,8 @@ span {
   flex-wrap: wrap;
 
   gap: 14px;
-  margin-bottom: 28px;
+
+  margin-bottom: 40px;
 }
 
 .theme-picker p {
@@ -65,7 +115,7 @@ span {
   font-weight: bold;
 }
 
-/* ONLY BACKGROUND COLOR CIRCLES */
+/* PERFECT CIRCLE BUTTONS */
 
 .theme-btn {
   width: 40px;
@@ -87,6 +137,8 @@ span {
   transform: scale(1.12);
 }
 
+/* THEME COLORS */
+
 .theme-btn.brown {
   background: #9e7e67;
 }
@@ -101,52 +153,6 @@ span {
 
 .theme-btn.purple {
   background: #cfc2ff;
-}
-
-/* =========================================
-   NAVIGATION
-========================================= */
-
-.nav {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: wrap;
-
-  gap: 16px;
-  margin-bottom: 40px;
-}
-
-/* ONLY NAV BUTTONS */
-
-.nav button {
-  padding: 12px 24px;
-
-  border: none;
-  border-radius: 18px;
-
-  color: white;
-  font-size: 15px;
-  font-weight: bold;
-
-  cursor: pointer;
-
-  background: #d4acb4;
-
-  box-shadow:
-    0 6px 14px rgba(0, 0, 0, 0.10);
-
-  transition: 0.2s;
-}
-
-.nav button:hover {
-  transform:
-    translateY(-2px)
-    scale(1.03);
-}
-
-.nav button:active {
-  transform: scale(0.98);
 }
 
 /* =========================================
@@ -175,7 +181,9 @@ button {
   gap: 28px;
 }
 
-/* LIGHT BOXES */
+/* =========================================
+   LIGHT BOXES
+========================================= */
 
 .products,
 .box {
@@ -542,7 +550,7 @@ button {
   color: white;
   font-weight: bold;
 
-  background: #d4acb4;
+  background: #c29b7d;
 
   cursor: pointer;
 }
