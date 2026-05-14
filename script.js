@@ -1,12 +1,11 @@
 import { db } from "./firebase-config.js";
-
 import {
   collection,
   onSnapshot
 } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
 /* =========================================
-   DATA
+   DATA & STATE
 ========================================= */
 
 let products = [];
@@ -25,7 +24,7 @@ const orderData = document.getElementById("orderData");
 const canvas = document.getElementById("canvas");
 
 /* =========================================
-   SAVE
+   SAVE DATA
 ========================================= */
 
 function saveCart() {
@@ -33,9 +32,12 @@ function saveCart() {
 }
 
 /* =========================================
-   UI & THEME
+   THEME & UI CONTROLS
 ========================================= */
 
+/**
+ * Switch between Order and Catalog views
+ */
 window.showSection = function(section) {
   const shop = document.getElementById("shopSection");
   const catalogSec = document.getElementById("catalogSection");
@@ -50,8 +52,8 @@ window.showSection = function(section) {
 };
 
 /**
- * UPDATED THEME FUNCTION
- * This handles both the background and the card colors.
+ * FIXED THEME SWITCHER
+ * Updates the CSS variables for both background and cards.
  */
 window.changeTheme = function(mainColor, subColor) {
   const root = document.documentElement;
@@ -60,33 +62,34 @@ window.changeTheme = function(mainColor, subColor) {
   root.style.setProperty('--main-bg', mainColor);
   root.style.setProperty('--card-bg', subColor);
   
-  // Update the body background directly for smoothness
+  // Update the body background directly for instant feedback
   document.body.style.background = mainColor;
 
-  // Update the trash bin icon background if it exists
+  // Sync the trash bin background to match the theme
   const bin = document.getElementById("bin");
   if (bin) {
     bin.style.background = mainColor;
   }
 };
 
-/* =========================================
-   BOX COLOR (Canvas Background)
-========================================= */
-
+/**
+ * Change the background color of the customization box (canvas)
+ */
 window.changeSelectedColor = function(color) {
   const colors = {
     Pink: "#d4acb4",
     Blue: "#bbc8d8",
-    Purple: "#cfc2ff",
+    White: "#ffffff",
     Brown: "#9e7e67"
   };
 
-  canvas.style.background = colors[color];
+  if (canvas) {
+    canvas.style.background = colors[color];
+  }
 };
 
 /* =========================================
-   FIREBASE
+   FIREBASE REAL-TIME SYNC
 ========================================= */
 
 onSnapshot(collection(db, "products"), (snapshot) => {
@@ -102,11 +105,13 @@ onSnapshot(collection(db, "products"), (snapshot) => {
 });
 
 /* =========================================
-   ADD ITEM
+   CART LOGIC (Add/Remove/Clear)
 ========================================= */
 
 function addItem(product) {
   const existing = cart.find(i => i.id === product.id);
+  
+  // Random starting position for the sticker in the box
   const sticker = {
     x: 80 + Math.random() * 60,
     y: 80 + Math.random() * 60
@@ -133,10 +138,6 @@ function addItem(product) {
   renderBox();
 }
 
-/* =========================================
-   REMOVE ITEM
-========================================= */
-
 function removeItem(id) {
   const item = cart.find(i => i.id === id);
   if (!item) return;
@@ -153,10 +154,6 @@ function removeItem(id) {
   renderSuggestions();
   renderBox();
 }
-
-/* =========================================
-   CLEAR CART
-========================================= */
 
 window.clearCart = function() {
   cart = [];
@@ -215,12 +212,14 @@ function renderCart() {
   if (!cartList) return;
   cartList.innerHTML = "";
 
+  // Show/Hide "Empty" text
   emptyText.style.display = cart.length === 0 ? "block" : "none";
 
   let total = 0;
 
   cart.forEach(item => {
     total += item.price * item.quantity;
+    
     const li = document.createElement("li");
     li.innerHTML = `
       <div class="cart-left">
@@ -228,9 +227,9 @@ function renderCart() {
         <span>${item.name}</span>
       </div>
       <div class="cart-controls">
-        <button class="minus">−</button>
+        <button type="button" class="minus">−</button>
         <span>${item.quantity}</span>
-        <button class="plus">+</button>
+        <button type="button" class="plus">+</button>
       </div>
     `;
 
@@ -240,7 +239,9 @@ function renderCart() {
   });
 
   totalEl.innerText = total.toLocaleString();
-  if (orderData) orderData.value = JSON.stringify(cart);
+  if (orderData) {
+    orderData.value = JSON.stringify(cart);
+  }
 }
 
 function renderBox() {
@@ -262,7 +263,7 @@ function renderBox() {
 }
 
 /* =========================================
-   DRAGGING
+   STICKER DRAGGING LOGIC
 ========================================= */
 
 function enableDragging(el, sticker) {
@@ -288,12 +289,13 @@ function enableDragging(el, sticker) {
     let newX = initialX + dx;
     let newY = initialY + dy;
 
+    // Boundaries within the canvas
     const padding = 24;
     const maxX = canvas.clientWidth - padding;
     const maxY = canvas.clientHeight - padding;
 
-    newX = Math.max(padding, Math.min(maxX, newX));
-    newY = Math.max(padding, Math.min(maxY, newY));
+    newX = Math.max(0, Math.min(maxX, newX));
+    newY = Math.max(0, Math.min(maxY, newY));
 
     sticker.x = newX;
     sticker.y = newY;
@@ -312,7 +314,7 @@ function enableDragging(el, sticker) {
 }
 
 /* =========================================
-   START
+   INITIALIZATION
 ========================================= */
 
 renderCart();
