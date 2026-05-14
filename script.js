@@ -1,11 +1,9 @@
 import { db } from "./firebase-config.js";
 import { collection, onSnapshot } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
-/* DATA */
 let products = [];
 let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-/* ELEMENTS */
 const catalog = document.querySelector(".catalog");
 const cartList = document.getElementById("cart");
 const totalEl = document.getElementById("total");
@@ -14,28 +12,21 @@ const emptyText = document.getElementById("empty");
 const orderData = document.getElementById("orderData");
 const canvas = document.getElementById("canvas");
 
-function saveCart() {
-  localStorage.setItem("cart", JSON.stringify(cart));
-}
+function saveCart() { localStorage.setItem("cart", JSON.stringify(cart)); }
 
-/* UI & THEME LOGIC */
+/* THEME & UI */
 window.showSection = function(section) {
   document.getElementById("shopSection").style.display = section === "shop" ? "block" : "none";
   document.getElementById("catalogSection").style.display = section === "catalog" ? "block" : "none";
 };
 
-/**
- * Updates CSS Variables and Body Background
- */
-window.changeTheme = function(mainColor, subColor) {
+window.changeTheme = function(main, sub) {
   const root = document.documentElement;
-  root.style.setProperty('--main-bg', mainColor);
-  root.style.setProperty('--card-bg', subColor);
-  
-  // Directly update body and bin for performance
-  document.body.style.background = mainColor;
+  root.style.setProperty('--main-bg', main);
+  root.style.setProperty('--card-bg', sub);
+  document.body.style.background = main;
   const bin = document.getElementById("bin");
-  if (bin) bin.style.background = mainColor;
+  if (bin) bin.style.background = main;
 };
 
 window.changeSelectedColor = function(color) {
@@ -46,17 +37,13 @@ window.changeSelectedColor = function(color) {
 /* FIREBASE SYNC */
 onSnapshot(collection(db, "products"), (snapshot) => {
   products = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-  renderCatalog();
-  renderSuggestions();
-  renderCart();
-  renderBox();
+  renderCatalog(); renderSuggestions(); renderCart(); renderBox();
 });
 
-/* CART ACTIONS */
+/* CART LOGIC */
 function addItem(product) {
   const existing = cart.find(i => i.id === product.id);
   const sticker = { x: 50 + Math.random() * 100, y: 50 + Math.random() * 100 };
-
   if (existing) {
     existing.quantity++;
     existing.stickers.push(sticker);
@@ -84,31 +71,21 @@ function renderCart() {
   if (!cartList) return;
   cartList.innerHTML = "";
   emptyText.style.display = cart.length === 0 ? "block" : "none";
-
   let total = 0;
   cart.forEach(item => {
     total += item.price * item.quantity;
     const li = document.createElement("li");
-    li.style.display = "flex";
-    li.style.justifyContent = "space-between";
-    li.style.marginBottom = "10px";
-    li.innerHTML = `
-      <span>${item.name} x${item.quantity}</span>
-      <div>
-        <button type="button" onclick="addItemById('${item.id}')" style="background:none; border:none; cursor:pointer;">➕</button>
-        <button type="button" onclick="removeItem('${item.id}')" style="background:none; border:none; cursor:pointer;">➖</button>
-      </div>
-    `;
+    li.style.cssText = "display:flex; justify-content:space-between; margin-bottom:10px;";
+    li.innerHTML = `<span>${item.name} x${item.quantity}</span>
+                    <div><button onclick="addItemById('${item.id}')" style="border:none; background:none; cursor:pointer;">➕</button>
+                    <button onclick="removeItem('${item.id}')" style="border:none; background:none; cursor:pointer;">➖</button></div>`;
     cartList.appendChild(li);
   });
   totalEl.innerText = total.toLocaleString();
   if (orderData) orderData.value = JSON.stringify(cart);
 }
 
-window.addItemById = (id) => {
-  const p = products.find(p => p.id === id);
-  if (p) addItem(p);
-};
+window.addItemById = (id) => { const p = products.find(p => p.id === id); if (p) addItem(p); };
 
 function renderBox() {
   if (!canvas) return;
@@ -117,10 +94,7 @@ function renderBox() {
     item.stickers.forEach(sticker => {
       const el = document.createElement("div");
       el.innerText = item.emoji || "🧶";
-      el.style.position = "absolute";
-      el.style.left = sticker.x + "px";
-      el.style.top = sticker.y + "px";
-      el.style.fontSize = "30px";
+      el.style.cssText = `position:absolute; left:${sticker.x}px; top:${sticker.y}px; font-size:30px;`;
       canvas.appendChild(el);
     });
   });
@@ -130,12 +104,12 @@ function renderCatalog() {
   if (!catalog) return;
   catalog.innerHTML = "";
   products.forEach(p => {
-    const card = document.createElement("div");
-    card.className = "catalog-card";
-    card.style.cursor = "pointer";
-    card.innerHTML = `<h3>${p.name}</h3><p>${Number(p.price).toLocaleString()} VND</p>`;
-    card.onclick = () => addItem(p);
-    catalog.appendChild(card);
+    const div = document.createElement("div");
+    div.className = "catalog-card";
+    div.style.cursor = "pointer";
+    div.innerHTML = `<h3>${p.name}</h3><p>${Number(p.price).toLocaleString()} VND</p>`;
+    div.onclick = () => addItem(p);
+    catalog.appendChild(div);
   });
 }
 
@@ -150,5 +124,3 @@ function renderSuggestions() {
     suggestionList.appendChild(div);
   });
 }
-
-renderCart(); renderSuggestions(); renderBox();
