@@ -19,11 +19,9 @@ body {
   font-family: "Comic Sans MS", cursive;
   text-align: center;
 
-  /* DEFAULT THEME */
   background: #9e7e67;
 
-  transition:
-    background 0.3s ease;
+  transition: background 0.3s ease;
 }
 
 h1 {
@@ -57,7 +55,7 @@ span {
   flex-wrap: wrap;
 
   gap: 14px;
-  margin-bottom: 22px;
+  margin-bottom: 28px;
 }
 
 .theme-picker p {
@@ -67,7 +65,7 @@ span {
   font-weight: bold;
 }
 
-/* PERFECT CIRCLE BUTTONS */
+/* ONLY BACKGROUND COLOR CIRCLES */
 
 .theme-btn {
   width: 40px;
@@ -88,8 +86,6 @@ span {
 .theme-btn:hover {
   transform: scale(1.12);
 }
-
-/* THEME COLORS */
 
 .theme-btn.brown {
   background: #9e7e67;
@@ -121,12 +117,10 @@ span {
   margin-bottom: 40px;
 }
 
-/* =========================================
-   BUTTONS
-========================================= */
+/* ONLY NAV BUTTONS */
 
-button {
-  padding: 12px 20px;
+.nav button {
+  padding: 12px 24px;
 
   border: none;
   border-radius: 18px;
@@ -137,7 +131,7 @@ button {
 
   cursor: pointer;
 
-  background: #9e7e67;
+  background: #d4acb4;
 
   box-shadow:
     0 6px 14px rgba(0, 0, 0, 0.10);
@@ -145,14 +139,22 @@ button {
   transition: 0.2s;
 }
 
-button:hover {
+.nav button:hover {
   transform:
     translateY(-2px)
     scale(1.03);
 }
 
-button:active {
+.nav button:active {
   transform: scale(0.98);
+}
+
+/* =========================================
+   GENERAL BUTTONS
+========================================= */
+
+button {
+  font-family: inherit;
 }
 
 /* =========================================
@@ -318,7 +320,14 @@ button:active {
 .cart-controls button {
   padding: 6px 10px;
 
+  border: none;
   border-radius: 12px;
+
+  color: white;
+
+  background: #d4acb4;
+
+  cursor: pointer;
 }
 
 /* =========================================
@@ -449,7 +458,7 @@ button:active {
 
   border-radius: 50%;
 
-  background: #9e7e67;
+  background: #d4acb4;
 
   color: white;
 
@@ -481,8 +490,6 @@ button:active {
 .color-panel h3 {
   margin-bottom: 8px;
 }
-
-/* PERFECT CIRCLES */
 
 .color-circle {
   width: 34px;
@@ -518,6 +525,26 @@ button:active {
 
 .color-circle.white {
   background: #cfc2ff;
+}
+
+/* =========================================
+   ORDER BUTTON
+========================================= */
+
+#orderForm button {
+  margin-top: 16px;
+
+  border: none;
+  border-radius: 18px;
+
+  padding: 12px 20px;
+
+  color: white;
+  font-weight: bold;
+
+  background: #d4acb4;
+
+  cursor: pointer;
 }
 
 /* =========================================
