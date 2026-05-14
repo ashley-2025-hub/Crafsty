@@ -1,269 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
   <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
-
-  <title>
-    Crochet Shop 🧶
-  </title>
-
-  <link
-    rel="stylesheet"
-    href="style.css"
-  >
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crochet Shop 🧶</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-  <h1>
-    My Crochet Shop 🧶
-  </h1>
+  <h1>My Crochet Shop 🧶</h1>
 
-    <!-- =====================================
-       NAVIGATION
-  ====================================== -->
-
-  <div class="nav">
-
-    <button
-      type="button"
-      onclick="showSection('shop')"
-    >
-      🧾 Order
-    </button>
-
-    <button
-      type="button"
-      onclick="showSection('catalog')"
-    >
-      🧸 Catalog
-    </button>
-
-  </div>
   <!-- =====================================
-       THEME PICKER
+       NAVIGATION (Now correctly on top)
   ====================================== -->
+  <div class="nav">
+    <button type="button" onclick="showSection('shop')">🧾 Order</button>
+    <button type="button" onclick="showSection('catalog')">🧸 Catalog</button>
+  </div>
 
+  <!-- =====================================
+       THEME PICKER (Now correctly below Nav)
+  ====================================== -->
   <div class="theme-picker">
-
-    <p>
-      Theme:
-    </p>
-
-    <!-- Soft Taupe -->
-
-<div
-  class="theme-btn brown"
-  onclick="changeBackground('#9e7e67')">
-</div>
-
-<div
-  class="theme-btn blue"
-  onclick="changeBackground('#bbc8d8')">
-</div>
-
-<div
-  class="theme-btn pink"
-  onclick="changeBackground('#d4acb4')">
-</div>
-
-<div
-  class="theme-btn purple"
-  onclick="changeBackground('#cfc2ff')">
-</div>
+    <p>Theme:</p>
+    <div class="theme-btn brown" onclick="changeBackground('#9e7e67')"></div>
+    <div class="theme-btn blue" onclick="changeBackground('#bbc8d8')"></div>
+    <div class="theme-btn pink" onclick="changeBackground('#d4acb4')"></div>
+    <div class="theme-btn purple" onclick="changeBackground('#cfc2ff')"></div>
+  </div>
 
   <!-- =====================================
        SHOP SECTION
   ====================================== -->
-
   <section id="shopSection">
-
     <div class="container">
 
-      <!-- =================================
-           CART
-      ================================== -->
-
+      <!-- CART BOX -->
       <div class="products">
-
-        <h2>
-          🛒 In Cart
-        </h2>
-
+        <h2>🛒 In Cart</h2>
         <ul id="cart"></ul>
-
-        <p id="empty">
-          Your cart is empty 🧺
-        </p>
-
-        <!-- SUGGESTIONS -->
+        <p id="empty">Your cart is empty 🧺</p>
 
         <div id="suggestions">
-
-          <h3>
-            ✨ You may also like
-          </h3>
-
+          <h3>✨ You may also like</h3>
           <div id="suggestionList"></div>
-
         </div>
-
       </div>
 
-      <!-- =================================
-           BOX
-      ================================== -->
-
+      <!-- CUSTOMIZATION BOX -->
       <div class="box">
-
-        <h2>
-          Your Box
-        </h2>
-
+        <h2>Your Box</h2>
         <div class="box-layout">
-
-          <!-- CANVAS -->
-
           <div id="canvas"></div>
 
-          <!-- COLORS -->
-
           <div class="color-panel">
-
-            <h3>
-              Colors
-            </h3>
-
-            <button
-              type="button"
-              class="color-circle pink"
-              onclick="changeSelectedColor('Pink')"
-              aria-label="Pink Box"
-            ></button>
-
-            <button
-              type="button"
-              class="color-circle blue"
-              onclick="changeSelectedColor('Blue')"
-              aria-label="Blue Box"
-            ></button>
-
-            <button
-              type="button"
-              class="color-circle white"
-              onclick="changeSelectedColor('White')"
-              aria-label="White Box"
-            ></button>
-
-            <button
-              type="button"
-              class="color-circle brown"
-              onclick="changeSelectedColor('Brown')"
-              aria-label="Brown Box"
-            ></button>
-
+            <h3>Colors</h3>
+            <button type="button" class="color-circle pink" onclick="changeSelectedColor('Pink')" aria-label="Pink Box"></button>
+            <button type="button" class="color-circle blue" onclick="changeSelectedColor('Blue')" aria-label="Blue Box"></button>
+            <button type="button" class="color-circle white" onclick="changeSelectedColor('White')" aria-label="White Box"></button>
+            <button type="button" class="color-circle brown" onclick="changeSelectedColor('Brown')" aria-label="Brown Box"></button>
           </div>
-
         </div>
 
-        <!-- TOTAL -->
-
-        <h2>
-          Total:
-          <span id="total">0</span>
-          VND
-        </h2>
-
-        <!-- CLEAR -->
-
-        <div
-          id="bin"
-          onclick="clearCart()"
-          title="Clear Cart"
-        >
-          🗑️
-        </div>
-
+        <h2>Total: <span id="total">0</span> VND</h2>
+        <div id="bin" onclick="clearCart()" title="Clear Cart">🗑️</div>
       </div>
 
-      <!-- =================================
-           ORDER FORM
-      ================================== -->
-
+      <!-- INFO/ORDER FORM -->
       <div class="products">
-
-        <form
-          id="orderForm"
-          action="https://formspree.io/f/xeenrvvk"
-          method="POST"
-        >
-
-          <h2>
-            💖 Your Info
-          </h2>
-
-          <input
-            type="text"
-            name="name"
-            placeholder="Your name"
-            required
-          >
-
-          <input
-            type="text"
-            name="contact"
-            placeholder="Phone / Instagram"
-            required
-          >
-
-          <input
-            type="hidden"
-            name="order"
-            id="orderData"
-          >
-
-          <button type="submit">
-            Place Order
-          </button>
-
+        <form id="orderForm" action="https://formspree.io/f/xeenrvvk" method="POST">
+          <h2>💖 Your Info</h2>
+          <input type="text" name="name" placeholder="Your name" required>
+          <input type="text" name="contact" placeholder="Phone / Instagram" required>
+          <input type="hidden" name="order" id="orderData">
+          <button type="submit">Place Order</button>
         </form>
-
       </div>
 
-    </div>
-
+    </div> <!-- End Container -->
   </section>
 
   <!-- =====================================
        CATALOG SECTION
   ====================================== -->
-
-  <section id="catalogSection">
-
-    <div
-      id="products"
-      class="catalog"
-    ></div>
-
+  <section id="catalogSection" style="display: none;">
+    <div id="products" class="catalog"></div>
   </section>
 
-  <!-- =====================================
-       SCRIPT
-  ====================================== -->
-
-  <script
-    type="module"
-    src="./script.js"
-  ></script>
+  <script type="module" src="./script.js"></script>
 
 </body>
-
 </html>
