@@ -52,7 +52,7 @@ function saveCart() {
 }
 
 /* =========================================
-   SECTION SWITCH
+   UI
 ========================================= */
 
 window.showSection = function(section) {
@@ -60,23 +60,23 @@ window.showSection = function(section) {
   const shop =
     document.getElementById("shopSection");
 
-  const catalogSec =
+  const catalogSection =
     document.getElementById("catalogSection");
 
   if (section === "shop") {
 
     shop.style.display = "block";
-    catalogSec.style.display = "none";
+    catalogSection.style.display = "none";
 
   } else {
 
     shop.style.display = "none";
-    catalogSec.style.display = "block";
+    catalogSection.style.display = "block";
   }
 };
 
 /* =========================================
-   THEME SYSTEM
+   THEME
 ========================================= */
 
 window.changeTheme = function(main, sub) {
@@ -94,15 +94,16 @@ window.changeTheme = function(main, sub) {
     sub
   );
 
-  root.style.setProperty(
-    "--button-bg",
-    main
-  );
-
   document.body.style.background =
     main;
 
-  /* BIN */
+  document.querySelectorAll(
+    ".nav button"
+  ).forEach(btn => {
+
+    btn.style.background =
+      main;
+  });
 
   const bin =
     document.getElementById("bin");
@@ -112,45 +113,10 @@ window.changeTheme = function(main, sub) {
     bin.style.background =
       main;
   }
-
-  /* NAV BUTTONS */
-
-  document
-    .querySelectorAll(".nav button")
-    .forEach(btn => {
-
-      btn.style.background =
-        main;
-    });
-
-  /* FORM BUTTON */
-
-  const orderBtn =
-    document.querySelector(
-      "#orderForm button"
-    );
-
-  if (orderBtn) {
-
-    orderBtn.style.background =
-      main;
-  }
-
-  /* CART +/- BUTTONS */
-
-  document
-    .querySelectorAll(
-      ".cart-controls button"
-    )
-    .forEach(btn => {
-
-      btn.style.background =
-        main;
-    });
 };
 
 /* =========================================
-   BOX COLOR
+   CANVAS COLOR
 ========================================= */
 
 window.changeSelectedColor =
@@ -158,17 +124,13 @@ window.changeSelectedColor =
 
     const colors = {
 
-      Pink:
-        "#d4acb4",
+      Pink: "#ffd4e5",
 
-      Blue:
-        "#bbc8d8",
+      Blue: "#cfe7ff",
 
-      White:
-        "#ffffff",
+      White: "#ffffff",
 
-      Brown:
-        "#9e7e67"
+      Brown: "#c99662"
     };
 
     canvas.style.background =
@@ -190,14 +152,17 @@ onSnapshot(
       }));
 
     renderCatalog();
+
     renderSuggestions();
+
     renderCart();
+
     renderBox();
   }
 );
 
 /* =========================================
-   ADD ITEM
+   CART
 ========================================= */
 
 function addItem(product) {
@@ -209,11 +174,9 @@ function addItem(product) {
 
   const sticker = {
 
-    x:
-      60 + Math.random() * 90,
+    x: 70 + Math.random() * 80,
 
-    y:
-      60 + Math.random() * 90
+    y: 70 + Math.random() * 80
   };
 
   if (existing) {
@@ -228,14 +191,11 @@ function addItem(product) {
 
     cart.push({
 
-      id:
-        product.id,
+      id: product.id,
 
-      name:
-        product.name,
+      name: product.name,
 
-      price:
-        Number(product.price),
+      price: Number(product.price),
 
       coverImage:
         product.coverImage,
@@ -243,11 +203,9 @@ function addItem(product) {
       emoji:
         product.emoji || "🧶",
 
-      quantity:
-        1,
+      quantity: 1,
 
-      stickers:
-        [sticker]
+      stickers: [sticker]
     });
   }
 
@@ -260,76 +218,65 @@ function addItem(product) {
   renderBox();
 }
 
-/* =========================================
-   REMOVE ITEM
-========================================= */
+function removeItem(id) {
 
-window.removeItem =
+  const item =
+    cart.find(i => i.id === id);
+
+  if (!item) return;
+
+  item.quantity--;
+
+  item.stickers.pop();
+
+  if (item.quantity <= 0) {
+
+    cart =
+      cart.filter(
+        i => i.id !== id
+      );
+  }
+
+  saveCart();
+
+  renderCart();
+
+  renderSuggestions();
+
+  renderBox();
+}
+
+window.addItemById = function(id) {
+
+  const product =
+    products.find(
+      p => p.id === id
+    );
+
+  if (product) {
+
+    addItem(product);
+  }
+};
+
+window.removeItemById =
   function(id) {
 
-    const item =
-      cart.find(
-        i => i.id === id
-      );
-
-    if (!item) return;
-
-    item.quantity--;
-
-    item.stickers.pop();
-
-    if (item.quantity <= 0) {
-
-      cart =
-        cart.filter(
-          i => i.id !== id
-        );
-    }
-
-    saveCart();
-
-    renderCart();
-
-    renderSuggestions();
-
-    renderBox();
+    removeItem(id);
   };
 
-/* =========================================
-   ADD BY ID
-========================================= */
+window.clearCart = function() {
 
-window.addItemById =
-  function(id) {
+  cart = [];
 
-    const product =
-      products.find(
-        p => p.id === id
-      );
+  saveCart();
 
-    if (product) {
+  renderCart();
 
-      addItem(product);
-    }
-  };
+  renderSuggestions();
 
-/* =========================================
-   CLEAR CART
-========================================= */
-
-window.clearCart =
-  function() {
-
-    cart = [];
-
-    saveCart();
-
-    renderCart();
-
-    renderSuggestions();
-
-    renderBox();
-  };
+  renderBox();
+};
 
 /* =========================================
    CATALOG
@@ -365,7 +312,8 @@ function renderCatalog() {
 
         <p>
           ${Number(product.price)
-            .toLocaleString()} VND
+            .toLocaleString()}
+          VND
         </p>
 
       </div>
@@ -399,7 +347,6 @@ function renderSuggestions() {
       )
     )
     .slice(0, 4)
-
     .forEach(product => {
 
       const div =
@@ -421,15 +368,15 @@ function renderSuggestions() {
         </p>
       `;
 
-      div.onclick =
-        () => addItem(product);
+      div.onclick = () =>
+        addItem(product);
 
       suggestionList.appendChild(div);
     });
 }
 
 /* =========================================
-   CART
+   CART RENDER
 ========================================= */
 
 function renderCart() {
@@ -474,7 +421,7 @@ function renderCart() {
       <div class="cart-controls">
 
         <button
-          onclick="removeItem('${item.id}')"
+          class="minus-btn"
         >
           −
         </button>
@@ -484,7 +431,7 @@ function renderCart() {
         </span>
 
         <button
-          onclick="addItemById('${item.id}')"
+          class="plus-btn"
         >
           +
         </button>
@@ -492,14 +439,27 @@ function renderCart() {
       </div>
     `;
 
+    li.querySelector(
+      ".minus-btn"
+    ).onclick = () =>
+      removeItem(item.id);
+
+    li.querySelector(
+      ".plus-btn"
+    ).onclick = () =>
+      addItem(item);
+
     cartList.appendChild(li);
   });
 
   totalEl.innerText =
     total.toLocaleString();
 
-  orderData.value =
-    JSON.stringify(cart);
+  if (orderData) {
+
+    orderData.value =
+      JSON.stringify(cart);
+  }
 }
 
 /* =========================================
@@ -523,7 +483,7 @@ function renderBox() {
         "sticker";
 
       el.innerText =
-        item.emoji;
+        item.emoji || "🧶";
 
       el.style.left =
         sticker.x + "px";
@@ -550,7 +510,7 @@ function enableDragging(
   sticker
 ) {
 
-  let isDragging = false;
+  let dragging = false;
 
   let startX = 0;
   let startY = 0;
@@ -562,21 +522,13 @@ function enableDragging(
     "pointerdown",
     (e) => {
 
-      e.preventDefault();
+      dragging = true;
 
-      isDragging = true;
+      startX = e.clientX;
+      startY = e.clientY;
 
-      startX =
-        e.clientX;
-
-      startY =
-        e.clientY;
-
-      initialX =
-        sticker.x;
-
-      initialY =
-        sticker.y;
+      initialX = sticker.x;
+      initialY = sticker.y;
 
       el.setPointerCapture(
         e.pointerId
@@ -588,7 +540,7 @@ function enableDragging(
     "pointermove",
     (e) => {
 
-      if (!isDragging) return;
+      if (!dragging) return;
 
       const dx =
         e.clientX - startX;
@@ -633,7 +585,7 @@ function enableDragging(
     "pointerup",
     () => {
 
-      isDragging = false;
+      dragging = false;
 
       saveCart();
     }
@@ -643,7 +595,7 @@ function enableDragging(
     "pointercancel",
     () => {
 
-      isDragging = false;
+      dragging = false;
     }
   );
 }
