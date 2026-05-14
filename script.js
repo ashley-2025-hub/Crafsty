@@ -125,16 +125,16 @@ window.changeSelectedColor = function(color) {
   const colors = {
 
     Pink:
-      "linear-gradient(180deg,#ffd4e5,#ffb7d2)",
+      "#d4acb4",
 
     Blue:
-      "linear-gradient(180deg,#cfe7ff,#9bc7ff)",
+      "#bbc8d8",
 
-    White:
-      "linear-gradient(180deg,#ffffff,#ececec)",
+    Purple:
+      "#cfc2ff",
 
     Brown:
-      "linear-gradient(180deg,#c99662,#9c6b3d)"
+      "#9e7e67"
   };
 
   canvas.style.background =
