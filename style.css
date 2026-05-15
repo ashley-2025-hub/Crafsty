@@ -23,6 +23,7 @@ body {
   margin: 0;
   padding: 24px;
   min-height: 100vh;
+  margin-bottom: 24px
 
   font-family: "Comic Sans MS", cursive;
   text-align: center;
