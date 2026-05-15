@@ -8,20 +8,51 @@
 </head>
 <body>
 
-  <h1>My Crochet Shop 🧶</h1>
+ <h1>
+  My Crochet Shop 🧶
+</h1>
+
+<div class="top-wrapper">
 
   <div class="nav">
-    <button type="button" onclick="showSection('shop')">🧾 Order</button>
-    <button type="button" onclick="showSection('catalog')">🧸 Catalog</button>
+
+    <button onclick="showSection('shop')">
+      🧾 Order
+    </button>
+
+    <button onclick="showSection('catalog')">
+      🧸 Catalog
+    </button>
+
   </div>
 
   <div class="theme-picker">
+
     <p>Theme:</p>
-    <div class="theme-btn brown" onclick="changeTheme('#9e7e67', '#efe3d3')"></div>
-    <div class="theme-btn blue" onclick="changeTheme('#bbc8d8', '#ebf0f6')"></div>
-    <div class="theme-btn pink" onclick="changeTheme('#d4acb4', '#fff9f9')"></div>
-    <div class="theme-btn purple" onclick="changeTheme('#c091f3', '#f6effd')"></div>
+
+    <button
+      class="theme-btn brown"
+      onclick="changeTheme('#9e7e67', '#FAFAFC')">
+    </button>
+
+    <button
+      class="theme-btn blue"
+      onclick="changeTheme('#bbc8d8', '#FAFAFC')">
+    </button>
+
+    <button
+      class="theme-btn pink"
+      onclick="changeTheme('#d4acb4', '#FAFAFC')">
+    </button>
+
+    <button
+      class="theme-btn purple"
+      onclick="changeTheme('#c091f3', '#FAFAFC')">
+    </button>
+
   </div>
+
+</div>
 
   <section id="shopSection">
     <div class="container">
