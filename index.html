@@ -1,111 +1,187 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Crochet Shop 🧶</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0" />
+
+  <title>My Crochet Shop 🧶</title>
+
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
- <h1>
-  My Crochet Shop 🧶
-</h1>
+  <!-- =========================================
+       TOP AREA
+  ========================================= -->
 
-<div class="top-wrapper">
+  <div class="top-wrapper">
 
-  <div class="nav">
+    <h1>My Crochet Shop 🧶</h1>
 
-    <button onclick="showSection('shop')">
-      🧾 Order
-    </button>
+    <div class="nav">
+      <button onclick="showSection('shop')">
+        🧾 Order
+      </button>
 
-    <button onclick="showSection('catalog')">
-      🧸 Catalog
-    </button>
+      <button onclick="showSection('catalog')">
+        🧸 Catalog
+      </button>
+    </div>
+
+    <div class="theme-picker">
+
+      <p>Theme:</p>
+
+      <button
+        class="theme-btn brown"
+        onclick="changeTheme('#9e7e67','#FAFAFC','#8f705a')">
+      </button>
+
+      <button
+        class="theme-btn blue"
+        onclick="changeTheme('#a9bfd6','#FAFAFC','#7f9bb6')">
+      </button>
+
+      <button
+        class="theme-btn pink"
+        onclick="changeTheme('#d4acb4','#FAFAFC','#bb8f9a')">
+      </button>
+
+      <button
+        class="theme-btn purple"
+        onclick="changeTheme('#b89ce6','#FAFAFC','#9275c7')">
+      </button>
+
+    </div>
 
   </div>
 
-  <div class="theme-picker">
-
-    <p>Theme:</p>
-
-    <button
-      class="theme-btn brown"
-      onclick="changeTheme('#9e7e67', '#FAFAFC')">
-    </button>
-
-    <button
-      class="theme-btn blue"
-      onclick="changeTheme('#bbc8d8', '#FAFAFC')">
-    </button>
-
-    <button
-      class="theme-btn pink"
-      onclick="changeTheme('#d4acb4', '#FAFAFC')">
-    </button>
-
-    <button
-      class="theme-btn purple"
-      onclick="changeTheme('#c091f3', '#FAFAFC')">
-    </button>
-
-  </div>
-
-</div>
+  <!-- =========================================
+       SHOP SECTION
+  ========================================= -->
 
   <section id="shopSection">
+
     <div class="container">
 
-      <!-- CART BOX -->
+      <!-- CART -->
+
       <div class="products">
+
         <h2>🛒 In Cart</h2>
+
+        <p id="empty">
+          Your cart is empty 🧺
+        </p>
+
         <ul id="cart"></ul>
-        <p id="empty">Your cart is empty 🧺</p>
 
         <div id="suggestions">
+
           <h3>✨ You may also like</h3>
+
           <div id="suggestionList"></div>
+
         </div>
+
       </div>
 
-      <!-- CUSTOMIZATION BOX -->
+      <!-- BOX -->
+
       <div class="box">
+
         <h2>Your Box</h2>
+
         <div class="box-layout">
+
           <div id="canvas"></div>
 
           <div class="color-panel">
+
             <h3>Colors</h3>
-            <button type="button" class="color-circle pink" onclick="changeSelectedColor('Pink')"></button>
-            <button type="button" class="color-circle blue" onclick="changeSelectedColor('Blue')"></button>
-            <button type="button" class="color-circle white" onclick="changeSelectedColor('White')"></button>
-            <button type="button" class="color-circle brown" onclick="changeSelectedColor('Brown')"></button>
+
+            <button class="color-circle pink"
+              onclick="changeSelectedColor('Pink')"></button>
+
+            <button class="color-circle blue"
+              onclick="changeSelectedColor('Blue')"></button>
+
+            <button class="color-circle purple"
+              onclick="changeSelectedColor('Purple')"></button>
+
+            <button class="color-circle brown"
+              onclick="changeSelectedColor('Brown')"></button>
+
           </div>
+
         </div>
 
-        <h2>Total: <span id="total">0</span> VND</h2>
-        <div id="bin" onclick="clearCart()" title="Clear Cart">🗑️</div>
+        <h2>
+          Total:
+          <span id="total">0</span>
+          VND
+        </h2>
+
+        <div id="bin"
+          onclick="clearCart()">
+          🗑️
+        </div>
+
       </div>
 
-      <!-- INFO/ORDER FORM -->
+      <!-- INFO -->
+
       <div class="products">
-        <form id="orderForm" action="https://formspree.io/f/xeenrvvk" method="POST">
-          <h2>💖 Your Info</h2>
-          <input type="text" name="name" placeholder="Your name" required>
-          <input type="text" name="contact" placeholder="Phone / Instagram" required>
-          <input type="hidden" name="order" id="orderData">
-          <button type="submit">Place Order</button>
+
+        <h2>💖 Your Info</h2>
+
+        <form id="orderForm">
+
+          <input
+            type="text"
+            placeholder="Your name"
+            required>
+
+          <input
+            type="text"
+            placeholder="Phone / Instagram"
+            required>
+
+          <textarea
+            placeholder="Notes..."
+            rows="4"></textarea>
+
+          <input
+            type="hidden"
+            id="orderData">
+
+          <button type="submit">
+            Place Order
+          </button>
+
         </form>
+
       </div>
 
     </div>
+
   </section>
 
-  <section id="catalogSection" style="display: none;">
-    <div id="products" class="catalog"></div>
+  <!-- =========================================
+       CATALOG SECTION
+  ========================================= -->
+
+  <section id="catalogSection">
+
+    <div class="catalog"></div>
+
   </section>
 
-  <script type="module" src="./script.js"></script>
+  <script type="module" src="script.js"></script>
+
 </body>
+
 </html>
