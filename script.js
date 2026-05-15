@@ -96,23 +96,6 @@ window.changeTheme = function(main, sub) {
 
   document.body.style.background =
     main;
-
-  document.querySelectorAll(
-    ".nav button"
-  ).forEach(btn => {
-
-    btn.style.background =
-      main;
-  });
-
-  const bin =
-    document.getElementById("bin");
-
-  if (bin) {
-
-    bin.style.background =
-      main;
-  }
 };
 
 /* =========================================
