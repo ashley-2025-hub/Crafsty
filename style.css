@@ -93,7 +93,7 @@ span {
 
   background: var(--button-bg);
   
-  color: white;
+  color: var(--text-dark);
   font-size: 15px;
   font-weight: bold;
   font-family: inherit;
