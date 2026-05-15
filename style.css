@@ -91,8 +91,6 @@ span {
   border: none;
   border-radius: 18px;
 
-  background: var(--button-bg);
-
   color: white;
   font-size: 15px;
   font-weight: bold;
