@@ -96,6 +96,14 @@ window.changeTheme = function(main, sub) {
 
   document.body.style.background =
     main;
+
+  document.querySelectorAll(
+    ".nav button"
+  ).forEach(btn => {
+
+    btn.style.background =
+      sub;
+  });
 };
 
 /* =========================================
