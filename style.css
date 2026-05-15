@@ -23,7 +23,6 @@ body {
   margin: 0;
   padding: 24px;
   min-height: 100vh;
-  margin-bottom: 24px
 
   font-family: "Comic Sans MS", cursive;
   text-align: center;
@@ -35,7 +34,7 @@ body {
 }
 
 h1 {
-  margin: 0 0 22px;
+  margin-bottom: 22px;
 
   color: white;
   font-size: 56px;
@@ -98,6 +97,7 @@ span {
     0 6px 14px rgba(0, 0, 0, 0.10);
 
   transition: 0.2s;
+  margin-bottom: 24px
 }
 
 .nav button:hover {
