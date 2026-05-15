@@ -72,45 +72,6 @@ span {
 }
 
 /* =========================================
-   NAVIGATION
-========================================= */
-
-.nav {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  gap: 14px;
-}
-
-.nav button {
-  padding: 12px 24px;
-
-  border: none;
-  border-radius: 18px;
-
-  background: var(--button-bg);
-
-  color: white;
-  font-size: 15px;
-  font-weight: bold;
-  font-family: inherit;
-
-  cursor: pointer;
-
-  box-shadow:
-    0 6px 14px rgba(0, 0, 0, 0.10);
-
-  transition: 0.2s;
-}
-
-.nav button:hover {
-  transform:
-    translateY(-2px)
-    scale(1.03);
-}
-
-/* =========================================
    THEME PICKER
 ========================================= */
 
@@ -164,6 +125,44 @@ span {
 
 .theme-btn.purple {
   background: #c091f3;
+}
+/* =========================================
+   NAVIGATION
+========================================= */
+
+.nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  gap: 14px;
+}
+
+.nav button {
+  padding: 12px 24px;
+
+  border: none;
+  border-radius: 18px;
+
+  background: var(--button-bg);
+
+  color: white;
+  font-size: 15px;
+  font-weight: bold;
+  font-family: inherit;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 6px 14px rgba(0, 0, 0, 0.10);
+
+  transition: 0.2s;
+}
+
+.nav button:hover {
+  transform:
+    translateY(-2px)
+    scale(1.03);
 }
 
 /* =========================================
