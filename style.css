@@ -2,6 +2,7 @@
   --main-bg: #9e7e67;
   --card-bg: #FAFAFC;
   --button-bg: #ffffff;
+
   --text-dark: #5d4358;
   --text-light: #6a5963;
 }
@@ -20,7 +21,7 @@ img {
 }
 
 body {
-  margin: 10px;
+  margin: 0;
   padding: 24px;
   min-height: 100vh;
 
@@ -65,7 +66,6 @@ span {
 
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
 
   gap: 18px;
@@ -92,8 +92,9 @@ span {
   border-radius: 18px;
 
   background: var(--button-bg);
-  
+
   color: var(--text-dark);
+
   font-size: 15px;
   font-weight: bold;
   font-family: inherit;
@@ -161,8 +162,7 @@ span {
 }
 
 .theme-btn.purple {
-  background: #
-  ;
+  background: #c091f3;
 }
 
 /* =========================================
@@ -262,7 +262,9 @@ span {
 
   background: var(--button-bg);
 
-  color: white;
+  color: var(--text-dark);
+
+  font-weight: bold;
 
   cursor: pointer;
 }
@@ -362,6 +364,17 @@ span {
   touch-action: none;
 
   cursor: grab;
+
+  transition: transform 0.15s ease;
+}
+
+.sticker:hover {
+  transform: scale(1.08);
+}
+
+.sticker:active {
+  cursor: grabbing;
+  transform: scale(1.12);
 }
 
 /* =========================================
@@ -382,7 +395,8 @@ span {
 
   background: var(--button-bg);
 
-  color: white;
+  color: var(--text-dark);
+
   font-size: 28px;
 
   cursor: pointer;
@@ -472,11 +486,15 @@ textarea {
 
   background: var(--button-bg);
 
-  color: white;
+  color: var(--text-dark);
+
   font-weight: bold;
   font-family: inherit;
 
   cursor: pointer;
+
+  box-shadow:
+    0 6px 14px rgba(0, 0, 0, 0.10);
 }
 
 /* =========================================
