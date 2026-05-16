@@ -97,6 +97,12 @@
   font-size: 16px;
 }
 
+#productForm button:hover {
+  transform:
+    translateY(-2px)
+    scale(1.03);
+}
+
 /* =========================================
    PRODUCT GRID
 ========================================= */
