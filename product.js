@@ -1,10 +1,12 @@
 import { db } from "./firebase-config.js";
 
 import {
+
   doc,
   getDoc,
   collection,
   getDocs
+
 } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
 /* =========================
@@ -32,6 +34,9 @@ const thumbnailRow =
 const suggestionList =
   document.getElementById("suggestionList");
 
+const addToCartBtn =
+  document.getElementById("addToCartBtn");
+
 /* =========================
    GET PRODUCT ID
 ========================= */
@@ -42,13 +47,21 @@ const params =
 const productId =
   params.get("id");
 
+console.log("PRODUCT ID:", productId);
+
 /* =========================
    LOAD PRODUCT
 ========================= */
 
 async function loadProduct() {
 
-  if (!productId) return;
+  if (!productId) {
+
+    productTitle.textContent =
+      "Missing Product ID";
+
+    return;
+  }
 
   try {
 
@@ -66,24 +79,31 @@ async function loadProduct() {
       return;
     }
 
-    const product = snapshot.data();
+    const product = {
+
+      id: snapshot.id,
+
+      ...snapshot.data()
+
+    };
 
     /* =========================
        TEXT
     ========================= */
 
     productTitle.textContent =
-      product.name;
+      product.name || "Unnamed Product";
 
     productName.textContent =
-      `${product.emoji || "🧶"} ${product.name}`;
+      `${product.emoji || "🧶"} ${product.name || "Unnamed Product"}`;
 
     productPrice.textContent =
       `${Number(product.price || 0)
         .toLocaleString()} VND`;
 
     productDescription.textContent =
-      product.description || "";
+      product.description ||
+      "No description yet.";
 
     /* =========================
        IMAGES
@@ -97,11 +117,11 @@ async function loadProduct() {
 
     ].filter(Boolean);
 
+    thumbnailRow.innerHTML = "";
+
     if (images.length > 0) {
 
       mainImage.src = images[0];
-
-      thumbnailRow.innerHTML = "";
 
       images.forEach((imageUrl) => {
 
@@ -113,25 +133,82 @@ async function loadProduct() {
         img.className =
           "thumbnail-image";
 
-        img.addEventListener(
-          "click",
-          () => {
+        img.onclick = () => {
 
-            mainImage.src = imageUrl;
-          }
-        );
+          mainImage.src =
+            imageUrl;
+
+        };
 
         thumbnailRow.appendChild(img);
 
       });
 
+    } else {
+
+      mainImage.src =
+        "https://placehold.co/600x600?text=No+Image";
+
     }
+
+    /* =========================
+       ADD TO CART
+    ========================= */
+
+    addToCartBtn.onclick = () => {
+
+      let cart =
+        JSON.parse(
+          localStorage.getItem("cart")
+        ) || [];
+
+      const existing =
+        cart.find(
+          item => item.id === product.id
+        );
+
+      if (existing) {
+
+        existing.quantity++;
+
+      } else {
+
+        cart.push({
+
+          id: product.id,
+
+          name: product.name,
+
+          price: Number(product.price || 0),
+
+          coverImage:
+            product.coverImage || "",
+
+          emoji:
+            product.emoji || "🧶",
+
+          quantity: 1,
+
+          stickers: []
+
+        });
+
+      }
+
+      localStorage.setItem(
+        "cart",
+        JSON.stringify(cart)
+      );
+
+      alert("Added To Cart 🛒");
+
+    };
 
     /* =========================
        SUGGESTIONS
     ========================= */
 
-    loadSuggestions(productId);
+    loadSuggestions(product.id);
 
   } catch (error) {
 
@@ -139,11 +216,13 @@ async function loadProduct() {
 
     productTitle.textContent =
       "Failed To Load Product";
+
   }
+
 }
 
 /* =========================
-   SUGGESTIONS
+   LOAD SUGGESTIONS
 ========================= */
 
 async function loadSuggestions(currentId) {
@@ -152,17 +231,20 @@ async function loadSuggestions(currentId) {
 
   try {
 
-    const snapshot = await getDocs(
-      collection(db, "products")
-    );
+    const snapshot =
+      await getDocs(
+        collection(db, "products")
+      );
 
     suggestionList.innerHTML = "";
 
     snapshot.forEach((docSnap) => {
 
-      if (docSnap.id === currentId) return;
+      if (docSnap.id === currentId)
+        return;
 
-      const product = docSnap.data();
+      const product =
+        docSnap.data();
 
       const card =
         document.createElement("div");
@@ -171,25 +253,29 @@ async function loadSuggestions(currentId) {
         "catalog-card";
 
       card.innerHTML = `
+
         <img
-          src="${product.coverImage || ''}"
+          src="${product.coverImage || ""}"
           class="catalog-image"
         >
 
-        <h3>
-          ${product.emoji || "🧶"}
-          ${product.name}
-        </h3>
+        <div class="catalog-info">
+
+          <h3>
+            ${product.emoji || "🧶"}
+            ${product.name || "Unnamed"}
+          </h3>
+
+        </div>
+
       `;
 
-      card.addEventListener(
-        "click",
-        () => {
+      card.onclick = () => {
 
-          window.location.href =
-            `product.html?id=${docSnap.id}`;
-        }
-      );
+        window.location.href =
+          `product.html?id=${docSnap.id}`;
+
+      };
 
       suggestionList.appendChild(card);
 
@@ -198,7 +284,9 @@ async function loadSuggestions(currentId) {
   } catch (error) {
 
     console.error(error);
+
   }
+
 }
 
 /* =========================
@@ -206,5 +294,3 @@ async function loadSuggestions(currentId) {
 ========================= */
 
 loadProduct();
-
-Underline Logo
