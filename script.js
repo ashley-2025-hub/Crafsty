@@ -97,7 +97,8 @@ function applyTheme(main, sub) {
     .querySelectorAll(".nav button")
     .forEach(btn => {
 
-      btn.style.background = sub;
+      btn.style.background =
+        sub;
 
       btn.style.color =
         "#5d4358";
@@ -227,7 +228,7 @@ window.changeSelectedColor =
   };
 
 /* =========================================
-   FIREBASE SYNC
+   FIREBASE REALTIME SYNC
 ========================================= */
 
 onSnapshot(
@@ -565,27 +566,21 @@ function renderCart() {
   totalEl.innerText =
     total.toLocaleString();
 
-  /* UPDATE FORM DATA */
+  /* =========================================
+     PRETTY ORDER FORMAT
+  ========================================= */
 
   if (orderData) {
 
-    const formattedOrder =
+    const prettyOrder =
       cart.map(item => {
 
-        return `
-${item.emoji || "🧶"} ${item.name}
+        return `${item.emoji || "🧶"} ${item.name} x${item.quantity}`;
 
-Quantity:
-${item.quantity}
-
-Price:
-${Number(item.price)
-  .toLocaleString()} VND
-`;
-      }).join("\n----------------\n");
+      }).join(" | ");
 
     orderData.value =
-      formattedOrder;
+      prettyOrder;
   }
 
   if (totalData) {
@@ -758,7 +753,9 @@ function enableDragging(
 ========================================= */
 
 const orderForm =
-  document.getElementById("orderForm");
+  document.getElementById(
+    "orderForm"
+  );
 
 if (orderForm) {
 
@@ -777,25 +774,17 @@ if (orderForm) {
           item.quantity;
       });
 
-      const formattedOrder =
-        cart.map(item => {
-
-          return `
-${item.emoji || "🧶"} ${item.name}
-
-Quantity:
-${item.quantity}
-
-Price:
-${Number(item.price)
-  .toLocaleString()} VND
-`;
-        }).join("\n----------------\n");
-
       if (orderData) {
 
+        const prettyOrder =
+          cart.map(item => {
+
+            return `${item.emoji || "🧶"} ${item.name} x${item.quantity}`;
+
+          }).join(" | ");
+
         orderData.value =
-          formattedOrder;
+          prettyOrder;
       }
 
       if (totalData) {
