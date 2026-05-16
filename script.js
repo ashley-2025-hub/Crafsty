@@ -428,7 +428,7 @@ function renderCatalog() {
       () => {
 
         window.location.href =
-          \`product.html?id=\${product.id}\`;
+          `product.html?id=${product.id}`;
       }
     );
 
@@ -566,9 +566,7 @@ function renderCart() {
   totalEl.innerText =
     total.toLocaleString();
 
-  /* =========================================
-     PRETTY ORDER FORMAT
-  ========================================= */
+  /* PRETTY ORDER FORMAT */
 
   if (orderData) {
 
