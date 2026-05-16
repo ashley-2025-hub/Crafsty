@@ -4,6 +4,8 @@
   --button-bg: #8f705a;
   --text-dark: #5d4358;
   --text-light: #7a6672;
+  --shadow: #875927
+  
 }
 
 /* =========================================
@@ -28,7 +30,7 @@ h1 {
   margin-bottom: 40px;
   color: white;
   font-size: 56px;
-  text-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  text-shadow: var(--shadow);
 }
 
 img {
@@ -66,11 +68,11 @@ img {
   margin-bottom: 24px;
   color: white;
   font-size: 36px;
-  text-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  text-shadow: var(--shadow);
 }
 
 /* =========================================
-   ADD PRODUCT FORM CONTAINER
+   FORM
 ========================================= */
 #productForm {
   width: 100%;
@@ -78,23 +80,22 @@ img {
   
   display: flex;
   flex-direction: column;
-  gap: 18px; /* Perfectly gaps input components inside */
+  gap: 18px;
   
   padding: 30px;
   border-radius: 32px;
   
-  /* FIXED: Thick, clean matching border profile */
   border: 4px solid #fff9f9; 
   
   backdrop-filter: blur(18px);
-  box-shadow: 0 14px 35px rgba(115, 90, 73, 0.25);
+  box-shadow: var(--shadow);
   transition: transform 0.25s ease;
 }
 
 #productForm input,
 #productForm textarea {
   width: 100%;
-  padding: 16px 20px; /* Safe padding framework */
+  padding: 16px 20px;
   background: white;
   border: 2px solid transparent;
   border-radius: 20px;
@@ -112,7 +113,7 @@ img {
 #productForm textarea:focus {
   outline: none;
   border-color: var(--main-bg);
-  box-shadow: 0 0 0 4px rgba(158, 126, 103, 0.15);
+  box-shadow: var(--shadow);
 }
 
 #productForm textarea {
@@ -130,7 +131,7 @@ img {
   font-size: 20px;
   font-weight: bold;
   cursor: pointer;
-  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow);
   transition: transform 0.2s ease, background-color 0.2s ease;
 }
 
@@ -160,16 +161,16 @@ img {
   border-radius: 32px;
   color: var(--text-dark);
   background: var(--card-bg);
-  border: 4px solid transparent; /* Keeps sizing symmetric with the form */
+  border: 4px solid transparent;
   
   backdrop-filter: blur(18px);
-  box-shadow: 0 14px 35px rgba(115, 90, 73, 0.15);
+  box-shadow: var(--shadow);
   transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease;
 }
 
 .product-card:hover {
   transform: translateY(-6px);
-  box-shadow: 0 20px 45px rgba(115, 90, 73, 0.25);
+  box-shadow: #5f3f1c;
 }
 
 .product-card img {
@@ -179,7 +180,7 @@ img {
   border-radius: 22px;
   margin-bottom: 20px;
   background: white;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  box-shadow: var(--shadow);
 }
 
 .product-card h3 {
@@ -196,7 +197,6 @@ img {
   line-height: 1.5;
 }
 
-/* Delete / Action Button inside Cards */
 .product-card button {
   width: 100%;
   margin-top: 14px;
