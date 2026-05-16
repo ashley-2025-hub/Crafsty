@@ -41,30 +41,55 @@ const addToCartBtn =
 
 function loadSavedTheme() {
 
-  const savedMain =
-    localStorage.getItem("themeMain");
+  const savedTheme =
+    JSON.parse(
+      localStorage.getItem("theme")
+    );
 
-  const savedSub =
-    localStorage.getItem("themeSub");
-
-  if (!savedMain || !savedSub)
-    return;
+  if (!savedTheme) return;
 
   const root =
     document.documentElement;
 
+  /* IMPORTANT */
+
   root.style.setProperty(
     "--main-bg",
-    savedMain
+    savedTheme.main
   );
 
   root.style.setProperty(
     "--sub-bg",
-    savedSub
+    savedTheme.sub
   );
 
   document.body.style.background =
-    savedMain;
+    savedTheme.main;
+
+  /* BACK BUTTON */
+
+  const backBtn =
+    document.querySelector(".back-btn");
+
+  if (backBtn) {
+
+    backBtn.style.background =
+      savedTheme.sub;
+
+    backBtn.style.color =
+      "#5d4358";
+  }
+
+  /* PRODUCT BUTTON */
+
+  if (addToCartBtn) {
+
+    addToCartBtn.style.background =
+      savedTheme.main;
+
+    addToCartBtn.style.color =
+      "white";
+  }
 }
 
 /* =========================
@@ -72,9 +97,7 @@ function loadSavedTheme() {
 ========================= */
 
 const params =
-  new URLSearchParams(
-    window.location.search
-  );
+  new URLSearchParams(window.location.search);
 
 const productId =
   params.get("id");
@@ -96,11 +119,7 @@ async function loadProduct() {
   try {
 
     const productRef =
-      doc(
-        db,
-        "products",
-        productId
-      );
+      doc(db, "products", productId);
 
     const snapshot =
       await getDoc(productRef);
@@ -113,14 +132,14 @@ async function loadProduct() {
       return;
     }
 
-    const product =
-      snapshot.data();
+    const product = snapshot.data();
 
-    /* TITLE */
+    /* =========================
+       TEXT
+    ========================= */
 
     productTitle.textContent =
-      product.name ||
-      "Unnamed Product";
+      product.name || "Unnamed Product";
 
     productName.textContent =
       `${product.emoji || "🧶"} ${product.name || ""}`;
@@ -133,7 +152,9 @@ async function loadProduct() {
       product.description ||
       "No description yet.";
 
-    /* IMAGES */
+    /* =========================
+       IMAGES
+    ========================= */
 
     const images = [
 
@@ -151,110 +172,117 @@ async function loadProduct() {
       thumbnailRow.innerHTML =
         "";
 
-      images.forEach(
-        (imageUrl) => {
+      images.forEach((imageUrl) => {
 
-          const img =
-            document.createElement("img");
+        const img =
+          document.createElement("img");
 
-          img.src =
-            imageUrl;
+        img.src =
+          imageUrl;
 
-          img.className =
-            "thumbnail-image";
+        img.className =
+          "thumbnail-image";
 
-          img.onclick =
-            () => {
+        img.addEventListener(
+          "click",
+          () => {
 
-              mainImage.src =
-                imageUrl;
-            };
+            mainImage.src =
+              imageUrl;
+          }
+        );
 
-          thumbnailRow.appendChild(img);
-        }
-      );
+        thumbnailRow.appendChild(img);
+
+      });
+
     }
 
-    /* ADD TO CART */
+    /* =========================
+       ADD TO CART
+    ========================= */
 
-    if (addToCartBtn) {
+    addToCartBtn.onclick =
+      () => {
 
-      addToCartBtn.onclick =
-        () => {
+        const cart =
+          JSON.parse(
+            localStorage.getItem("cart")
+          ) || [];
 
-          let cart =
-            JSON.parse(
-              localStorage.getItem("cart")
-            ) || [];
+        const existing =
+          cart.find(
+            item =>
+              item.id === productId
+          );
 
-          const existing =
-            cart.find(
-              item =>
-                item.id === productId
-            );
+        if (existing) {
 
-          const sticker = {
+          existing.quantity++;
+
+          existing.stickers.push({
 
             x:
-              40 +
-              Math.random() * 110,
+              40 + Math.random() * 110,
 
             y:
-              40 +
-              Math.random() * 110
-          };
+              40 + Math.random() * 110
+          });
 
-          if (existing) {
+        } else {
 
-            existing.quantity++;
+          cart.push({
 
-            existing.stickers.push(
-              sticker
-            );
+            id: productId,
 
-          } else {
+            name:
+              product.name,
 
-            cart.push({
+            price:
+              Number(
+                product.price || 0
+              ),
 
-              id:
-                productId,
+            coverImage:
+              product.coverImage || "",
 
-              name:
-                product.name,
+            emoji:
+              product.emoji || "🧶",
 
-              price:
-                Number(
-                  product.price || 0
-                ),
+            quantity: 1,
 
-              coverImage:
-                product.coverImage || "",
+            stickers: [{
 
-              emoji:
-                product.emoji || "🧶",
+              x: 50,
 
-              quantity: 1,
+              y: 50
+            }]
+          });
+        }
 
-              stickers: [sticker]
-            });
-          }
+        localStorage.setItem(
 
-          localStorage.setItem(
-            "cart",
-            JSON.stringify(cart)
-          );
+          "cart",
 
-          alert(
-            "Added To Cart 🛒"
-          );
-        };
-    }
+          JSON.stringify(cart)
+        );
 
-    /* SUGGESTIONS */
+        addToCartBtn.textContent =
+          "Added 🛒";
 
-    loadSuggestions(
-      productId
-    );
+        setTimeout(() => {
+
+          addToCartBtn.textContent =
+            "Add To Cart";
+
+        }, 1200);
+      };
+
+    /* =========================
+       SUGGESTIONS
+    ========================= */
+
+    loadSuggestions(productId);
 
   } catch (error) {
 
@@ -266,81 +294,76 @@ async function loadProduct() {
 }
 
 /* =========================
-   SUGGESTIONS
+   LOAD SUGGESTIONS
 ========================= */
 
-async function loadSuggestions(
-  currentId
-) {
+async function loadSuggestions(currentId) {
 
   try {
 
     const snapshot =
       await getDocs(
-        collection(
-          db,
-          "products"
-        )
+        collection(db, "products")
       );
 
     suggestionList.innerHTML =
       "";
 
-    snapshot.forEach(
-      (docSnap) => {
+    snapshot.forEach((docSnap) => {
 
-        if (
-          docSnap.id === currentId
-        ) return;
+      if (
+        docSnap.id === currentId
+      ) return;
 
-        const product =
-          docSnap.data();
+      const product =
+        docSnap.data();
 
-        const card =
-          document.createElement("div");
+      const card =
+        document.createElement("div");
 
-        card.className =
-          "catalog-card";
+      card.className =
+        "catalog-card";
 
-        card.innerHTML = `
+      card.innerHTML = `
 
-          <img
-            src="${product.coverImage || ""}"
-            class="catalog-image"
-          >
+        <img
+          src="${product.coverImage || ""}"
+          alt="${product.name || ""}"
+          class="catalog-image"
+        >
 
-          <div class="catalog-info">
+        <div class="catalog-info">
 
-            <h3>
+          <h3>
 
-              ${product.emoji || "🧶"}
+            ${product.emoji || "🧶"}
 
-              ${product.name || ""}
+            ${product.name || ""}
 
-            </h3>
+          </h3>
 
-            <p>
+          <p>
 
-              ${Number(product.price || 0)
-                .toLocaleString()} VND
+            ${Number(product.price || 0)
+              .toLocaleString()} VND
 
-            </p>
+          </p>
 
-          </div>
-        `;
+        </div>
+      `;
 
-        card.onclick =
-          () => {
+      card.onclick =
+        () => {
 
-            window.location.href =
-              `product.html?id=${docSnap.id}`;
-          };
+          window.location.href =
+            `product.html?id=${docSnap.id}`;
+        };
 
-        suggestionList.appendChild(
-          card
-        );
-      }
-    );
+      suggestionList.appendChild(
+        card
+      );
+
+    });
 
   } catch (error) {
 
