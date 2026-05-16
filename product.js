@@ -210,28 +210,95 @@ loadProduct();
    ADD TO CART
 ========================= */
 
-const addBtn = document.getElementById("addToCartBtn");
+const addBtn =
+  document.getElementById(
+    "addToCartBtn"
+  );
 
 if (addBtn) {
 
-  addBtn.addEventListener("click", async () => {
+  addBtn.addEventListener(
+    "click",
+    async () => {
 
-    const snapshot = await getDoc(
-      doc(db, "products", productId)
-    );
+      const snapshot =
+        await getDoc(
+          doc(
+            db,
+            "products",
+            productId
+          )
+        );
 
-    if (!snapshot.exists()) return;
+      if (!snapshot.exists()) return;
 
-    const product = snapshot.data();
+      const product =
+        snapshot.data();
 
-    const cart =
-      JSON.parse(localStorage.getItem("cart")) || [];
+      let cart =
+        JSON.parse(
+          localStorage.getItem("cart")
+        ) || [];
 
-    cart.push(product);
+      const existing =
+        cart.find(
+          item => item.id === productId
+        );
 
-    localStorage.setItem("cart", JSON.stringify(cart));
+      const sticker = {
 
-    alert("Added to cart 🛒");
-  });
+        x: 40 + Math.random() * 120,
 
+        y: 40 + Math.random() * 120
+      };
+
+      if (existing) {
+
+        existing.quantity++;
+
+        existing.stickers.push(
+          sticker
+        );
+
+      } else {
+
+        cart.push({
+
+          id: productId,
+
+          name: product.name,
+
+          price: Number(
+            product.price || 0
+          ),
+
+          coverImage:
+            product.coverImage || "",
+
+          emoji:
+            product.emoji || "🧶",
+
+          quantity: 1,
+
+          stickers: [sticker]
+        });
+      }
+
+      localStorage.setItem(
+        "cart",
+        JSON.stringify(cart)
+      );
+
+      addBtn.textContent =
+        "Added ✨";
+
+      setTimeout(() => {
+
+        addBtn.textContent =
+          "Add To Cart";
+
+      }, 1200);
+    }
+  );
+}
 }
