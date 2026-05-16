@@ -1,20 +1,60 @@
+/* =========================================
+   ROOT
+========================================= */
+
 :root {
+
   --main-bg: #9e7e67;
+
   --sub-bg: #e4dbd5;
-  --shadow: ##875927;
+
+  --shadow: 0 10px 30px rgba(0,0,0,0.12);
 
   --text-dark: #5d4358;
+
   --text-light: #e4dee1;
 }
+
 /* =========================================
-   PRODUCT PAGE
+   GLOBAL
+========================================= */
+
+* {
+
+  box-sizing: border-box;
+}
+
+body {
+
+  margin: 0;
+
+  padding: 24px;
+
+  min-height: 100vh;
+
+  font-family: "Comic Sans MS", cursive;
+
+  background: var(--main-bg);
+
+  transition: 0.25s;
+}
+
+img {
+
+  max-width: 100%;
+
+  display: block;
+}
+
+/* =========================================
+   BACK BUTTON
 ========================================= */
 
 .back-btn {
 
   display: inline-flex;
 
-  align-items: left;
+  align-items: center;
 
   gap: 10px;
 
@@ -49,7 +89,25 @@
 }
 
 /* =========================================
-   PAGE LAYOUT
+   TITLE
+========================================= */
+
+#productTitle {
+
+  text-align: center;
+
+  color: white;
+
+  font-size: 52px;
+
+  margin-bottom: 30px;
+
+  text-shadow:
+    0 6px 14px rgba(0,0,0,0.18);
+}
+
+/* =========================================
+   PAGE
 ========================================= */
 
 .product-page {
@@ -78,13 +136,9 @@
 
   background: var(--sub-bg);
 
-  border: 2px solid var(--text-light);
-
   border-radius: 32px;
 
   padding: 28px;
-
-  backdrop-filter: blur(18px);
 
   box-shadow: var(--shadow);
 }
@@ -94,8 +148,6 @@
 ========================================= */
 
 .product-gallery {
-
-  width: 100%;
 
   display: flex;
 
@@ -112,21 +164,13 @@
 
   width: 100%;
 
-  max-height: 700px;
-
   aspect-ratio: 1 / 1;
 
   object-fit: cover;
 
-  display: block;
-
-  background: white;
-
   border-radius: 24px;
 
-  overflow: hidden;
-
-  border: 2px solid var(--text-light);
+  background: white;
 
   box-shadow: var(--shadow);
 }
@@ -143,8 +187,6 @@
     repeat(auto-fit, minmax(90px, 1fr));
 
   gap: 14px;
-
-  width: 100%;
 }
 
 .thumbnail-image {
@@ -157,18 +199,13 @@
 
   border-radius: 18px;
 
-  background: white;
-
   cursor: pointer;
+
+  background: white;
 
   transition: 0.22s;
 
-  border:
-    3px solid transparent;
-
-  overflow: hidden;
-
-  box-sizing: border-box;
+  border: 3px solid transparent;
 }
 
 .thumbnail-image:hover {
@@ -178,12 +215,10 @@
     scale(1.04);
 
   border-color: var(--main-bg);
-
-  box-shadow: var(--shadow);
 }
 
 /* =========================================
-   INFO PANEL
+   INFO
 ========================================= */
 
 .product-info-panel {
@@ -200,8 +235,6 @@
   font-size: 38px;
 
   line-height: 1.2;
-
-  color: var(--text-dark);
 }
 
 .product-price {
@@ -211,8 +244,6 @@
   font-size: 30px;
 
   font-weight: bold;
-
-  color: var(--text-dark);
 }
 
 .product-description {
@@ -223,13 +254,11 @@
 
   font-size: 18px;
 
-  color: var(--text-dark);
-
   white-space: pre-line;
 }
 
 /* =========================================
-   BUTTON
+   ADD BUTTON
 ========================================= */
 
 .big-add-btn {
@@ -267,10 +296,108 @@
 }
 
 /* =========================================
+   SUGGESTIONS
+========================================= */
+
+.suggest-section {
+
+  max-width: 1300px;
+
+  margin: 60px auto 0;
+}
+
+.suggest-section h2 {
+
+  text-align: center;
+
+  color: white;
+
+  margin-bottom: 26px;
+
+  font-size: 34px;
+}
+
+.suggestion-grid {
+
+  display: grid;
+
+  grid-template-columns:
+    repeat(auto-fit, minmax(240px, 1fr));
+
+  gap: 24px;
+}
+
+/* =========================================
+   CARDS
+========================================= */
+
+.catalog-card {
+
+  overflow: hidden;
+
+  border-radius: 28px;
+
+  background: var(--sub-bg);
+
+  cursor: pointer;
+
+  transition: 0.25s;
+
+  box-shadow: var(--shadow);
+}
+
+.catalog-card:hover {
+
+  transform:
+    translateY(-6px)
+    scale(1.02);
+}
+
+.catalog-image {
+
+  width: 100%;
+
+  height: 250px;
+
+  object-fit: cover;
+}
+
+.catalog-info {
+
+  padding: 18px;
+
+  text-align: center;
+}
+
+.catalog-info h3 {
+
+  margin: 0;
+
+  color: var(--text-dark);
+}
+
+.catalog-info p {
+
+  margin-top: 10px;
+
+  color: var(--text-dark);
+}
+
+/* =========================================
    MOBILE
 ========================================= */
 
 @media (max-width: 950px) {
+
+  body {
+
+    padding: 18px;
+  }
+
+  #productTitle {
+
+    font-size: 38px;
+  }
 
   .product-page {
 
@@ -289,6 +416,6 @@
 
   .product-price {
 
-    font-size: 32px;
+    font-size: 28px;
   }
 }
