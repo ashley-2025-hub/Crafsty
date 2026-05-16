@@ -105,8 +105,10 @@ window.changeTheme = function(main, sub) {
       sub;
   });
 
-  bin.style.background =
-      main;
+const bin = document.getElementById("bin");
+  if (bin) {
+    bin.style.background = main; 
+  }
 };
 
 /* =========================================
