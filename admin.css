@@ -31,16 +31,13 @@
 
   border-radius: 32px;
 
-  background:
-    rgba(255, 255, 255, 0.14);
+  background: #9e7e67;
 
   backdrop-filter: blur(18px);
 
-  border:
-    1px solid rgba(255, 255, 255, 0.22);
+  border: none;
 
-  box-shadow:
-    0 18px 45px rgba(0, 0, 0, 0.14);
+  box-shadow: #735a49;
 }
 
 .admin-box h2 {
