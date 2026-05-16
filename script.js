@@ -12,9 +12,7 @@ import {
 let products = [];
 
 let cart =
-  JSON.parse(
-    localStorage.getItem("cart")
-  ) || [];
+  JSON.parse(localStorage.getItem("cart")) || [];
 
 /* =========================================
    ELEMENTS
@@ -44,9 +42,6 @@ const totalData =
 const canvas =
   document.getElementById("canvas");
 
-const orderForm =
-  document.getElementById("orderForm");
-
 /* =========================================
    SAVE CART
 ========================================= */
@@ -67,7 +62,6 @@ function saveTheme(main, sub) {
 
   localStorage.setItem(
     "theme",
-
     JSON.stringify({
       main,
       sub
@@ -94,11 +88,6 @@ function applyTheme(main, sub) {
     sub
   );
 
-  root.style.setProperty(
-    "--card-bg",
-    sub
-  );
-
   document.body.style.background =
     main;
 
@@ -108,8 +97,7 @@ function applyTheme(main, sub) {
     .querySelectorAll(".nav button")
     .forEach(btn => {
 
-      btn.style.background =
-        sub;
+      btn.style.background = sub;
 
       btn.style.color =
         "#5d4358";
@@ -219,17 +207,13 @@ window.changeSelectedColor =
 
     const colors = {
 
-      Pink:
-        "#ffd4e5",
+      Pink: "#ffd4e5",
 
-      Blue:
-        "#cfe7ff",
+      Blue: "#cfe7ff",
 
-      Purple:
-        "#e6d5ff",
+      Purple: "#e6d5ff",
 
-      Brown:
-        "#c99662"
+      Brown: "#c99662"
     };
 
     if (
@@ -283,11 +267,9 @@ function addItem(product) {
 
   const sticker = {
 
-    x:
-      40 + Math.random() * 110,
+    x: 40 + Math.random() * 110,
 
-    y:
-      40 + Math.random() * 110
+    y: 40 + Math.random() * 110
   };
 
   if (existing) {
@@ -302,14 +284,11 @@ function addItem(product) {
 
     cart.push({
 
-      id:
-        product.id,
+      id: product.id,
 
-      name:
-        product.name,
+      name: product.name,
 
-      price:
-        Number(product.price),
+      price: Number(product.price),
 
       coverImage:
         product.coverImage,
@@ -317,11 +296,9 @@ function addItem(product) {
       emoji:
         product.emoji || "🧶",
 
-      quantity:
-        1,
+      quantity: 1,
 
-      stickers:
-        [sticker]
+      stickers: [sticker]
     });
   }
 
@@ -450,7 +427,7 @@ function renderCatalog() {
       () => {
 
         window.location.href =
-          `product.html?id=${product.id}`;
+          \`product.html?id=\${product.id}\`;
       }
     );
 
@@ -588,29 +565,27 @@ function renderCart() {
   totalEl.innerText =
     total.toLocaleString();
 
-  /* FORM DATA */
+  /* UPDATE FORM DATA */
 
   if (orderData) {
 
-    const simpleCart =
-      cart.map(item => ({
+    const formattedOrder =
+      cart.map(item => {
 
-        product:
-          item.name,
+        return `
+${item.emoji || "🧶"} ${item.name}
 
-        quantity:
-          item.quantity,
+Quantity:
+${item.quantity}
 
-        price:
-          item.price
-      }));
+Price:
+${Number(item.price)
+  .toLocaleString()} VND
+`;
+      }).join("\n----------------\n");
 
     orderData.value =
-      JSON.stringify(
-        simpleCart,
-        null,
-        2
-      );
+      formattedOrder;
   }
 
   if (totalData) {
@@ -782,6 +757,9 @@ function enableDragging(
    FORM SUBMIT
 ========================================= */
 
+const orderForm =
+  document.getElementById("orderForm");
+
 if (orderForm) {
 
   orderForm.addEventListener(
@@ -790,7 +768,42 @@ if (orderForm) {
 
     () => {
 
-      renderCart();
+      let total = 0;
+
+      cart.forEach(item => {
+
+        total +=
+          item.price *
+          item.quantity;
+      });
+
+      const formattedOrder =
+        cart.map(item => {
+
+          return `
+${item.emoji || "🧶"} ${item.name}
+
+Quantity:
+${item.quantity}
+
+Price:
+${Number(item.price)
+  .toLocaleString()} VND
+`;
+        }).join("\n----------------\n");
+
+      if (orderData) {
+
+        orderData.value =
+          formattedOrder;
+      }
+
+      if (totalData) {
+
+        totalData.value =
+          total.toLocaleString() +
+          " VND";
+      }
     }
   );
 }
