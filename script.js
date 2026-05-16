@@ -116,7 +116,7 @@ window.changeTheme = function(main, sub) {
 
   if (orderBtn) {
 
-    orderBtn.style.background = sub;
+    orderBtn.style.background = main;
   }
 
   /* BIN */
