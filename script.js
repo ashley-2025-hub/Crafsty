@@ -101,8 +101,12 @@ window.changeTheme = function(main, sub) {
     ".nav button"
   ).forEach(btn => {
 
-    btn.style.background =
+  btn.style.background =
       sub;
+  });
+
+    bin.style.background =
+      main;
   });
 };
 
