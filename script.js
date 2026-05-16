@@ -191,12 +191,12 @@ function renderCatalog() {
       </div>
     `;
 
-    card.onclick = () => {
-  localStorage.setItem(
-    "selectedProduct",
-    product.id
-  );
+card.onclick = () => {
 
+  window.location.href =
+    `product.html?id=${product.id}`;
+};
+    
   window.location.href =
     "./product.html";
 };
