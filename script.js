@@ -36,11 +36,14 @@ const emptyText =
 const orderData =
   document.getElementById("orderData");
 
+const totalData =
+  document.getElementById("totalData");
+
 const canvas =
   document.getElementById("canvas");
 
 /* =========================================
-   SAVE
+   SAVE CART
 ========================================= */
 
 function saveCart() {
@@ -52,34 +55,25 @@ function saveCart() {
 }
 
 /* =========================================
-   UI NAVIGATION
+   SAVE THEME
 ========================================= */
 
-window.showSection = function(section) {
+function saveTheme(main, sub) {
 
-  const shop =
-    document.getElementById("shopSection");
-
-  const catalogSection =
-    document.getElementById("catalogSection");
-
-  if (section === "shop") {
-
-    shop.style.display = "block";
-    catalogSection.style.display = "none";
-
-  } else {
-
-    shop.style.display = "none";
-    catalogSection.style.display = "block";
-  }
-};
+  localStorage.setItem(
+    "theme",
+    JSON.stringify({
+      main,
+      sub
+    })
+  );
+}
 
 /* =========================================
-   THEME SWITCHER
+   APPLY THEME
 ========================================= */
 
-window.changeTheme = function(main, sub) {
+function applyTheme(main, sub) {
 
   const root =
     document.documentElement;
@@ -104,7 +98,9 @@ window.changeTheme = function(main, sub) {
     .forEach(btn => {
 
       btn.style.background = sub;
-      btn.style.color = "#5d4358";
+
+      btn.style.color =
+        "#5d4358";
     });
 
   /* ORDER BUTTON */
@@ -116,7 +112,11 @@ window.changeTheme = function(main, sub) {
 
   if (orderBtn) {
 
-    orderBtn.style.background = main;
+    orderBtn.style.background =
+      main;
+
+    orderBtn.style.color =
+      "white";
   }
 
   /* BIN */
@@ -126,9 +126,77 @@ window.changeTheme = function(main, sub) {
 
   if (bin) {
 
-    bin.style.background = main;
+    bin.style.background =
+      main;
   }
-};
+}
+
+/* =========================================
+   LOAD SAVED THEME
+========================================= */
+
+function loadSavedTheme() {
+
+  const savedTheme =
+    JSON.parse(
+      localStorage.getItem("theme")
+    );
+
+  if (savedTheme) {
+
+    applyTheme(
+      savedTheme.main,
+      savedTheme.sub
+    );
+  }
+}
+
+/* =========================================
+   UI NAVIGATION
+========================================= */
+
+window.showSection =
+  function(section) {
+
+    const shop =
+      document.getElementById(
+        "shopSection"
+      );
+
+    const catalogSection =
+      document.getElementById(
+        "catalogSection"
+      );
+
+    if (section === "shop") {
+
+      shop.style.display =
+        "block";
+
+      catalogSection.style.display =
+        "none";
+
+    } else {
+
+      shop.style.display =
+        "none";
+
+      catalogSection.style.display =
+        "block";
+    }
+  };
+
+/* =========================================
+   THEME SWITCHER
+========================================= */
+
+window.changeTheme =
+  function(main, sub) {
+
+    applyTheme(main, sub);
+
+    saveTheme(main, sub);
+  };
 
 /* =========================================
    CANVAS COLOR
@@ -163,6 +231,7 @@ window.changeSelectedColor =
 ========================================= */
 
 onSnapshot(
+
   collection(db, "products"),
 
   (snapshot) => {
@@ -176,8 +245,11 @@ onSnapshot(
       }));
 
     renderCatalog();
+
     renderSuggestions();
+
     renderCart();
+
     renderBox();
   }
 );
@@ -242,7 +314,9 @@ function addItem(product) {
 function removeItem(id) {
 
   const item =
-    cart.find(i => i.id === id);
+    cart.find(
+      i => i.id === id
+    );
 
   if (!item) return;
 
@@ -346,9 +420,8 @@ function renderCatalog() {
       </div>
     `;
 
-    /* FIXED CLICK */
-
     card.addEventListener(
+
       "click",
 
       () => {
@@ -375,6 +448,7 @@ function renderSuggestions() {
   products
 
     .filter(product =>
+
       !cart.some(
         c => c.id === product.id
       )
@@ -424,6 +498,7 @@ function renderCart() {
   cartList.innerHTML = "";
 
   emptyText.style.display =
+
     cart.length === 0
       ? "block"
       : "none";
@@ -460,21 +535,15 @@ function renderCart() {
       <div class="cart-controls">
 
         <button class="minus-btn">
-
           −
-
         </button>
 
         <span>
-
           ${item.quantity}
-
         </span>
 
         <button class="plus-btn">
-
           +
-
         </button>
 
       </div>
@@ -496,10 +565,23 @@ function renderCart() {
   totalEl.innerText =
     total.toLocaleString();
 
+  /* FORM DATA */
+
   if (orderData) {
 
     orderData.value =
-      JSON.stringify(cart);
+      JSON.stringify(
+        cart,
+        null,
+        2
+      );
+  }
+
+  if (totalData) {
+
+    totalData.value =
+      total.toLocaleString() +
+      " VND";
   }
 }
 
@@ -516,6 +598,7 @@ function renderBox() {
   cart.forEach(item => {
 
     item.stickers.forEach(
+
       sticker => {
 
         const el =
@@ -564,19 +647,24 @@ function enableDragging(
   let initialY = 0;
 
   el.addEventListener(
+
     "pointerdown",
 
     (e) => {
 
       dragging = true;
 
-      startX = e.clientX;
+      startX =
+        e.clientX;
 
-      startY = e.clientY;
+      startY =
+        e.clientY;
 
-      initialX = sticker.x;
+      initialX =
+        sticker.x;
 
-      initialY = sticker.y;
+      initialY =
+        sticker.y;
 
       el.setPointerCapture(
         e.pointerId
@@ -585,6 +673,7 @@ function enableDragging(
   );
 
   el.addEventListener(
+
     "pointermove",
 
     (e) => {
@@ -631,15 +720,16 @@ function enableDragging(
     }
   );
 
-  const stopDragging = () => {
+  const stopDragging =
+    () => {
 
-    if (dragging) {
+      if (dragging) {
 
-      dragging = false;
+        dragging = false;
 
-      saveCart();
-    }
-  };
+        saveCart();
+      }
+    };
 
   el.addEventListener(
     "pointerup",
@@ -655,6 +745,8 @@ function enableDragging(
 /* =========================================
    INITIALIZE
 ========================================= */
+
+loadSavedTheme();
 
 renderCart();
 
