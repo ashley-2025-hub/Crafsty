@@ -36,11 +36,68 @@ const addToCartBtn =
   document.getElementById("addToCartBtn");
 
 /* =========================
+   LOAD SAVED THEME
+========================= */
+
+function loadSavedTheme() {
+
+  const savedTheme =
+    JSON.parse(
+      localStorage.getItem("theme")
+    );
+
+  if (!savedTheme) return;
+
+  const root =
+    document.documentElement;
+
+  root.style.setProperty(
+    "--main-bg",
+    savedTheme.main
+  );
+
+  root.style.setProperty(
+    "--card-bg",
+    savedTheme.sub
+  );
+
+  document.body.style.background =
+    savedTheme.main;
+
+  /* BACK BUTTON */
+
+  const backBtn =
+    document.querySelector(".back-btn");
+
+  if (backBtn) {
+
+    backBtn.style.background =
+      savedTheme.sub;
+
+    backBtn.style.color =
+      "#5d4358";
+  }
+
+  /* ADD TO CART BUTTON */
+
+  if (addToCartBtn) {
+
+    addToCartBtn.style.background =
+      savedTheme.main;
+
+    addToCartBtn.style.color =
+      "white";
+  }
+}
+
+/* =========================
    GET PRODUCT ID
 ========================= */
 
 const params =
-  new URLSearchParams(window.location.search);
+  new URLSearchParams(
+    window.location.search
+  );
 
 const productId =
   params.get("id");
@@ -62,7 +119,11 @@ async function loadProduct() {
   try {
 
     const productRef =
-      doc(db, "products", productId);
+      doc(
+        db,
+        "products",
+        productId
+      );
 
     const snapshot =
       await getDoc(productRef);
@@ -75,14 +136,16 @@ async function loadProduct() {
       return;
     }
 
-    const product = snapshot.data();
+    const product =
+      snapshot.data();
 
     /* =========================
        TITLE + INFO
     ========================= */
 
     productTitle.textContent =
-      product.name || "Unnamed Product";
+      product.name ||
+      "Unnamed Product";
 
     productName.textContent =
       `${product.emoji || "🧶"} ${product.name || ""}`;
@@ -100,92 +163,138 @@ async function loadProduct() {
     ========================= */
 
     const images = [
+
       product.coverImage,
+
       ...(product.displayImages || [])
+
     ].filter(Boolean);
 
     if (images.length > 0) {
 
-      mainImage.src = images[0];
+      mainImage.src =
+        images[0];
 
-      thumbnailRow.innerHTML = "";
+      thumbnailRow.innerHTML =
+        "";
 
-      images.forEach((imageUrl) => {
+      images.forEach(
+        (imageUrl) => {
 
-        const img =
-          document.createElement("img");
+          const img =
+            document.createElement("img");
 
-        img.src = imageUrl;
+          img.src =
+            imageUrl;
 
-        img.className =
-          "thumbnail-image";
+          img.className =
+            "thumbnail-image";
 
-        img.addEventListener(
-          "click",
-          () => {
+          img.addEventListener(
+            "click",
+            () => {
 
-            mainImage.src =
-              imageUrl;
-          }
-        );
+              mainImage.src =
+                imageUrl;
+            }
+          );
 
-        thumbnailRow.appendChild(img);
-
-      });
-
+          thumbnailRow.appendChild(img);
+        }
+      );
     }
 
     /* =========================
        ADD TO CART
     ========================= */
 
-    addToCartBtn.onclick = () => {
+    if (addToCartBtn) {
 
-      const cart =
-        JSON.parse(
-          localStorage.getItem("cart")
-        ) || [];
+      addToCartBtn.onclick =
+        () => {
 
-      const existing =
-        cart.find(
-          item => item.id === productId
-        );
+          let cart =
+            JSON.parse(
+              localStorage.getItem("cart")
+            ) || [];
 
-      if (existing) {
+          const existing =
+            cart.find(
+              item =>
+                item.id === productId
+            );
 
-        existing.quantity++;
+          const sticker = {
 
-      } else {
+            x:
+              40 +
+              Math.random() * 110,
 
-        cart.push({
-          id: productId,
-          name: product.name,
-          price: Number(product.price || 0),
-          coverImage: product.coverImage || "",
-          emoji: product.emoji || "🧶",
-          quantity: 1,
-          stickers: [{
-            x: 50,
-            y: 50
-          }]
-        });
+            y:
+              40 +
+              Math.random() * 110
+          };
 
-      }
+          if (existing) {
 
-      localStorage.setItem(
-        "cart",
-        JSON.stringify(cart)
-      );
+            existing.quantity++;
 
-      alert("Added To Cart 🛒");
+            if (
+              !existing.stickers
+            ) {
 
-    };
+              existing.stickers = [];
+            }
+
+            existing.stickers.push(
+              sticker
+            );
+
+          } else {
+
+            cart.push({
+
+              id:
+                productId,
+
+              name:
+                product.name,
+
+              price:
+                Number(
+                  product.price || 0
+                ),
+
+              coverImage:
+                product.coverImage || "",
+
+              emoji:
+                product.emoji || "🧶",
+
+              quantity: 1,
+
+              stickers: [sticker]
+            });
+          }
+
+          localStorage.setItem(
+            "cart",
+            JSON.stringify(cart)
+          );
+
+          alert(
+            "Added To Cart 🛒"
+          );
+        };
+    }
 
     /* =========================
        LOAD SUGGESTIONS
     ========================= */
 
-    loadSuggestions(productId);
+    loadSuggestions(
+      productId
+    );
 
   } catch (error) {
 
@@ -200,62 +309,79 @@ async function loadProduct() {
    LOAD SUGGESTIONS
 ========================= */
 
-async function loadSuggestions(currentId) {
+async function loadSuggestions(
+  currentId
+) {
 
   try {
 
     const snapshot =
       await getDocs(
-        collection(db, "products")
+        collection(
+          db,
+          "products"
+        )
       );
 
-    suggestionList.innerHTML = "";
+    suggestionList.innerHTML =
+      "";
 
-    snapshot.forEach((docSnap) => {
+    snapshot.forEach(
+      (docSnap) => {
 
-      if (docSnap.id === currentId)
-        return;
+        if (
+          docSnap.id === currentId
+        ) return;
 
-      const product =
-        docSnap.data();
+        const product =
+          docSnap.data();
 
-      const card =
-        document.createElement("div");
+        const card =
+          document.createElement("div");
 
-      card.className =
-        "catalog-card";
+        card.className =
+          "catalog-card";
 
-      card.innerHTML = `
-        <img
-          src="${product.coverImage || ""}"
-          alt="${product.name || ""}"
-          class="catalog-image"
-        >
+        card.innerHTML = `
 
-        <div class="catalog-info">
+          <img
+            src="${product.coverImage || ""}"
+            alt="${product.name || ""}"
+            class="catalog-image"
+          >
 
-          <h3>
-            ${product.emoji || "🧶"}
-            ${product.name || ""}
-          </h3>
+          <div class="catalog-info">
 
-          <p>
-            ${Number(product.price || 0)
-              .toLocaleString()} VND
-          </p>
+            <h3>
 
-        </div>
-      `;
+              ${product.emoji || "🧶"}
 
-      card.onclick = () => {
+              ${product.name || ""}
 
-        window.location.href =
-          `product.html?id=${docSnap.id}`;
-      };
+            </h3>
 
-      suggestionList.appendChild(card);
+            <p>
 
-    });
+              ${Number(product.price || 0)
+                .toLocaleString()} VND
+
+            </p>
+
+          </div>
+        `;
+
+        card.onclick =
+          () => {
+
+            window.location.href =
+              `product.html?id=${docSnap.id}`;
+          };
+
+        suggestionList.appendChild(
+          card
+        );
+      }
+    );
 
   } catch (error) {
 
@@ -266,5 +392,7 @@ async function loadSuggestions(currentId) {
 /* =========================
    START
 ========================= */
+
+loadSavedTheme();
 
 loadProduct();
