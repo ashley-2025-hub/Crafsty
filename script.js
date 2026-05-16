@@ -1,4 +1,5 @@
 import { db } from "./firebase-config.js";
+
 import {
   collection,
   onSnapshot
@@ -7,38 +8,68 @@ import {
 /* =========================================
    DATA
 ========================================= */
+
 let products = [];
-let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+let cart =
+  JSON.parse(localStorage.getItem("cart")) || [];
 
 /* =========================================
    ELEMENTS
 ========================================= */
-const catalog = document.querySelector(".catalog");
-const cartList = document.getElementById("cart");
-const totalEl = document.getElementById("total");
-const suggestionList = document.getElementById("suggestionList");
-const emptyText = document.getElementById("empty");
-const orderData = document.getElementById("orderData");
-const canvas = document.getElementById("canvas");
+
+const catalog =
+  document.querySelector(".catalog");
+
+const cartList =
+  document.getElementById("cart");
+
+const totalEl =
+  document.getElementById("total");
+
+const suggestionList =
+  document.getElementById("suggestionList");
+
+const emptyText =
+  document.getElementById("empty");
+
+const orderData =
+  document.getElementById("orderData");
+
+const canvas =
+  document.getElementById("canvas");
 
 /* =========================================
    SAVE
 ========================================= */
+
 function saveCart() {
-  localStorage.setItem("cart", JSON.stringify(cart));
+
+  localStorage.setItem(
+    "cart",
+    JSON.stringify(cart)
+  );
 }
 
 /* =========================================
    UI NAVIGATION
 ========================================= */
+
 window.showSection = function(section) {
-  const shop = document.getElementById("shopSection");
-  const catalogSection = document.getElementById("catalogSection");
+
+  const shop =
+    document.getElementById("shopSection");
+
+  const catalogSection =
+    document.getElementById("catalogSection");
 
   if (section === "shop") {
+
     shop.style.display = "block";
     catalogSection.style.display = "none";
+
   } else {
+
     shop.style.display = "none";
     catalogSection.style.display = "block";
   }
@@ -47,297 +78,587 @@ window.showSection = function(section) {
 /* =========================================
    THEME SWITCHER
 ========================================= */
+
 window.changeTheme = function(main, sub) {
-  const root = document.documentElement;
 
-  // Set the structural variables so layout properties stay uniform
-  root.style.setProperty("--main-bg", main);
-  root.style.setProperty("--card-bg", sub);
+  const root =
+    document.documentElement;
 
-  // Directly adjust body backdrop accent
-  document.body.style.background = main;
+  root.style.setProperty(
+    "--main-bg",
+    main
+  );
 
-  // Clean application of theme styling to navigation buttons
-  document.querySelectorAll(".nav button").forEach(btn => {
-    btn.style.background = sub; 
-  });
+  root.style.setProperty(
+    "--card-bg",
+    sub
+  );
 
-  // Keep the trash bin tracking your main backdrop hue
-  const bin = document.getElementById("bin");
+  document.body.style.background =
+    main;
+
+  /* NAV BUTTONS */
+
+  document
+    .querySelectorAll(".nav button")
+    .forEach(btn => {
+
+      btn.style.background = sub;
+      btn.style.color = "#5d4358";
+    });
+
+  /* ORDER BUTTON */
+
+  const orderBtn =
+    document.querySelector(
+      "#orderForm button"
+    );
+
+  if (orderBtn) {
+
+    orderBtn.style.background = sub;
+    orderBtn.style.color = "#5d4358";
+  }
+
+  /* BIN */
+
+  const bin =
+    document.getElementById("bin");
+
   if (bin) {
-    bin.style.background = main; 
+
+    bin.style.background = main;
   }
 };
 
 /* =========================================
-   CANVAS BACKGROUND COLOR
+   CANVAS COLOR
 ========================================= */
-window.changeSelectedColor = function(color) {
-  const colors = {
-    Pink: "#ffd4e5",
-    Blue: "#cfe7ff",
-    White: "#ffffff",
-    Brown: "#c99662"
+
+window.changeSelectedColor =
+  function(color) {
+
+    const colors = {
+
+      Pink: "#ffd4e5",
+
+      Blue: "#cfe7ff",
+
+      Purple: "#e6d5ff",
+
+      Brown: "#c99662"
+    };
+
+    if (
+      canvas &&
+      colors[color]
+    ) {
+
+      canvas.style.background =
+        colors[color];
+    }
   };
 
-  if (canvas && colors[color]) {
-    canvas.style.background = colors[color];
-  }
-};
-
 /* =========================================
-   FIREBASE REAL-TIME SYNC
+   FIREBASE SYNC
 ========================================= */
-onSnapshot(collection(db, "products"), (snapshot) => {
-  products = snapshot.docs.map(doc => ({
-    id: doc.id,
-    ...doc.data()
-  }));
 
-  renderCatalog();
-  renderSuggestions();
-  renderCart();
-  renderBox();
-});
+onSnapshot(
+  collection(db, "products"),
+
+  (snapshot) => {
+
+    products =
+      snapshot.docs.map(doc => ({
+
+        id: doc.id,
+
+        ...doc.data()
+      }));
+
+    renderCatalog();
+    renderSuggestions();
+    renderCart();
+    renderBox();
+  }
+);
 
 /* =========================================
    CART OPERATIONS
 ========================================= */
-function addItem(product) {
-  const existing = cart.find(i => i.id === product.id);
 
-  // Generate safely offset sticker nodes to prevent stack bundling
+function addItem(product) {
+
+  const existing =
+    cart.find(
+      i => i.id === product.id
+    );
+
   const sticker = {
+
     x: 40 + Math.random() * 110,
+
     y: 40 + Math.random() * 110
   };
 
   if (existing) {
+
     existing.quantity++;
-    existing.stickers.push(sticker);
+
+    existing.stickers.push(
+      sticker
+    );
+
   } else {
+
     cart.push({
+
       id: product.id,
+
       name: product.name,
+
       price: Number(product.price),
-      coverImage: product.coverImage,
-      emoji: product.emoji || "🧶",
+
+      coverImage:
+        product.coverImage,
+
+      emoji:
+        product.emoji || "🧶",
+
       quantity: 1,
+
       stickers: [sticker]
     });
   }
 
   saveCart();
+
   renderCart();
+
   renderSuggestions();
+
   renderBox();
 }
 
 function removeItem(id) {
-  const item = cart.find(i => i.id === id);
+
+  const item =
+    cart.find(i => i.id === id);
+
   if (!item) return;
 
   item.quantity--;
+
   item.stickers.pop();
 
   if (item.quantity <= 0) {
-    cart = cart.filter(i => i.id !== id);
+
+    cart =
+      cart.filter(
+        i => i.id !== id
+      );
   }
 
   saveCart();
+
   renderCart();
+
   renderSuggestions();
+
   renderBox();
 }
 
-window.addItemById = function(id) {
-  const product = products.find(p => p.id === id);
-  if (product) {
-    addItem(product);
-  }
-};
+window.addItemById =
+  function(id) {
 
-window.removeItemById = function(id) {
-  removeItem(id);
-};
+    const product =
+      products.find(
+        p => p.id === id
+      );
 
-window.clearCart = function() {
-  cart = [];
-  saveCart();
-  renderCart();
-  renderSuggestions();
-  renderBox();
-};
+    if (product) {
+
+      addItem(product);
+    }
+  };
+
+window.removeItemById =
+  function(id) {
+
+    removeItem(id);
+  };
+
+window.clearCart =
+  function() {
+
+    cart = [];
+
+    saveCart();
+
+    renderCart();
+
+    renderSuggestions();
+
+    renderBox();
+  };
 
 /* =========================================
-   RENDERING METHODS
+   RENDER CATALOG
 ========================================= */
+
 function renderCatalog() {
+
   if (!catalog) return;
+
   catalog.innerHTML = "";
 
   products.forEach(product => {
-    const card = document.createElement("div");
-    card.className = "catalog-card";
+
+    const card =
+      document.createElement("div");
+
+    card.className =
+      "catalog-card";
 
     card.innerHTML = `
-      <img src="${product.coverImage}" alt="${product.name}">
+
+      <img
+        src="${product.coverImage}"
+        alt="${product.name}"
+      >
+
       <div class="catalog-info">
+
         <h3>
+
           ${product.emoji || "🧶"}
+
           ${product.name}
+
         </h3>
-        <p>${Number(product.price).toLocaleString()} VND</p>
+
+        <p>
+
+          ${Number(product.price)
+            .toLocaleString()} VND
+
+        </p>
+
       </div>
     `;
 
-card.onclick = () => {
+    /* FIXED CLICK */
 
-  window.location.href =
-    `product.html?id=${product.id}`;
-};
-    
-  window.location.href =
-    "./product.html";
-};
-    
+    card.addEventListener(
+      "click",
+
+      () => {
+
+        window.location.href =
+          `product.html?id=${product.id}`;
+      }
+    );
+
     catalog.appendChild(card);
   });
 }
 
+/* =========================================
+   SUGGESTIONS
+========================================= */
+
 function renderSuggestions() {
+
   if (!suggestionList) return;
+
   suggestionList.innerHTML = "";
 
   products
-    .filter(product => !cart.some(c => c.id === product.id))
+
+    .filter(product =>
+      !cart.some(
+        c => c.id === product.id
+      )
+    )
+
     .slice(0, 4)
+
     .forEach(product => {
-      const div = document.createElement("div");
-      div.className = "suggest-card";
+
+      const div =
+        document.createElement("div");
+
+      div.className =
+        "suggest-card";
 
       div.innerHTML = `
-        <img src="${product.coverImage}" alt="${product.name}">
-        <p>${product.emoji || "🧶"} ${product.name}</p>
+
+        <img
+          src="${product.coverImage}"
+          alt="${product.name}"
+        >
+
+        <p>
+
+          ${product.emoji || "🧶"}
+
+          ${product.name}
+
+        </p>
       `;
 
-      div.onclick = () => addItem(product);
+      div.onclick = () =>
+        addItem(product);
+
       suggestionList.appendChild(div);
     });
 }
 
+/* =========================================
+   RENDER CART
+========================================= */
+
 function renderCart() {
+
   if (!cartList) return;
+
   cartList.innerHTML = "";
 
-  emptyText.style.display = cart.length === 0 ? "block" : "none";
+  emptyText.style.display =
+    cart.length === 0
+      ? "block"
+      : "none";
+
   let total = 0;
 
   cart.forEach(item => {
-    total += item.price * item.quantity;
 
-    const li = document.createElement("li");
+    total +=
+      item.price *
+      item.quantity;
+
+    const li =
+      document.createElement("li");
+
     li.innerHTML = `
+
       <div class="cart-left">
-        <img class="cart-img" src="${item.coverImage}" alt="${item.name}">
-        <span>${item.name}</span>
+
+        <img
+          class="cart-img"
+          src="${item.coverImage}"
+          alt="${item.name}"
+        >
+
+        <span>
+
+          ${item.name}
+
+        </span>
+
       </div>
+
       <div class="cart-controls">
-        <button class="minus-btn">−</button>
-        <span>${item.quantity}</span>
-        <button class="plus-btn">+</button>
+
+        <button class="minus-btn">
+
+          −
+
+        </button>
+
+        <span>
+
+          ${item.quantity}
+
+        </span>
+
+        <button class="plus-btn">
+
+          +
+
+        </button>
+
       </div>
     `;
 
-    li.querySelector(".minus-btn").onclick = () => removeItem(item.id);
-    li.querySelector(".plus-btn").onclick = () => addItem(item);
+    li.querySelector(
+      ".minus-btn"
+    ).onclick = () =>
+      removeItem(item.id);
+
+    li.querySelector(
+      ".plus-btn"
+    ).onclick = () =>
+      addItem(item);
 
     cartList.appendChild(li);
   });
 
-  totalEl.innerText = total.toLocaleString();
+  totalEl.innerText =
+    total.toLocaleString();
 
   if (orderData) {
-    orderData.value = JSON.stringify(cart);
+
+    orderData.value =
+      JSON.stringify(cart);
   }
 }
 
+/* =========================================
+   RENDER BOX
+========================================= */
+
 function renderBox() {
+
   if (!canvas) return;
+
   canvas.innerHTML = "";
 
   cart.forEach(item => {
-    item.stickers.forEach(sticker => {
-      const el = document.createElement("div");
-      el.className = "sticker";
-      el.innerText = item.emoji || "🧶";
 
-      el.style.left = sticker.x + "px";
-      el.style.top = sticker.y + "px";
+    item.stickers.forEach(
+      sticker => {
 
-      enableDragging(el, sticker);
-      canvas.appendChild(el);
-    });
+        const el =
+          document.createElement("div");
+
+        el.className =
+          "sticker";
+
+        el.innerText =
+          item.emoji || "🧶";
+
+        el.style.left =
+          sticker.x + "px";
+
+        el.style.top =
+          sticker.y + "px";
+
+        enableDragging(
+          el,
+          sticker
+        );
+
+        canvas.appendChild(el);
+      }
+    );
   });
 }
 
 /* =========================================
-   POINTER DRAGGING SYSTEM
+   DRAGGING
 ========================================= */
-function enableDragging(el, sticker) {
+
+function enableDragging(
+  el,
+  sticker
+) {
+
   let dragging = false;
+
   let startX = 0;
+
   let startY = 0;
+
   let initialX = 0;
+
   let initialY = 0;
 
-  el.addEventListener("pointerdown", (e) => {
-    dragging = true;
-    startX = e.clientX;
-    startY = e.clientY;
-    initialX = sticker.x;
-    initialY = sticker.y;
+  el.addEventListener(
+    "pointerdown",
 
-    el.setPointerCapture(e.pointerId);
-  });
+    (e) => {
 
-  el.addEventListener("pointermove", (e) => {
-    if (!dragging) return;
+      dragging = true;
 
-    const dx = e.clientX - startX;
-    const dy = e.clientY - startY;
+      startX = e.clientX;
 
-    let newX = initialX + dx;
-    let newY = initialY + dy;
+      startY = e.clientY;
 
-    // Fixed sizing buffers to keep stickers neatly inside canvas thresholds
-    const maxX = canvas.clientWidth - 48;
-    const maxY = canvas.clientHeight - 48;
+      initialX = sticker.x;
 
-    newX = Math.max(4, Math.min(maxX, newX));
-    newY = Math.max(4, Math.min(maxY, newY));
+      initialY = sticker.y;
 
-    sticker.x = newX;
-    sticker.y = newY;
+      el.setPointerCapture(
+        e.pointerId
+      );
+    }
+  );
 
-    el.style.left = newX + "px";
-    el.style.top = newY + "px";
-  });
+  el.addEventListener(
+    "pointermove",
+
+    (e) => {
+
+      if (!dragging) return;
+
+      const dx =
+        e.clientX - startX;
+
+      const dy =
+        e.clientY - startY;
+
+      let newX =
+        initialX + dx;
+
+      let newY =
+        initialY + dy;
+
+      const maxX =
+        canvas.clientWidth - 48;
+
+      const maxY =
+        canvas.clientHeight - 48;
+
+      newX = Math.max(
+        4,
+        Math.min(maxX, newX)
+      );
+
+      newY = Math.max(
+        4,
+        Math.min(maxY, newY)
+      );
+
+      sticker.x = newX;
+
+      sticker.y = newY;
+
+      el.style.left =
+        newX + "px";
+
+      el.style.top =
+        newY + "px";
+    }
+  );
 
   const stopDragging = () => {
+
     if (dragging) {
+
       dragging = false;
+
       saveCart();
     }
   };
 
-  el.addEventListener("pointerup", stopDragging);
-  el.addEventListener("pointercancel", stopDragging);
+  el.addEventListener(
+    "pointerup",
+    stopDragging
+  );
+
+  el.addEventListener(
+    "pointercancel",
+    stopDragging
+  );
 }
 
 /* =========================================
    INITIALIZE
 ========================================= */
+
 renderCart();
+
 renderSuggestions();
+
 renderBox();
