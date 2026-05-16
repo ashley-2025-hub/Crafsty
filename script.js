@@ -192,10 +192,15 @@ function renderCatalog() {
     `;
 
     card.onclick = () => {
-      addItem(product);
-      showSection("shop");
-    };
+  localStorage.setItem(
+    "selectedProduct",
+    product.id
+  );
 
+  window.location.href =
+    "./product.html";
+};
+    
     catalog.appendChild(card);
   });
 }
