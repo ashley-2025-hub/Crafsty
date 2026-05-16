@@ -12,7 +12,9 @@ import {
 let products = [];
 
 let cart =
-  JSON.parse(localStorage.getItem("cart")) || [];
+  JSON.parse(
+    localStorage.getItem("cart")
+  ) || [];
 
 /* =========================================
    ELEMENTS
@@ -42,6 +44,9 @@ const totalData =
 const canvas =
   document.getElementById("canvas");
 
+const orderForm =
+  document.getElementById("orderForm");
+
 /* =========================================
    SAVE CART
 ========================================= */
@@ -62,6 +67,7 @@ function saveTheme(main, sub) {
 
   localStorage.setItem(
     "theme",
+
     JSON.stringify({
       main,
       sub
@@ -84,6 +90,11 @@ function applyTheme(main, sub) {
   );
 
   root.style.setProperty(
+    "--sub-bg",
+    sub
+  );
+
+  root.style.setProperty(
     "--card-bg",
     sub
   );
@@ -97,7 +108,8 @@ function applyTheme(main, sub) {
     .querySelectorAll(".nav button")
     .forEach(btn => {
 
-      btn.style.background = sub;
+      btn.style.background =
+        sub;
 
       btn.style.color =
         "#5d4358";
@@ -207,13 +219,17 @@ window.changeSelectedColor =
 
     const colors = {
 
-      Pink: "#ffd4e5",
+      Pink:
+        "#ffd4e5",
 
-      Blue: "#cfe7ff",
+      Blue:
+        "#cfe7ff",
 
-      Purple: "#e6d5ff",
+      Purple:
+        "#e6d5ff",
 
-      Brown: "#c99662"
+      Brown:
+        "#c99662"
     };
 
     if (
@@ -267,9 +283,11 @@ function addItem(product) {
 
   const sticker = {
 
-    x: 40 + Math.random() * 110,
+    x:
+      40 + Math.random() * 110,
 
-    y: 40 + Math.random() * 110
+    y:
+      40 + Math.random() * 110
   };
 
   if (existing) {
@@ -284,11 +302,14 @@ function addItem(product) {
 
     cart.push({
 
-      id: product.id,
+      id:
+        product.id,
 
-      name: product.name,
+      name:
+        product.name,
 
-      price: Number(product.price),
+      price:
+        Number(product.price),
 
       coverImage:
         product.coverImage,
@@ -296,9 +317,11 @@ function addItem(product) {
       emoji:
         product.emoji || "🧶",
 
-      quantity: 1,
+      quantity:
+        1,
 
-      stickers: [sticker]
+      stickers:
+        [sticker]
     });
   }
 
@@ -569,9 +592,22 @@ function renderCart() {
 
   if (orderData) {
 
+    const simpleCart =
+      cart.map(item => ({
+
+        product:
+          item.name,
+
+        quantity:
+          item.quantity,
+
+        price:
+          item.price
+      }));
+
     orderData.value =
       JSON.stringify(
-        cart,
+        simpleCart,
         null,
         2
       );
@@ -739,6 +775,23 @@ function enableDragging(
   el.addEventListener(
     "pointercancel",
     stopDragging
+  );
+}
+
+/* =========================================
+   FORM SUBMIT
+========================================= */
+
+if (orderForm) {
+
+  orderForm.addEventListener(
+
+    "submit",
+
+    () => {
+
+      renderCart();
+    }
   );
 }
 
