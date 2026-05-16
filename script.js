@@ -84,7 +84,7 @@ function applyTheme(main, sub) {
   );
 
   root.style.setProperty(
-    "--sub-bg",
+    "--card-bg",
     sub
   );
 
