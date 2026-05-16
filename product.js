@@ -1,12 +1,10 @@
 import { db } from "./firebase-config.js";
 
 import {
-
   doc,
   getDoc,
   collection,
   getDocs
-
 } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
 /* =========================
@@ -47,8 +45,6 @@ const params =
 const productId =
   params.get("id");
 
-console.log("PRODUCT ID:", productId);
-
 /* =========================
    LOAD PRODUCT
 ========================= */
@@ -79,23 +75,17 @@ async function loadProduct() {
       return;
     }
 
-    const product = {
-
-      id: snapshot.id,
-
-      ...snapshot.data()
-
-    };
+    const product = snapshot.data();
 
     /* =========================
-       TEXT
+       TITLE + INFO
     ========================= */
 
     productTitle.textContent =
       product.name || "Unnamed Product";
 
     productName.textContent =
-      `${product.emoji || "🧶"} ${product.name || "Unnamed Product"}`;
+      `${product.emoji || "🧶"} ${product.name || ""}`;
 
     productPrice.textContent =
       `${Number(product.price || 0)
@@ -110,18 +100,15 @@ async function loadProduct() {
     ========================= */
 
     const images = [
-
       product.coverImage,
-
       ...(product.displayImages || [])
-
     ].filter(Boolean);
-
-    thumbnailRow.innerHTML = "";
 
     if (images.length > 0) {
 
       mainImage.src = images[0];
+
+      thumbnailRow.innerHTML = "";
 
       images.forEach((imageUrl) => {
 
@@ -133,21 +120,18 @@ async function loadProduct() {
         img.className =
           "thumbnail-image";
 
-        img.onclick = () => {
+        img.addEventListener(
+          "click",
+          () => {
 
-          mainImage.src =
-            imageUrl;
-
-        };
+            mainImage.src =
+              imageUrl;
+          }
+        );
 
         thumbnailRow.appendChild(img);
 
       });
-
-    } else {
-
-      mainImage.src =
-        "https://placehold.co/600x600?text=No+Image";
 
     }
 
@@ -157,14 +141,14 @@ async function loadProduct() {
 
     addToCartBtn.onclick = () => {
 
-      let cart =
+      const cart =
         JSON.parse(
           localStorage.getItem("cart")
         ) || [];
 
       const existing =
         cart.find(
-          item => item.id === product.id
+          item => item.id === productId
         );
 
       if (existing) {
@@ -174,23 +158,16 @@ async function loadProduct() {
       } else {
 
         cart.push({
-
-          id: product.id,
-
+          id: productId,
           name: product.name,
-
           price: Number(product.price || 0),
-
-          coverImage:
-            product.coverImage || "",
-
-          emoji:
-            product.emoji || "🧶",
-
+          coverImage: product.coverImage || "",
+          emoji: product.emoji || "🧶",
           quantity: 1,
-
-          stickers: []
-
+          stickers: [{
+            x: 50,
+            y: 50
+          }]
         });
 
       }
@@ -205,10 +182,10 @@ async function loadProduct() {
     };
 
     /* =========================
-       SUGGESTIONS
+       LOAD SUGGESTIONS
     ========================= */
 
-    loadSuggestions(product.id);
+    loadSuggestions(productId);
 
   } catch (error) {
 
@@ -216,9 +193,7 @@ async function loadProduct() {
 
     productTitle.textContent =
       "Failed To Load Product";
-
   }
-
 }
 
 /* =========================
@@ -226,8 +201,6 @@ async function loadProduct() {
 ========================= */
 
 async function loadSuggestions(currentId) {
-
-  if (!suggestionList) return;
 
   try {
 
@@ -253,9 +226,9 @@ async function loadSuggestions(currentId) {
         "catalog-card";
 
       card.innerHTML = `
-
         <img
           src="${product.coverImage || ""}"
+          alt="${product.name || ""}"
           class="catalog-image"
         >
 
@@ -263,18 +236,21 @@ async function loadSuggestions(currentId) {
 
           <h3>
             ${product.emoji || "🧶"}
-            ${product.name || "Unnamed"}
+            ${product.name || ""}
           </h3>
 
-        </div>
+          <p>
+            ${Number(product.price || 0)
+              .toLocaleString()} VND
+          </p>
 
+        </div>
       `;
 
       card.onclick = () => {
 
         window.location.href =
           `product.html?id=${docSnap.id}`;
-
       };
 
       suggestionList.appendChild(card);
@@ -284,9 +260,7 @@ async function loadSuggestions(currentId) {
   } catch (error) {
 
     console.error(error);
-
   }
-
 }
 
 /* =========================
