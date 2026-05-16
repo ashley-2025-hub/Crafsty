@@ -123,7 +123,6 @@ if (orderButton) {
   if (orderBtn) {
 
     orderBtn.style.background = sub;
-    orderBtn.style.color = "#5d4358";
   }
 
   /* BIN */
