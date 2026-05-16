@@ -78,13 +78,13 @@
 #productForm textarea {
   width: 100%;
 
-  padding: 26px;
+  padding: 45px;
 
   background: white;
 
   box-sizing: border-box;
 
-  font-size: 26px;
+  font-size: 16px;
 
   font-family: inherit;
    
@@ -193,7 +193,8 @@
   padding: 8px;
   color: #ede9eb;
   background: #9e7e67;
-  font-size: 20px;
+  font-size: 18px;
+  border-radius: 10px;
 }
 
 /* =========================================
