@@ -2,13 +2,21 @@
 <html lang="en">
 
 <head>
+
   <meta charset="UTF-8" />
-  <meta name="viewport"
-    content="width=device-width, initial-scale=1.0" />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
 
   <title>My Crochet Shop 🧶</title>
 
-  <link rel="stylesheet" href="style.css">
+  <link
+    rel="stylesheet"
+    href="style.css"
+  >
+
 </head>
 
 <body>
@@ -19,41 +27,55 @@
 
   <div class="top-wrapper">
 
-    <h1>My Crochet Shop 🧶</h1>
+    <h1>
+      My Crochet Shop 🧶
+    </h1>
+
+    <!-- NAV -->
 
     <div class="nav">
-      <button onclick="showSection('shop')">
+
+      <button
+        onclick="showSection('shop')"
+      >
         🧾 Order
       </button>
 
-      <button onclick="showSection('catalog')">
+      <button
+        onclick="showSection('catalog')"
+      >
         🧸 Catalog
       </button>
+
     </div>
+
+    <!-- THEMES -->
 
     <div class="theme-picker">
 
-      <p>Theme:</p>
+      <p>
+        Theme:
+      </p>
 
       <button
         class="theme-btn brown"
-        onclick="changeTheme('#9e7e67','#e4dbd5')">
-      </button>
+        onclick="changeTheme('#9e7e67','#e4dbd5')"
+      ></button>
 
       <button
         class="theme-btn blue"
-        onclick="changeTheme('#7f9bb6','#dde6ef')">
-      </button>
+        onclick="changeTheme('#7f9bb6','#dde6ef')"
+      ></button>
 
       <button
         class="theme-btn pink"
-        onclick="changeTheme('#bb8f9a','#eedee2')">
-      </button>
+        onclick="changeTheme('#bb8f9a','#eedee2')"
+      ></button>
 
       <button
         class="theme-btn purple"
-        onclick="changeTheme('#9678b6','#e6e6fa')">
-      </button>
+        onclick="changeTheme('#9678b6','#e6e6fa')"
+      ></button>
 
     </div>
 
@@ -67,11 +89,15 @@
 
     <div class="container">
 
-      <!-- CART -->
+      <!-- =========================================
+           CART
+      ========================================= -->
 
       <div class="products">
 
-        <h2>🛒 In Cart</h2>
+        <h2>
+          🛒 In Cart
+        </h2>
 
         <p id="empty">
           Your cart is empty 🧺
@@ -79,9 +105,13 @@
 
         <ul id="cart"></ul>
 
+        <!-- SUGGESTIONS -->
+
         <div id="suggestions">
 
-          <h3>✨ You may also like</h3>
+          <h3>
+            ✨ You may also like
+          </h3>
 
           <div id="suggestionList"></div>
 
@@ -89,77 +119,160 @@
 
       </div>
 
-      <!-- BOX -->
+      <!-- =========================================
+           BOX
+      ========================================= -->
 
       <div class="box">
 
-        <h2>Your Box</h2>
+        <h2>
+          Your Box
+        </h2>
 
         <div class="box-layout">
 
+          <!-- STICKER AREA -->
+
           <div id="canvas"></div>
+
+          <!-- COLORS -->
 
           <div class="color-panel">
 
-            <h3>Colors</h3>
+            <h3>
+              Colors
+            </h3>
 
-            <button class="color-circle pink"
-              onclick="changeSelectedColor('Pink')"></button>
+            <button
+              class="color-circle pink"
+              type="button"
+              onclick="changeSelectedColor('Pink')"
+            ></button>
 
-            <button class="color-circle blue"
-              onclick="changeSelectedColor('Blue')"></button>
+            <button
+              class="color-circle blue"
+              type="button"
+              onclick="changeSelectedColor('Blue')"
+            ></button>
 
-            <button class="color-circle purple"
-              onclick="changeSelectedColor('Purple')"></button>
+            <button
+              class="color-circle purple"
+              type="button"
+              onclick="changeSelectedColor('Purple')"
+            ></button>
 
-            <button class="color-circle brown"
-              onclick="changeSelectedColor('Brown')"></button>
+            <button
+              class="color-circle brown"
+              type="button"
+              onclick="changeSelectedColor('Brown')"
+            ></button>
 
           </div>
 
         </div>
 
+        <!-- TOTAL -->
+
         <h2>
+
           Total:
-          <span id="total">0</span>
+
+          <span id="total">
+            0
+          </span>
+
           VND
+
         </h2>
 
-        <div id="bin"
-          onclick="clearCart()">
+        <!-- BIN -->
+
+        <div
+          id="bin"
+          onclick="clearCart()"
+        >
           🗑️
         </div>
 
       </div>
 
-      <!-- INFO -->
+      <!-- =========================================
+           CUSTOMER INFO
+      ========================================= -->
 
       <div class="products">
 
-        <h2>💖 Your Info</h2>
+        <h2>
+          💖 Your Info
+        </h2>
 
-        <form id="orderForm">
+        <!-- FORMSPREE FORM -->
+
+        <form
+
+          id="orderForm"
+
+          action="https://formspree.io/f/xeenrvvk"
+
+          method="POST"
+        >
+
+          <!-- NAME -->
 
           <input
             type="text"
+            name="customer_name"
             placeholder="Your name"
-            required>
+            required
+          >
+
+          <!-- CONTACT -->
 
           <input
             type="text"
+            name="contact"
             placeholder="Phone / Instagram"
-            required>
+            required
+          >
+
+          <!-- NOTES -->
 
           <textarea
+            name="notes"
             placeholder="Notes..."
-            rows="4"></textarea>
+            rows="4"
+          ></textarea>
+
+          <!-- CART DATA -->
 
           <input
             type="hidden"
-            id="orderData">
+            id="orderData"
+            name="order_items"
+          >
+
+          <!-- TOTAL -->
+
+          <input
+            type="hidden"
+            id="totalData"
+            name="total_price"
+          >
+
+          <!-- REDIRECT -->
+
+          <input
+            type="hidden"
+            name="_next"
+            value="https://ashley-2025-hub.github.io/Crafsty/"
+          >
+
+          <!-- BUTTON -->
 
           <button type="submit">
+
             Place Order
+
           </button>
 
         </form>
@@ -180,7 +293,14 @@
 
   </section>
 
-  <script type="module" src="script.js"></script>
+  <!-- =========================================
+       SCRIPT
+  ========================================= -->
+
+  <script
+    type="module"
+    src="script.js"
+  ></script>
 
 </body>
 
