@@ -105,9 +105,8 @@ window.changeTheme = function(main, sub) {
       sub;
   });
 
-    bin.style.background =
+  bin.style.background =
       main;
-  });
 };
 
 /* =========================================
