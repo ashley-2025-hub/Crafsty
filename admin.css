@@ -78,17 +78,13 @@
 #productForm textarea {
   width: 100%;
 
-  padding: 15px;
-
-  border: none;
-
-  border-radius: 18px;
+  padding: 26px;
 
   background: white;
 
   box-sizing: border-box;
 
-  font-size: 15px;
+  font-size: 26px;
 
   font-family: inherit;
    
@@ -106,7 +102,7 @@
 
   border-radius: 20px;
 
-  font-size: 16px;
+  font-size: 20px;
 }
 
 #productForm button:hover {
@@ -197,11 +193,7 @@
   padding: 8px;
   color: #ede9eb;
   background: #9e7e67;
-
-
-  border-radius: 16px;
-
-  font-size: 16px;
+  font-size: 20px;
 }
 
 /* =========================================
