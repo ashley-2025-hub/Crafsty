@@ -230,6 +230,8 @@ img {
 
 #productName {
 
+  color: var(--text-dark);
+
   margin-top: 0;
 
   font-size: 38px;
@@ -239,6 +241,8 @@ img {
 
 .product-price {
 
+  color: var(--text-dark);
+   
   margin-top: 12px;
 
   font-size: 30px;
@@ -247,6 +251,8 @@ img {
 }
 
 .product-description {
+
+  color: var(--text-dark);
 
   margin-top: 22px;
 
