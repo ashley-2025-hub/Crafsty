@@ -41,53 +41,30 @@ const addToCartBtn =
 
 function loadSavedTheme() {
 
-  const savedTheme =
-    JSON.parse(
-      localStorage.getItem("theme")
-    );
+  const savedMain =
+    localStorage.getItem("themeMain");
 
-  if (!savedTheme) return;
+  const savedSub =
+    localStorage.getItem("themeSub");
+
+  if (!savedMain || !savedSub)
+    return;
 
   const root =
     document.documentElement;
 
   root.style.setProperty(
     "--main-bg",
-    savedTheme.main
+    savedMain
   );
 
   root.style.setProperty(
-    "--card-bg",
-    savedTheme.sub
+    "--sub-bg",
+    savedSub
   );
 
   document.body.style.background =
-    savedTheme.main;
-
-  /* BACK BUTTON */
-
-  const backBtn =
-    document.querySelector(".back-btn");
-
-  if (backBtn) {
-
-    backBtn.style.background =
-      savedTheme.sub;
-
-    backBtn.style.color =
-      "#5d4358";
-  }
-
-  /* ADD TO CART BUTTON */
-
-  if (addToCartBtn) {
-
-    addToCartBtn.style.background =
-      savedTheme.main;
-
-    addToCartBtn.style.color =
-      "white";
-  }
+    savedMain;
 }
 
 /* =========================
@@ -139,9 +116,7 @@ async function loadProduct() {
     const product =
       snapshot.data();
 
-    /* =========================
-       TITLE + INFO
-    ========================= */
+    /* TITLE */
 
     productTitle.textContent =
       product.name ||
@@ -158,9 +133,7 @@ async function loadProduct() {
       product.description ||
       "No description yet.";
 
-    /* =========================
-       IMAGES
-    ========================= */
+    /* IMAGES */
 
     const images = [
 
@@ -190,23 +163,19 @@ async function loadProduct() {
           img.className =
             "thumbnail-image";
 
-          img.addEventListener(
-            "click",
+          img.onclick =
             () => {
 
               mainImage.src =
                 imageUrl;
-            }
-          );
+            };
 
           thumbnailRow.appendChild(img);
         }
       );
     }
 
-    /* =========================
-       ADD TO CART
-    ========================= */
+    /* ADD TO CART */
 
     if (addToCartBtn) {
 
@@ -238,13 +207,6 @@ async function loadProduct() {
           if (existing) {
 
             existing.quantity++;
-
-            if (
-              !existing.stickers
-            ) {
-
-              existing.stickers = [];
-            }
 
             existing.stickers.push(
               sticker
@@ -288,9 +250,7 @@ async function loadProduct() {
         };
     }
 
-    /* =========================
-       LOAD SUGGESTIONS
-    ========================= */
+    /* SUGGESTIONS */
 
     loadSuggestions(
       productId
@@ -306,7 +266,7 @@ async function loadProduct() {
 }
 
 /* =========================
-   LOAD SUGGESTIONS
+   SUGGESTIONS
 ========================= */
 
 async function loadSuggestions(
@@ -346,7 +306,6 @@ async function loadSuggestions(
 
           <img
             src="${product.coverImage || ""}"
-            alt="${product.name || ""}"
             class="catalog-image"
           >
 
