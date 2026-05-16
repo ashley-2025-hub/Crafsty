@@ -59,7 +59,7 @@ window.changeTheme = function(main, sub) {
 
   // Clean application of theme styling to navigation buttons
   document.querySelectorAll(".nav button").forEach(btn => {
-    btn.style.background = "var(--button-bg)"; 
+    btn.style.background = sub; 
   });
 
   // Keep the trash bin tracking your main backdrop hue
