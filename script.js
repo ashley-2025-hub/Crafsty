@@ -107,6 +107,12 @@ window.changeTheme = function(main, sub) {
       btn.style.color = "#5d4358";
     });
 
+const orderButton = document.querySelector("#orderForm button");
+
+if (orderButton) {
+  orderButton.style.background = main; 
+}
+  
   /* ORDER BUTTON */
 
   const orderBtn =
