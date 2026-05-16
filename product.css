@@ -190,7 +190,7 @@
 
   text-align: left;
 
-  color: var(--sub-bg);
+  color: var(--text-dark);
 }
 
 #productName {
@@ -201,7 +201,7 @@
 
   line-height: 1.2;
 
-  color: var(--text-light);
+  color: var(--text-dark);
 }
 
 .product-price {
@@ -212,7 +212,7 @@
 
   font-weight: bold;
 
-  color: #var(--text-dark);
+  color: var(--text-dark);
 }
 
 .product-description {
@@ -223,7 +223,7 @@
 
   font-size: 18px;
 
-  color: var(--text-light);
+  color: var(--text-dark);
 
   white-space: pre-line;
 }
