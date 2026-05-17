@@ -186,34 +186,6 @@ window.changeTheme =
   };
 
 /* =========================================
-   BOX COLOR
-========================================= */
-
-window.changeSelectedColor =
-  function(color) {
-
-    const colors = {
-
-      Pink: "#ffd4e5",
-
-      Blue: "#cfe7ff",
-
-      Purple: "#e6d5ff",
-
-      Brown: "#c99662"
-    };
-
-    if (
-      canvas &&
-      colors[color]
-    ) {
-
-      canvas.style.background =
-        colors[color];
-    }
-  };
-
-/* =========================================
    FIREBASE
 ========================================= */
 
