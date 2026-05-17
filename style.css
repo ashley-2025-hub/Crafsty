@@ -534,6 +534,75 @@ span {
 .sticker-sub {
 
   z-index: 2;
+}/* =========================================
+   STICKERS
+========================================= */
+
+.sticker {
+
+  position: absolute;
+
+  width: 72px;
+
+  height: 72px;
+
+  user-select: none;
+
+  touch-action: none;
+
+  cursor: grab;
+
+  z-index: 5;
+
+  display: flex;
+
+  justify-content: center;
+
+  align-items: center;
+
+  will-change: transform;
+
+  backface-visibility: hidden;
+
+  transform: translateZ(0);
+}
+
+.sticker.dragging {
+
+  z-index: 9999;
+
+  cursor: grabbing;
+}
+
+.sticker img {
+
+  width: 100%;
+
+  height: 100%;
+
+  object-fit: contain;
+
+  pointer-events: none;
+
+  user-select: none;
+
+  -webkit-user-drag: none;
+}
+
+.sticker-main {
+
+  position: relative;
+
+  z-index: 1;
+}
+
+.sticker-sub {
+
+  position: absolute;
+
+  inset: 0;
+
+  z-index: 2;
 }
 
 /* =========================================
@@ -691,68 +760,6 @@ span {
   transform: scale(1.22);
 
   filter: brightness(1.15);
-}
-
-/* =========================================
-   COLOR PANEL
-========================================= */
-
-.color-panel {
-
-  display: flex;
-
-  flex-direction: column;
-
-  align-items: center;
-
-  gap: 12px;
-}
-
-.color-panel h3 {
-
-  margin-bottom: 4px;
-}
-
-.color-circle {
-
-  width: 34px;
-
-  height: 34px;
-
-  border: 2px solid white;
-
-  border-radius: 50%;
-
-  cursor: pointer;
-
-  transition:
-    transform 0.2s ease,
-    opacity 0.2s ease;
-}
-
-.color-circle:hover {
-
-  transform: scale(1.12);
-}
-
-.color-circle.brown {
-
-  background: #9e7e67;
-}
-
-.color-circle.blue {
-
-  background: #bbc8d8;
-}
-
-.color-circle.pink {
-
-  background: #d4acb4;
-}
-
-.color-circle.purple {
-
-  background: #c091f3;
 }
 
 /* =========================================
