@@ -3,7 +3,8 @@ import { db } from "./firebase-config.js";
 import {
   collection,
   onSnapshot
-} from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+}
+from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
 /* =========================================
    DATA
@@ -12,7 +13,9 @@ import {
 let products = [];
 
 let cart =
-  JSON.parse(localStorage.getItem("cart")) || [];
+  JSON.parse(
+    localStorage.getItem("cart")
+  ) || [];
 
 /* =========================================
    ELEMENTS
@@ -62,7 +65,7 @@ function getEmoji(folder) {
 }
 
 /* =========================================
-   SAVE CART
+   SAVE
 ========================================= */
 
 function saveCart() {
@@ -114,13 +117,12 @@ function loadSavedTheme() {
       localStorage.getItem("theme")
     );
 
-  if (savedTheme) {
+  if (!savedTheme) return;
 
-    applyTheme(
-      savedTheme.main,
-      savedTheme.sub
-    );
-  }
+  applyTheme(
+    savedTheme.main,
+    savedTheme.sub
+  );
 }
 
 /* =========================================
@@ -230,25 +232,22 @@ function addItem(product) {
 
   const existing =
     cart.find(
-      i => i.id === product.id
+      item =>
+        item.id === product.id
     );
 
   const sticker = {
 
-    x: 40 + Math.random() * 110,
+    x: 40 + Math.random() * 180,
 
-    y: 40 + Math.random() * 110,
-
-    /* DEFAULT STICKER */
+    y: 40 + Math.random() * 180,
 
     mainVariant: null,
 
     subVariant: null,
 
-    /* DEFAULT IMAGE */
-
     image:
-      `assets/products/${product.folder}/emoji.png`
+      getEmoji(product.folder)
   };
 
   if (existing) {
@@ -273,10 +272,10 @@ function addItem(product) {
         Number(product.price),
 
       coverImage:
-        `assets/products/${product.folder}/cover.png`,
+        getCover(product.folder),
 
       emojiImage:
-        `assets/products/${product.folder}/emoji.png`,
+        getEmoji(product.folder),
 
       quantity: 1,
 
@@ -377,14 +376,12 @@ function renderCatalog() {
       </div>
     `;
 
-    card.addEventListener(
-      "click",
+    card.onclick =
       () => {
 
         window.location.href =
           `product.html?id=${product.id}`;
-      }
-    );
+      };
 
     catalog.appendChild(card);
   });
@@ -423,7 +420,6 @@ function renderSuggestions() {
 
         <img
           src="${getCover(product.folder)}"
-          alt="${product.name}"
         >
 
         <p>
@@ -431,8 +427,8 @@ function renderSuggestions() {
         </p>
       `;
 
-      div.onclick = () =>
-        addItem(product);
+      div.onclick =
+        () => addItem(product);
 
       suggestionList.appendChild(div);
     });
@@ -499,23 +495,24 @@ function renderCart() {
 
     li.querySelector(
       ".minus-btn"
-    ).onclick = () =>
-      removeItem(item.id);
+    ).onclick =
+      () => removeItem(item.id);
 
     li.querySelector(
       ".plus-btn"
-    ).onclick = () => {
+    ).onclick =
+      () => {
 
-      const product =
-        products.find(
-          p => p.id === item.id
-        );
+        const product =
+          products.find(
+            p => p.id === item.id
+          );
 
-      if (product) {
+        if (product) {
 
-        addItem(product);
-      }
-    };
+          addItem(product);
+        }
+      };
 
     cartList.appendChild(li);
   });
@@ -555,21 +552,19 @@ function renderBox() {
 
     item.stickers.forEach(sticker => {
 
-      /* STICKER CONTAINER */
-
-      const stickerWrap =
+      const wrap =
         document.createElement("div");
 
-      stickerWrap.className =
+      wrap.className =
         "sticker";
 
-      stickerWrap.style.left =
+      wrap.style.left =
         sticker.x + "px";
 
-      stickerWrap.style.top =
+      wrap.style.top =
         sticker.y + "px";
 
-      /* MAIN IMAGE */
+      /* MAIN */
 
       const mainImg =
         document.createElement("img");
@@ -577,13 +572,9 @@ function renderBox() {
       mainImg.className =
         "sticker-main";
 
-      /* DEFAULT */
-
       let imagePath =
         sticker.image ||
         item.emojiImage;
-
-      /* MAIN VARIANT */
 
       if (
         sticker.mainVariant
@@ -596,11 +587,9 @@ function renderBox() {
       mainImg.src =
         imagePath;
 
-      stickerWrap.appendChild(
-        mainImg
-      );
+      wrap.appendChild(mainImg);
 
-      /* SUB OVERLAY */
+      /* SUB */
 
       if (
         sticker.subVariant
@@ -615,21 +604,16 @@ function renderBox() {
         subImg.src =
           `assets/products/${item.folder}/icon/sub/${sticker.subVariant}.png`;
 
-        stickerWrap.appendChild(
-          subImg
-        );
+        wrap.appendChild(subImg);
       }
 
-      /* DRAGGING */
-
       enableDragging(
-        stickerWrap,
-        sticker
+        wrap,
+        sticker,
+        item
       );
 
-      canvas.appendChild(
-        stickerWrap
-      );
+      canvas.appendChild(wrap);
     });
   });
 }
@@ -640,7 +624,8 @@ function renderBox() {
 
 function enableDragging(
   el,
-  sticker
+  sticker,
+  item
 ) {
 
   const bin =
@@ -656,14 +641,12 @@ function enableDragging(
 
   let initialY = 0;
 
-  let latestX = 0;
+  let currentX = 0;
 
-  let latestY = 0;
+  let currentY = 0;
 
   el.addEventListener(
-
     "pointerdown",
-
     (e) => {
 
       dragging = true;
@@ -681,7 +664,7 @@ function enableDragging(
         sticker.y;
 
       el.style.zIndex =
-        "999";
+        "9999";
 
       el.style.cursor =
         "grabbing";
@@ -693,9 +676,7 @@ function enableDragging(
   );
 
   el.addEventListener(
-
     "pointermove",
-
     (e) => {
 
       if (!dragging) return;
@@ -706,45 +687,43 @@ function enableDragging(
       const dy =
         e.clientY - startY;
 
-      latestX =
+      currentX =
         initialX + dx;
 
-      latestY =
+      currentY =
         initialY + dy;
 
       el.style.left =
-        latestX + "px";
+        currentX + "px";
 
       el.style.top =
-        latestY + "px";
+        currentY + "px";
 
-      /* BIN DETECTION */
+      /* BIN */
 
       if (bin) {
 
         const binRect =
           bin.getBoundingClientRect();
 
-        const stickerRect =
+        const rect =
           el.getBoundingClientRect();
 
-        const touchingBin =
+        const touching =
 
-          !(
-            stickerRect.right <
-              binRect.left ||
+          rect.right >
+            binRect.left &&
 
-            stickerRect.left >
-              binRect.right ||
+          rect.left <
+            binRect.right &&
 
-            stickerRect.bottom <
-              binRect.top ||
+          rect.bottom >
+            binRect.top &&
 
-            stickerRect.top >
-              binRect.bottom
-          );
+          rect.top <
+            binRect.bottom;
 
-        if (touchingBin) {
+        if (touching) {
 
           bin.classList.add(
             "bin-active"
@@ -760,131 +739,128 @@ function enableDragging(
     }
   );
 
-  const stopDragging =
-    () => {
+  function stopDragging() {
 
-      if (!dragging) return;
+    if (!dragging) return;
 
-      dragging = false;
+    dragging = false;
 
-      el.style.zIndex =
-        "1";
+    const canvasRect =
+      canvas.getBoundingClientRect();
 
-      el.style.cursor =
-        "grab";
+    const rect =
+      el.getBoundingClientRect();
 
-      const canvasRect =
-        canvas.getBoundingClientRect();
+    const binRect =
+      bin.getBoundingClientRect();
 
-      const binRect =
-        bin.getBoundingClientRect();
+    /* DELETE */
 
-      const stickerRect =
-        el.getBoundingClientRect();
+    const droppedOnBin =
 
-      /* DROP ON BIN */
+      rect.right >
+        binRect.left &&
 
-      const droppedOnBin =
+      rect.left <
+        binRect.right &&
 
-        !(
-          stickerRect.right <
-            binRect.left ||
+      rect.bottom >
+        binRect.top &&
 
-          stickerRect.left >
-            binRect.right ||
+      rect.top <
+        binRect.bottom;
 
-          stickerRect.bottom <
-            binRect.top ||
+    if (droppedOnBin) {
 
-          stickerRect.top >
-            binRect.bottom
+      item.stickers =
+        item.stickers.filter(
+          s => s !== sticker
         );
 
-      if (droppedOnBin) {
+      item.quantity =
+        item.stickers.length;
 
-        cart.forEach(item => {
-
-          item.stickers =
-            item.stickers.filter(
-              s => s !== sticker
-            );
-
-          item.quantity =
-            item.stickers.length;
-        });
+      if (
+        item.quantity <= 0
+      ) {
 
         cart =
           cart.filter(
-            item =>
-              item.quantity > 0
+            c =>
+              c.id !== item.id
           );
-
-        saveCart();
-
-        renderCart();
-
-        renderBox();
-
-        bin.classList.remove(
-          "bin-active"
-        );
-
-        return;
       }
 
-      /* OUTSIDE BOX */
+      saveCart();
 
-      const insideBox =
+      renderCart();
 
-        stickerRect.left >=
-          canvasRect.left &&
-
-        stickerRect.right <=
-          canvasRect.right &&
-
-        stickerRect.top >=
-          canvasRect.top &&
-
-        stickerRect.bottom <=
-          canvasRect.bottom;
-
-      if (!insideBox) {
-
-        /* SNAP BACK */
-
-        el.style.transition =
-          "0.25s";
-
-        el.style.left =
-          sticker.x + "px";
-
-        el.style.top =
-          sticker.y + "px";
-
-        setTimeout(() => {
-
-          el.style.transition =
-            "";
-
-        }, 250);
-
-      } else {
-
-        /* SAVE POSITION */
-
-        sticker.x =
-          latestX;
-
-        sticker.y =
-          latestY;
-
-        saveCart();
-      }
+      renderBox();
 
       bin.classList.remove(
         "bin-active"
       );
-    };
+
+      return;
+    }
+
+    /* INSIDE */
+
+    const inside =
+
+      rect.left >=
+        canvasRect.left &&
+
+      rect.right <=
+        canvasRect.right &&
+
+      rect.top >=
+        canvasRect.top &&
+
+      rect.bottom <=
+        canvasRect.bottom;
+
+    if (inside) {
+
+      sticker.x =
+        currentX;
+
+      sticker.y =
+        currentY;
+
+      saveCart();
+
+    } else {
+
+      /* SNAP BACK */
+
+      el.style.transition =
+        "0.25s";
+
+      el.style.left =
+        sticker.x + "px";
+
+      el.style.top =
+        sticker.y + "px";
+
+      setTimeout(() => {
+
+        el.style.transition =
+          "";
+
+      }, 250);
+    }
+
+    bin.classList.remove(
+      "bin-active"
+    );
+
+    el.style.cursor =
+      "grab";
+
+    el.style.zIndex =
+      "1";
+  }
 
   el.addEventListener(
     "pointerup",
