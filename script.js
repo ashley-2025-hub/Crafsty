@@ -17,10 +17,6 @@ let cart =
     localStorage.getItem("cart")
   ) || [];
 
-let activeSticker = null;
-
-let activeItem = null;
-
 /* =========================================
    ELEMENTS
 ========================================= */
@@ -51,6 +47,15 @@ const canvas =
 
 const variantPanel =
   document.getElementById("variantPanel");
+
+/* =========================================
+   SAFE CHECK
+========================================= */
+
+if (variantPanel) {
+
+  variantPanel.style.display = "none";
+}
 
 /* =========================================
    HELPERS
@@ -149,6 +154,11 @@ window.showSection =
         "catalogSection"
       );
 
+    if (
+      !shop ||
+      !catalogSection
+    ) return;
+
     if (section === "shop") {
 
       shop.style.display =
@@ -228,6 +238,14 @@ onSnapshot(
     renderCart();
 
     renderBox();
+  },
+
+  (error) => {
+
+    console.error(
+      "Firebase Error:",
+      error
+    );
   }
 );
 
@@ -245,9 +263,9 @@ function addItem(product) {
 
   const sticker = {
 
-    x: 70,
+    x: 40 + Math.random() * 120,
 
-    y: 70,
+    y: 40 + Math.random() * 120,
 
     mainVariant: null,
 
@@ -383,11 +401,14 @@ function renderCatalog() {
       </div>
     `;
 
-    card.onclick =
+    card.addEventListener(
+      "click",
       () => {
 
-        addItem(product);
-      };
+        window.location.href =
+          `product.html?id=${product.id}`;
+      }
+    );
 
     catalog.appendChild(card);
   });
@@ -433,8 +454,10 @@ function renderSuggestions() {
         </p>
       `;
 
-      div.onclick =
-        () => addItem(product);
+      div.addEventListener(
+        "click",
+        () => addItem(product)
+      );
 
       suggestionList.appendChild(div);
     });
@@ -450,11 +473,14 @@ function renderCart() {
 
   cartList.innerHTML = "";
 
-  emptyText.style.display =
+  if (emptyText) {
 
-    cart.length === 0
-      ? "block"
-      : "none";
+    emptyText.style.display =
+
+      cart.length === 0
+        ? "block"
+        : "none";
+  }
 
   let total = 0;
 
@@ -501,12 +527,15 @@ function renderCart() {
 
     li.querySelector(
       ".minus-btn"
-    ).onclick =
-      () => removeItem(item.id);
+    ).addEventListener(
+      "click",
+      () => removeItem(item.id)
+    );
 
     li.querySelector(
       ".plus-btn"
-    ).onclick =
+    ).addEventListener(
+      "click",
       () => {
 
         const product =
@@ -518,13 +547,17 @@ function renderCart() {
 
           addItem(product);
         }
-      };
+      }
+    );
 
     cartList.appendChild(li);
   });
 
-  totalEl.innerText =
-    total.toLocaleString();
+  if (totalEl) {
+
+    totalEl.innerText =
+      total.toLocaleString();
+  }
 
   if (orderData) {
 
@@ -548,62 +581,31 @@ function renderCart() {
    VARIANT PANEL
 ========================================= */
 
-function closeVariantPanel() {
-
-  if (!variantPanel) return;
-
-  variantPanel.classList.remove(
-    "show"
-  );
-
-  variantPanel.innerHTML = "";
-
-  activeSticker = null;
-
-  activeItem = null;
-}
-
 function openVariantPanel(
   sticker,
-  item
+  item,
+  x,
+  y
 ) {
 
   if (!variantPanel) return;
 
-  activeSticker =
-    sticker;
-
-  activeItem =
-    item;
-
   variantPanel.innerHTML = "";
 
-  /* TITLE */
+  variantPanel.style.display =
+    "flex";
 
-  const title =
-    document.createElement("p");
+  variantPanel.style.position =
+    "fixed";
 
-  title.className =
-    "variant-title";
+  variantPanel.style.left =
+    x + "px";
 
-  title.innerText =
-    "Choose Style";
+  variantPanel.style.top =
+    y + "px";
 
-  variantPanel.appendChild(
-    title
-  );
-
-  /* OPTIONS */
-
-  const options =
-    document.createElement("div");
-
-  options.className =
-    "variant-options";
-
-  variantPanel.appendChild(
-    options
-  );
+  variantPanel.style.zIndex =
+    "999999";
 
   for (
     let i = 1;
@@ -611,27 +613,29 @@ function openVariantPanel(
     i++
   ) {
 
-    const btn =
-      document.createElement("button");
-
-    btn.className =
-      "variant-btn";
-
     const img =
       document.createElement("img");
 
     img.src =
       `assets/products/${item.folder}/icon/${i}.png`;
 
+    img.style.width =
+      "45px";
+
+    img.style.height =
+      "45px";
+
+    img.style.cursor =
+      "pointer";
+
     img.onerror =
       () => {
 
-        btn.remove();
+        img.remove();
       };
 
-    btn.appendChild(img);
-
-    btn.onclick =
+    img.addEventListener(
+      "click",
       () => {
 
         sticker.mainVariant =
@@ -641,15 +645,13 @@ function openVariantPanel(
 
         renderBox();
 
-        closeVariantPanel();
-      };
+        variantPanel.style.display =
+          "none";
+      }
+    );
 
-    options.appendChild(btn);
+    variantPanel.appendChild(img);
   }
-
-  variantPanel.classList.add(
-    "show"
-  );
 }
 
 /* =========================================
@@ -678,22 +680,20 @@ function renderBox() {
       wrap.style.top =
         sticker.y + "px";
 
-      /* CLICK */
-
       wrap.addEventListener(
-        "click",
+        "dblclick",
         (e) => {
 
           e.stopPropagation();
 
           openVariantPanel(
             sticker,
-            item
+            item,
+            e.clientX,
+            e.clientY
           );
         }
       );
-
-      /* MAIN IMAGE */
 
       const mainImg =
         document.createElement("img");
@@ -717,8 +717,6 @@ function renderBox() {
         imagePath;
 
       wrap.appendChild(mainImg);
-
-      /* SUB IMAGE */
 
       if (
         sticker.subVariant
@@ -775,12 +773,10 @@ function enableDragging(
   let currentY = 0;
 
   el.addEventListener(
-
     "pointerdown",
-
     (e) => {
 
-      dragging = false;
+      dragging = true;
 
       startX =
         e.clientX;
@@ -800,6 +796,10 @@ function enableDragging(
       currentY =
         sticker.y;
 
+      el.classList.add(
+        "dragging"
+      );
+
       el.setPointerCapture(
         e.pointerId
       );
@@ -807,30 +807,16 @@ function enableDragging(
   );
 
   el.addEventListener(
-
     "pointermove",
-
     (e) => {
+
+      if (!dragging) return;
 
       const dx =
         e.clientX - startX;
 
       const dy =
         e.clientY - startY;
-
-      if (
-        Math.abs(dx) > 5 ||
-        Math.abs(dy) > 5
-      ) {
-
-        dragging = true;
-      }
-
-      if (!dragging) return;
-
-      el.classList.add(
-        "dragging"
-      );
 
       currentX =
         initialX + dx;
@@ -892,134 +878,20 @@ function enableDragging(
       "dragging"
     );
 
-    const canvasRect =
-      canvas.getBoundingClientRect();
+    sticker.x =
+      currentX;
 
-    const rect =
-      el.getBoundingClientRect();
+    sticker.y =
+      currentY;
 
-    const binRect =
-      bin.getBoundingClientRect();
+    saveCart();
 
-    /* BIN */
-
-    const droppedOnBin =
-
-      rect.right >
-        binRect.left &&
-
-      rect.left <
-        binRect.right &&
-
-      rect.bottom >
-        binRect.top &&
-
-      rect.top <
-        binRect.bottom;
-
-    if (droppedOnBin) {
-
-      item.stickers =
-        item.stickers.filter(
-          s => s !== sticker
-        );
-
-      item.quantity =
-        item.stickers.length;
-
-      if (
-        item.quantity <= 0
-      ) {
-
-        cart =
-          cart.filter(
-            c =>
-              c.id !== item.id
-          );
-      }
-
-      saveCart();
-
-      renderCart();
-
-      renderBox();
+    if (bin) {
 
       bin.classList.remove(
         "bin-active"
       );
-
-      return;
     }
-
-    /* KEEP INSIDE */
-
-    const overlapX =
-
-      Math.max(
-        0,
-
-        Math.min(
-          rect.right,
-          canvasRect.right
-        ) -
-
-        Math.max(
-          rect.left,
-          canvasRect.left
-        )
-      );
-
-    const overlapY =
-
-      Math.max(
-        0,
-
-        Math.min(
-          rect.bottom,
-          canvasRect.bottom
-        ) -
-
-        Math.max(
-          rect.top,
-          canvasRect.top
-        )
-      );
-
-    const overlapArea =
-      overlapX * overlapY;
-
-    const stickerArea =
-      rect.width * rect.height;
-
-    const overlapRatio =
-      overlapArea /
-      stickerArea;
-
-    if (overlapRatio >= 0.33) {
-
-      sticker.x =
-        currentX;
-
-      sticker.y =
-        currentY;
-
-      saveCart();
-
-    } else {
-
-      el.style.left =
-        sticker.x + "px";
-
-      el.style.top =
-        sticker.y + "px";
-    }
-
-    bin.classList.remove(
-      "bin-active"
-    );
-
-    el.style.zIndex =
-      "1";
   }
 
   el.addEventListener(
@@ -1043,11 +915,12 @@ document.addEventListener(
 
     if (
       variantPanel &&
-      !variantPanel.contains(e.target) &&
+      !e.target.closest("#variantPanel") &&
       !e.target.closest(".sticker")
     ) {
 
-      closeVariantPanel();
+      variantPanel.style.display =
+        "none";
     }
   }
 );
