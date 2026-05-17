@@ -553,33 +553,84 @@ function renderBox() {
 
   cart.forEach(item => {
 
-    item.stickers.forEach(
+    item.stickers.forEach(sticker => {
 
-      sticker => {
+      /* STICKER CONTAINER */
 
-        const el =
+      const stickerWrap =
+        document.createElement("div");
+
+      stickerWrap.className =
+        "sticker";
+
+      stickerWrap.style.left =
+        sticker.x + "px";
+
+      stickerWrap.style.top =
+        sticker.y + "px";
+
+      /* MAIN IMAGE */
+
+      const mainImg =
+        document.createElement("img");
+
+      mainImg.className =
+        "sticker-main";
+
+      /* DEFAULT */
+
+      let imagePath =
+        sticker.image ||
+        item.emojiImage;
+
+      /* MAIN VARIANT */
+
+      if (
+        sticker.mainVariant
+      ) {
+
+        imagePath =
+          `assets/products/${item.folder}/icon/${sticker.mainVariant}.png`;
+      }
+
+      mainImg.src =
+        imagePath;
+
+      stickerWrap.appendChild(
+        mainImg
+      );
+
+      /* SUB OVERLAY */
+
+      if (
+        sticker.subVariant
+      ) {
+
+        const subImg =
           document.createElement("img");
 
-        el.className =
-          "sticker";
+        subImg.className =
+          "sticker-sub";
 
-        el.src =
-          getEmoji(item.folder);
+        subImg.src =
+          `assets/products/${item.folder}/icon/sub/${sticker.subVariant}.png`;
 
-        el.style.left =
-          sticker.x + "px";
-
-        el.style.top =
-          sticker.y + "px";
-
-        enableDragging(
-          el,
-          sticker
+        stickerWrap.appendChild(
+          subImg
         );
-
-        canvas.appendChild(el);
       }
-    );
+
+      /* DRAGGING */
+
+      enableDragging(
+        stickerWrap,
+        sticker
+      );
+
+      canvas.appendChild(
+        stickerWrap
+      );
+    });
   });
 }
 
