@@ -1,771 +1,1065 @@
-:root {
+import { db } from "./firebase-config.js";
 
-  --main-bg: #9e7e67;
+import {
+  collection,
+  onSnapshot
+}
+from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
-  --card-bg: #e4dbd5;
+/* =========================================
+   DATA
+========================================= */
 
-  --button-bg: #e4dbd5;
+let products = [];
 
-  --text-dark: #5d4358;
+let cart =
+  JSON.parse(
+    localStorage.getItem("cart")
+  ) || [];
 
-  --text-light: #6a5963;
+let activeSticker = null;
+
+let activeItem = null;
+
+/* =========================================
+   ELEMENTS
+========================================= */
+
+const catalog =
+  document.querySelector(".catalog");
+
+const cartList =
+  document.getElementById("cart");
+
+const totalEl =
+  document.getElementById("total");
+
+const suggestionList =
+  document.getElementById("suggestionList");
+
+const emptyText =
+  document.getElementById("empty");
+
+const orderData =
+  document.getElementById("orderData");
+
+const totalData =
+  document.getElementById("totalData");
+
+const canvas =
+  document.getElementById("canvas");
+
+const variantPanel =
+  document.getElementById("variantPanel");
+
+/* =========================================
+   HELPERS
+========================================= */
+
+function getProductPath(folder) {
+
+  return `assets/products/${folder}`;
+}
+
+function getCover(folder) {
+
+  return `${getProductPath(folder)}/cover.png`;
+}
+
+function getEmoji(folder) {
+
+  return `${getProductPath(folder)}/emoji.png`;
 }
 
 /* =========================================
-   GLOBAL
+   SAVE
 ========================================= */
 
-* {
+function saveCart() {
 
-  box-sizing: border-box;
-}
-
-img {
-
-  max-width: 100%;
-
-  display: block;
-}
-
-body {
-
-  margin: 0;
-
-  padding: 24px;
-
-  min-height: 100vh;
-
-  font-family: "Comic Sans MS", cursive;
-
-  text-align: center;
-
-  background: var(--main-bg);
-
-  transition: background 0.3s ease;
+  localStorage.setItem(
+    "cart",
+    JSON.stringify(cart)
+  );
 }
 
 /* =========================================
-   TYPOGRAPHY
+   THEME
 ========================================= */
 
-h1 {
+function saveTheme(main, sub) {
 
-  margin: 0;
-
-  color: white;
-
-  font-size: 58px;
-
-  text-shadow:
-    0 6px 16px rgba(0, 0, 0, 0.15);
+  localStorage.setItem(
+    "theme",
+    JSON.stringify({
+      main,
+      sub
+    })
+  );
 }
 
-h2,
-h3 {
+function applyTheme(main, sub) {
 
-  color: var(--text-dark);
+  const root =
+    document.documentElement;
+
+  root.style.setProperty(
+    "--main-bg",
+    main
+  );
+
+  root.style.setProperty(
+    "--card-bg",
+    sub
+  );
+
+  document.body.style.background =
+    main;
 }
 
-p,
-span {
+function loadSavedTheme() {
 
-  color: var(--text-light);
-}
+  const savedTheme =
+    JSON.parse(
+      localStorage.getItem("theme")
+    );
 
-/* =========================================
-   TOP AREA
-========================================= */
+  if (!savedTheme) return;
 
-.top-wrapper {
-
-  width: 100%;
-
-  display: flex;
-
-  flex-direction: column;
-
-  align-items: center;
-
-  gap: 18px;
-
-  margin-bottom: 40px;
+  applyTheme(
+    savedTheme.main,
+    savedTheme.sub
+  );
 }
 
 /* =========================================
    NAVIGATION
 ========================================= */
 
-.nav {
+window.showSection =
+  function(section) {
 
-  display: flex;
+    const shop =
+      document.getElementById(
+        "shopSection"
+      );
 
-  justify-content: center;
+    const catalogSection =
+      document.getElementById(
+        "catalogSection"
+      );
 
-  align-items: center;
+    if (section === "shop") {
 
-  flex-wrap: wrap;
+      shop.style.display =
+        "block";
 
-  gap: 14px;
-}
+      catalogSection.style.display =
+        "none";
 
-.nav button {
+    } else {
 
-  padding: 12px 24px;
+      shop.style.display =
+        "none";
 
-  border: none;
+      catalogSection.style.display =
+        "block";
+    }
+  };
 
-  border-radius: 18px;
+window.changeTheme =
+  function(main, sub) {
 
-  color: var(--text-dark);
+    applyTheme(main, sub);
 
-  background: var(--button-bg);
-
-  font-size: 15px;
-
-  font-weight: bold;
-
-  font-family: inherit;
-
-  cursor: pointer;
-
-  box-shadow:
-    0 6px 14px rgba(0, 0, 0, 0.10);
-
-  transition: 0.2s;
-}
-
-.nav button:hover {
-
-  transform:
-    translateY(-2px)
-    scale(1.03);
-}
+    saveTheme(main, sub);
+  };
 
 /* =========================================
-   THEME PICKER
+   BOX COLOR
 ========================================= */
 
-.theme-picker {
+window.changeSelectedColor =
+  function(color) {
 
-  display: flex;
+    const colors = {
 
-  justify-content: center;
+      Pink: "#ffd4e5",
 
-  align-items: center;
+      Blue: "#cfe7ff",
 
-  flex-wrap: wrap;
+      Purple: "#e6d5ff",
 
-  gap: 12px;
-}
+      Brown: "#c99662"
+    };
 
-.theme-picker p {
+    if (
+      canvas &&
+      colors[color]
+    ) {
 
-  margin: 0;
-
-  color: white;
-
-  font-weight: bold;
-}
-
-.theme-btn {
-
-  width: 42px;
-
-  height: 42px;
-
-  border: 3px solid white;
-
-  border-radius: 50%;
-
-  cursor: pointer;
-
-  transition: 0.2s;
-}
-
-.theme-btn:hover {
-
-  transform: scale(1.12);
-}
-
-.theme-btn.brown {
-
-  background: #9e7e67;
-}
-
-.theme-btn.blue {
-
-  background: #bbc8d8;
-}
-
-.theme-btn.pink {
-
-  background: #d4acb4;
-}
-
-.theme-btn.purple {
-
-  background: #734f96;
-}
+      canvas.style.background =
+        colors[color];
+    }
+  };
 
 /* =========================================
-   MAIN LAYOUT
+   FIREBASE
 ========================================= */
 
-.container {
+onSnapshot(
 
-  width: 100%;
+  collection(db, "products"),
 
-  max-width: 1400px;
+  (snapshot) => {
 
-  margin: auto;
+    products =
+      snapshot.docs.map(doc => ({
 
-  display: flex;
+        id: doc.id,
 
-  flex-wrap: wrap;
+        ...doc.data()
+      }));
 
-  justify-content: center;
+    renderCatalog();
 
-  align-items: flex-start;
+    renderSuggestions();
 
-  gap: 28px;
-}
+    renderCart();
 
-/* =========================================
-   PANELS
-========================================= */
-
-.products,
-.box {
-
-  width: 320px;
-
-  min-width: 320px;
-
-  padding: 24px;
-
-  border-radius: 30px;
-
-  background: var(--card-bg);
-
-  box-shadow:
-    0 18px 45px rgba(0, 0, 0, 0.08);
-
-  flex-shrink: 0;
-}
+    renderBox();
+  }
+);
 
 /* =========================================
    CART
 ========================================= */
 
-#cart {
+function addItem(product) {
 
-  list-style: none;
+  const existing =
+    cart.find(
+      item =>
+        item.id === product.id
+    );
 
-  padding: 0;
+  const sticker = {
 
-  margin: 0;
+    x: 70,
+
+    y: 70,
+
+    mainVariant: null,
+
+    subVariant: null,
+
+    image:
+      getEmoji(product.folder)
+  };
+
+  if (existing) {
+
+    existing.quantity++;
+
+    existing.stickers.push(
+      sticker
+    );
+
+  } else {
+
+    cart.push({
+
+      id: product.id,
+
+      name: product.name,
+
+      folder: product.folder,
+
+      price:
+        Number(product.price),
+
+      coverImage:
+        getCover(product.folder),
+
+      emojiImage:
+        getEmoji(product.folder),
+
+      quantity: 1,
+
+      stickers: [sticker]
+    });
+  }
+
+  saveCart();
+
+  renderCart();
+
+  renderSuggestions();
+
+  renderBox();
 }
 
-#cart li {
+function removeItem(id) {
 
-  display: flex;
+  const item =
+    cart.find(
+      i => i.id === id
+    );
 
-  justify-content: space-between;
+  if (!item) return;
 
-  align-items: center;
+  item.quantity--;
 
-  gap: 12px;
+  item.stickers.pop();
 
-  margin-bottom: 14px;
+  if (item.quantity <= 0) {
 
-  padding: 12px;
+    cart =
+      cart.filter(
+        i => i.id !== id
+      );
+  }
 
-  border-radius: 18px;
+  saveCart();
 
-  background: white;
+  renderCart();
+
+  renderSuggestions();
+
+  renderBox();
 }
 
-.cart-left {
+window.clearCart =
+  function() {
 
-  display: flex;
+    cart = [];
 
-  align-items: center;
+    saveCart();
 
-  gap: 10px;
+    renderCart();
 
-  text-align: left;
-}
+    renderSuggestions();
 
-.cart-img {
+    renderBox();
+  };
 
-  width: 52px;
+/* =========================================
+   CATALOG
+========================================= */
 
-  height: 52px;
+function renderCatalog() {
 
-  object-fit: cover;
+  if (!catalog) return;
 
-  border-radius: 14px;
-}
+  catalog.innerHTML = "";
 
-.cart-controls {
+  products.forEach(product => {
 
-  display: flex;
+    const card =
+      document.createElement("div");
 
-  align-items: center;
+    card.className =
+      "catalog-card";
 
-  gap: 8px;
-}
+    card.innerHTML = `
 
-.cart-controls button {
+      <img
+        src="${getCover(product.folder)}"
+        alt="${product.name}"
+      >
 
-  padding: 6px 10px;
+      <div class="catalog-info">
 
-  border: none;
+        <h3>
+          ${product.name}
+        </h3>
 
-  border-radius: 12px;
+        <p>
+          ${Number(product.price)
+            .toLocaleString()}
+          VND
+        </p>
 
-  background: var(--button-bg);
+      </div>
+    `;
 
-  color: var(--text-dark);
+    card.onclick =
+      () => {
 
-  font-weight: bold;
+        addItem(product);
+      };
 
-  cursor: pointer;
+    catalog.appendChild(card);
+  });
 }
 
 /* =========================================
    SUGGESTIONS
 ========================================= */
 
-#suggestions {
+function renderSuggestions() {
 
-  margin-top: 26px;
+  if (!suggestionList) return;
+
+  suggestionList.innerHTML = "";
+
+  products
+
+    .filter(product =>
+
+      !cart.some(
+        c => c.id === product.id
+      )
+    )
+
+    .slice(0, 4)
+
+    .forEach(product => {
+
+      const div =
+        document.createElement("div");
+
+      div.className =
+        "suggest-card";
+
+      div.innerHTML = `
+
+        <img
+          src="${getCover(product.folder)}"
+        >
+
+        <p>
+          ${product.name}
+        </p>
+      `;
+
+      div.onclick =
+        () => addItem(product);
+
+      suggestionList.appendChild(div);
+    });
 }
 
-#suggestionList {
+/* =========================================
+   CART UI
+========================================= */
 
-  display: flex;
+function renderCart() {
 
-  flex-direction: column;
+  if (!cartList) return;
 
-  gap: 14px;
+  cartList.innerHTML = "";
+
+  emptyText.style.display =
+
+    cart.length === 0
+      ? "block"
+      : "none";
+
+  let total = 0;
+
+  cart.forEach(item => {
+
+    total +=
+      item.price *
+      item.quantity;
+
+    const li =
+      document.createElement("li");
+
+    li.innerHTML = `
+
+      <div class="cart-left">
+
+        <img
+          class="cart-img"
+          src="${getCover(item.folder)}"
+        >
+
+        <span>
+          ${item.name}
+        </span>
+
+      </div>
+
+      <div class="cart-controls">
+
+        <button class="minus-btn">
+          −
+        </button>
+
+        <span>
+          ${item.quantity}
+        </span>
+
+        <button class="plus-btn">
+          +
+        </button>
+
+      </div>
+    `;
+
+    li.querySelector(
+      ".minus-btn"
+    ).onclick =
+      () => removeItem(item.id);
+
+    li.querySelector(
+      ".plus-btn"
+    ).onclick =
+      () => {
+
+        const product =
+          products.find(
+            p => p.id === item.id
+          );
+
+        if (product) {
+
+          addItem(product);
+        }
+      };
+
+    cartList.appendChild(li);
+  });
+
+  totalEl.innerText =
+    total.toLocaleString();
+
+  if (orderData) {
+
+    orderData.value =
+      cart.map(item =>
+
+        `${item.name} x${item.quantity}`
+
+      ).join(" | ");
+  }
+
+  if (totalData) {
+
+    totalData.value =
+      total.toLocaleString() +
+      " VND";
+  }
 }
 
-.suggest-card {
+/* =========================================
+   VARIANT PANEL
+========================================= */
 
-  overflow: hidden;
+function closeVariantPanel() {
 
-  border-radius: 22px;
+  if (!variantPanel) return;
 
-  background: white;
+  variantPanel.classList.remove(
+    "show"
+  );
 
-  cursor: pointer;
+  variantPanel.innerHTML = "";
 
-  transition: 0.2s;
+  activeSticker = null;
+
+  activeItem = null;
 }
 
-.suggest-card:hover {
+function openVariantPanel(
+  sticker,
+  item
+) {
 
-  transform: translateY(-4px);
-}
+  if (!variantPanel) return;
 
-.suggest-card img {
+  activeSticker =
+    sticker;
 
-  width: 100%;
+  activeItem =
+    item;
 
-  height: 240px;
+  variantPanel.innerHTML = "";
 
-  object-fit: cover;
-}
+  /* TITLE */
 
-.suggest-card p {
+  const title =
+    document.createElement("p");
 
-  padding: 14px;
+  title.className =
+    "variant-title";
 
-  margin: 0;
+  title.innerText =
+    "Choose Style";
+
+  variantPanel.appendChild(
+    title
+  );
+
+  /* OPTIONS */
+
+  const options =
+    document.createElement("div");
+
+  options.className =
+    "variant-options";
+
+  variantPanel.appendChild(
+    options
+  );
+
+  for (
+    let i = 1;
+    i <= 20;
+    i++
+  ) {
+
+    const btn =
+      document.createElement("button");
+
+    btn.className =
+      "variant-btn";
+
+    const img =
+      document.createElement("img");
+
+    img.src =
+      `assets/products/${item.folder}/icon/${i}.png`;
+
+    img.onerror =
+      () => {
+
+        btn.remove();
+      };
+
+    btn.appendChild(img);
+
+    btn.onclick =
+      () => {
+
+        sticker.mainVariant =
+          i;
+
+        saveCart();
+
+        renderBox();
+
+        closeVariantPanel();
+      };
+
+    options.appendChild(btn);
+  }
+
+  variantPanel.classList.add(
+    "show"
+  );
 }
 
 /* =========================================
    BOX
 ========================================= */
 
-.box-layout {
+function renderBox() {
 
-  display: flex;
+  if (!canvas) return;
 
-  justify-content: center;
+  canvas.innerHTML = "";
 
-  align-items: center;
+  cart.forEach(item => {
 
-  gap: 20px;
+    item.stickers.forEach(sticker => {
 
-  margin-bottom: 20px;
-}
+      const wrap =
+        document.createElement("div");
 
-#canvas {
+      wrap.className =
+        "sticker";
 
-  position: relative;
+      wrap.style.left =
+        sticker.x + "px";
 
-  width: 220px;
+      wrap.style.top =
+        sticker.y + "px";
 
-  height: 220px;
+      /* CLICK */
 
-  overflow: hidden;
+      wrap.addEventListener(
+        "click",
+        (e) => {
 
-  border-radius: 20px;
+          e.stopPropagation();
 
-  background: white;
+          openVariantPanel(
+            sticker,
+            item
+          );
+        }
+      );
 
-  border: 3px solid #d4acb4;
+      /* MAIN IMAGE */
 
-  flex-shrink: 0;
+      const mainImg =
+        document.createElement("img");
 
-  touch-action: none;
-}
+      mainImg.className =
+        "sticker-main";
 
-/* =========================================
-   STICKERS
-========================================= */
+      let imagePath =
+        sticker.image ||
+        item.emojiImage;
 
-.sticker {
+      if (
+        sticker.mainVariant
+      ) {
 
-  position: absolute;
+        imagePath =
+          `assets/products/${item.folder}/icon/${sticker.mainVariant}.png`;
+      }
 
-  width: 72px;
+      mainImg.src =
+        imagePath;
 
-  height: 72px;
+      wrap.appendChild(mainImg);
 
-  user-select: none;
+      /* SUB IMAGE */
 
-  touch-action: none;
+      if (
+        sticker.subVariant
+      ) {
 
-  cursor: grab;
+        const subImg =
+          document.createElement("img");
 
-  z-index: 5;
+        subImg.className =
+          "sticker-sub";
 
-  transition:
-    transform 0.15s ease,
-    filter 0.2s ease;
-}
+        subImg.src =
+          `assets/products/${item.folder}/icon/sub/${sticker.subVariant}.png`;
 
-.sticker:hover {
+        wrap.appendChild(subImg);
+      }
 
-  transform: scale(1.08);
-}
+      enableDragging(
+        wrap,
+        sticker,
+        item
+      );
 
-.sticker.dragging {
-
-  transform: scale(1.14);
-
-  z-index: 9999;
-}
-
-.sticker img {
-
-  position: absolute;
-
-  width: 100%;
-
-  height: 100%;
-
-  object-fit: contain;
-
-  pointer-events: none;
-}
-
-.sticker-main {
-
-  z-index: 1;
-}
-
-.sticker-sub {
-
-  z-index: 2;
+      canvas.appendChild(wrap);
+    });
+  });
 }
 
 /* =========================================
-   BIN
+   DRAGGING
 ========================================= */
 
-#bin {
+function enableDragging(
+  el,
+  sticker,
+  item
+) {
 
-  width: 60px;
+  const bin =
+    document.getElementById("bin");
 
-  height: 60px;
+  let dragging = false;
 
-  margin: 18px auto 0;
+  let startX = 0;
 
-  display: flex;
+  let startY = 0;
 
-  justify-content: center;
+  let initialX = 0;
 
-  align-items: center;
+  let initialY = 0;
 
-  border-radius: 50%;
+  let currentX = 0;
 
-  background: var(--main-bg);
+  let currentY = 0;
 
-  color: white;
+  el.addEventListener(
 
-  font-size: 28px;
+    "pointerdown",
 
-  cursor: pointer;
+    (e) => {
 
-  transition:
-    transform 0.2s ease,
-    filter 0.2s ease,
-    background 0.2s ease;
-}
+      dragging = false;
 
-#bin:hover {
+      startX =
+        e.clientX;
 
-  transform: scale(1.08);
-}
+      startY =
+        e.clientY;
 
-.bin-active {
+      initialX =
+        sticker.x;
 
-  transform: scale(1.22);
+      initialY =
+        sticker.y;
 
-  filter: brightness(1.15);
+      currentX =
+        sticker.x;
+
+      currentY =
+        sticker.y;
+
+      el.setPointerCapture(
+        e.pointerId
+      );
+    }
+  );
+
+  el.addEventListener(
+
+    "pointermove",
+
+    (e) => {
+
+      const dx =
+        e.clientX - startX;
+
+      const dy =
+        e.clientY - startY;
+
+      if (
+        Math.abs(dx) > 5 ||
+        Math.abs(dy) > 5
+      ) {
+
+        dragging = true;
+      }
+
+      if (!dragging) return;
+
+      el.classList.add(
+        "dragging"
+      );
+
+      currentX =
+        initialX + dx;
+
+      currentY =
+        initialY + dy;
+
+      el.style.left =
+        currentX + "px";
+
+      el.style.top =
+        currentY + "px";
+
+      if (bin) {
+
+        const binRect =
+          bin.getBoundingClientRect();
+
+        const rect =
+          el.getBoundingClientRect();
+
+        const touching =
+
+          rect.right >
+            binRect.left &&
+
+          rect.left <
+            binRect.right &&
+
+          rect.bottom >
+            binRect.top &&
+
+          rect.top <
+            binRect.bottom;
+
+        if (touching) {
+
+          bin.classList.add(
+            "bin-active"
+          );
+
+        } else {
+
+          bin.classList.remove(
+            "bin-active"
+          );
+        }
+      }
+    }
+  );
+
+  function stopDragging() {
+
+    if (!dragging) return;
+
+    dragging = false;
+
+    el.classList.remove(
+      "dragging"
+    );
+
+    const canvasRect =
+      canvas.getBoundingClientRect();
+
+    const rect =
+      el.getBoundingClientRect();
+
+    const binRect =
+      bin.getBoundingClientRect();
+
+    /* BIN */
+
+    const droppedOnBin =
+
+      rect.right >
+        binRect.left &&
+
+      rect.left <
+        binRect.right &&
+
+      rect.bottom >
+        binRect.top &&
+
+      rect.top <
+        binRect.bottom;
+
+    if (droppedOnBin) {
+
+      item.stickers =
+        item.stickers.filter(
+          s => s !== sticker
+        );
+
+      item.quantity =
+        item.stickers.length;
+
+      if (
+        item.quantity <= 0
+      ) {
+
+        cart =
+          cart.filter(
+            c =>
+              c.id !== item.id
+          );
+      }
+
+      saveCart();
+
+      renderCart();
+
+      renderBox();
+
+      bin.classList.remove(
+        "bin-active"
+      );
+
+      return;
+    }
+
+    /* KEEP INSIDE */
+
+    const overlapX =
+
+      Math.max(
+        0,
+
+        Math.min(
+          rect.right,
+          canvasRect.right
+        ) -
+
+        Math.max(
+          rect.left,
+          canvasRect.left
+        )
+      );
+
+    const overlapY =
+
+      Math.max(
+        0,
+
+        Math.min(
+          rect.bottom,
+          canvasRect.bottom
+        ) -
+
+        Math.max(
+          rect.top,
+          canvasRect.top
+        )
+      );
+
+    const overlapArea =
+      overlapX * overlapY;
+
+    const stickerArea =
+      rect.width * rect.height;
+
+    const overlapRatio =
+      overlapArea /
+      stickerArea;
+
+    if (overlapRatio >= 0.33) {
+
+      sticker.x =
+        currentX;
+
+      sticker.y =
+        currentY;
+
+      saveCart();
+
+    } else {
+
+      el.style.left =
+        sticker.x + "px";
+
+      el.style.top =
+        sticker.y + "px";
+    }
+
+    bin.classList.remove(
+      "bin-active"
+    );
+
+    el.style.zIndex =
+      "1";
+  }
+
+  el.addEventListener(
+    "pointerup",
+    stopDragging
+  );
+
+  el.addEventListener(
+    "pointercancel",
+    stopDragging
+  );
 }
 
 /* =========================================
-   COLOR PANEL
+   CLOSE PANEL
 ========================================= */
 
-.color-panel {
+document.addEventListener(
+  "click",
+  (e) => {
 
-  display: flex;
+    if (
+      variantPanel &&
+      !variantPanel.contains(e.target) &&
+      !e.target.closest(".sticker")
+    ) {
 
-  flex-direction: column;
-
-  align-items: center;
-
-  gap: 12px;
-}
-
-.color-circle {
-
-  width: 34px;
-
-  height: 34px;
-
-  border: 2px solid white;
-
-  border-radius: 50%;
-
-  cursor: pointer;
-
-  transition: 0.2s;
-}
-
-.color-circle:hover {
-
-  transform: scale(1.12);
-}
-
-.color-circle.brown {
-
-  background: #9e7e67;
-}
-
-.color-circle.blue {
-
-  background: #bbc8d8;
-}
-
-.color-circle.pink {
-
-  background: #d4acb4;
-}
-
-.color-circle.purple {
-
-  background: #c091f3;
-}
+      closeVariantPanel();
+    }
+  }
+);
 
 /* =========================================
-   FORM
+   INIT
 ========================================= */
 
-input,
-textarea {
+loadSavedTheme();
 
-  width: 100%;
+renderCart();
 
-  padding: 14px;
+renderSuggestions();
 
-  margin-top: 12px;
-
-  border: none;
-
-  border-radius: 18px;
-
-  font-size: 15px;
-
-  font-family: inherit;
-
-  background: white;
-}
-
-textarea {
-
-  resize: none;
-}
-
-#orderForm button {
-
-  width: 100%;
-
-  margin-top: 15px;
-
-  padding: 14px;
-
-  border: none;
-
-  border-radius: 18px;
-
-  background: var(--main-bg);
-
-  color: white;
-
-  font-weight: bold;
-
-  font-family: inherit;
-
-  cursor: pointer;
-
-  box-shadow:
-    0 6px 14px rgba(0, 0, 0, 0.10);
-}
-
-/* =========================================
-   CATALOG
-========================================= */
-
-.catalog {
-
-  width: 100%;
-
-  max-width: 1300px;
-
-  margin: auto;
-
-  display: grid;
-
-  grid-template-columns:
-    repeat(auto-fit, minmax(240px, 1fr));
-
-  gap: 26px;
-}
-
-.catalog-card {
-
-  overflow: hidden;
-
-  border-radius: 28px;
-
-  background: var(--card-bg);
-
-  box-shadow:
-    0 12px 30px rgba(0, 0, 0, 0.08);
-
-  cursor: pointer;
-
-  transition: 0.25s;
-}
-
-.catalog-card:hover {
-
-  transform:
-    translateY(-6px)
-    scale(1.02);
-}
-
-.catalog-card img {
-
-  width: 100%;
-
-  height: 260px;
-
-  object-fit: cover;
-}
-
-.catalog-info {
-
-  padding: 18px;
-}
-
-/* =========================================
-   SECTION DEFAULTS
-========================================= */
-
-#shopSection {
-
-  display: block;
-}
-
-#catalogSection {
-
-  display: none;
-}
-
-/* =========================================
-   MOBILE
-========================================= */
-
-@media (max-width: 950px) {
-
-  body {
-
-    padding: 18px;
-  }
-
-  h1 {
-
-    font-size: 42px;
-  }
-
-  .container {
-
-    flex-direction: column;
-
-    align-items: center;
-  }
-
-  .products,
-  .box {
-
-    width: 100%;
-
-    min-width: unset;
-
-    max-width: 380px;
-  }
-
-  .box-layout {
-
-    flex-direction: column;
-  }
-
-  .color-panel {
-
-    flex-direction: row;
-
-    justify-content: center;
-
-    flex-wrap: wrap;
-  }
-
-  #canvas {
-
-    width: 200px;
-
-    height: 200px;
-  }
-
-  .catalog {
-
-    grid-template-columns: 1fr;
-  }
-}
+renderBox();
