@@ -564,7 +564,7 @@ function renderBox() {
       wrap.style.top =
         sticker.y + "px";
 
-      /* MAIN */
+      /* MAIN IMAGE */
 
       const mainImg =
         document.createElement("img");
@@ -589,7 +589,7 @@ function renderBox() {
 
       wrap.appendChild(mainImg);
 
-      /* SUB */
+      /* SUB IMAGE */
 
       if (
         sticker.subVariant
@@ -624,7 +624,8 @@ function renderBox() {
 
 function enableDragging(
   el,
-  sticker
+  sticker,
+  item
 ) {
 
   const bin =
@@ -640,9 +641,9 @@ function enableDragging(
 
   let initialY = 0;
 
-  let latestX = 0;
+  let currentX = 0;
 
-  let latestY = 0;
+  let currentY = 0;
 
   el.addEventListener(
 
@@ -664,15 +665,18 @@ function enableDragging(
       initialY =
         sticker.y;
 
-      latestX =
+      currentX =
         sticker.x;
 
-      latestY =
+      currentY =
         sticker.y;
 
       el.classList.add(
         "dragging"
       );
+
+      el.style.zIndex =
+        "999";
 
       el.setPointerCapture(
         e.pointerId
@@ -694,239 +698,19 @@ function enableDragging(
       const dy =
         e.clientY - startY;
 
-      latestX =
+      currentX =
         initialX + dx;
 
-      latestY =
+      currentY =
         initialY + dy;
 
       el.style.left =
-        latestX + "px";
+        currentX + "px";
 
       el.style.top =
-        latestY + "px";
+        currentY + "px";
 
-      /* BIN DETECTION */
-
-      if (bin) {
-
-        const binRect =
-          bin.getBoundingClientRect();
-
-        const stickerRect =
-          el.getBoundingClientRect();
-
-        const touchingBin =
-
-          !(
-            stickerRect.right <
-              binRect.left ||
-
-            stickerRect.left >
-              binRect.right ||
-
-            stickerRect.bottom <
-              binRect.top ||
-
-            stickerRect.top >
-              binRect.bottom
-          );
-
-        if (touchingBin) {
-
-          bin.classList.add(
-            "bin-active"
-          );
-
-        } else {
-
-          bin.classList.remove(
-            "bin-active"
-          );
-        }
-      }
-    }
-  );
-
-  const stopDragging =
-    () => {
-
-      if (!dragging) return;
-
-      dragging = false;
-
-      el.classList.remove(
-        "dragging"
-      );
-
-      const canvasRect =
-        canvas.getBoundingClientRect();
-
-      const binRect =
-        bin.getBoundingClientRect();
-
-      const stickerRect =
-        el.getBoundingClientRect();
-
-      /* =========================
-         DROP ON BIN
-      ========================= */
-
-      const droppedOnBin =
-
-        !(
-          stickerRect.right <
-            binRect.left ||
-
-          stickerRect.left >
-            binRect.right ||
-
-          stickerRect.bottom <
-            binRect.top ||
-
-          stickerRect.top >
-            binRect.bottom
-        );
-
-      if (droppedOnBin) {
-
-        cart.forEach(item => {
-
-          item.stickers =
-            item.stickers.filter(
-              s => s !== sticker
-            );
-
-          item.quantity =
-            item.stickers.length;
-        });
-
-        cart =
-          cart.filter(
-            item =>
-              item.quantity > 0
-          );
-
-        saveCart();
-
-        renderCart();
-
-        renderBox();
-
-        bin.classList.remove(
-          "bin-active"
-        );
-
-        return;
-      }
-
-      /* =========================
-         ALLOW 1/3 INSIDE BOX
-      ========================= */
-
-      const overlapX =
-
-        Math.max(
-          0,
-
-          Math.min(
-            stickerRect.right,
-            canvasRect.right
-          ) -
-
-          Math.max(
-            stickerRect.left,
-            canvasRect.left
-          )
-        );
-
-      const overlapY =
-
-        Math.max(
-          0,
-
-          Math.min(
-            stickerRect.bottom,
-            canvasRect.bottom
-          ) -
-
-          Math.max(
-            stickerRect.top,
-            canvasRect.top
-          )
-        );
-
-      const overlapArea =
-        overlapX * overlapY;
-
-      const stickerArea =
-        stickerRect.width *
-        stickerRect.height;
-
-      const overlapRatio =
-        overlapArea /
-        stickerArea;
-
-      /* =========================
-         ACCEPT DROP
-      ========================= */
-
-      if (overlapRatio >= 0.33) {
-
-        const relativeX =
-
-          latestX;
-
-        const relativeY =
-
-          latestY;
-
-        sticker.x =
-          relativeX;
-
-        sticker.y =
-          relativeY;
-
-        saveCart();
-
-      } else {
-
-        /* SNAP BACK */
-
-        el.style.transition =
-          "0.25s ease";
-
-        el.style.left =
-          sticker.x + "px";
-
-        el.style.top =
-          sticker.y + "px";
-
-        setTimeout(() => {
-
-          el.style.transition =
-            "";
-
-        }, 250);
-      }
-
-      bin.classList.remove(
-        "bin-active"
-      );
-    };
-
-  el.addEventListener(
-    "pointerup",
-    stopDragging
-  );
-
-  el.addEventListener(
-    "pointercancel",
-    stopDragging
-  );
-}
-
-      /* BIN */
+      /* BIN HOVER */
 
       if (bin) {
 
@@ -972,6 +756,10 @@ function enableDragging(
 
     dragging = false;
 
+    el.classList.remove(
+      "dragging"
+    );
+
     const canvasRect =
       canvas.getBoundingClientRect();
 
@@ -981,7 +769,9 @@ function enableDragging(
     const binRect =
       bin.getBoundingClientRect();
 
-    /* DELETE */
+    /* =========================
+       DROP ON BIN
+    ========================= */
 
     const droppedOnBin =
 
@@ -1031,23 +821,57 @@ function enableDragging(
       return;
     }
 
-    /* INSIDE */
+    /* =========================
+       ALLOW 1/3 INSIDE
+    ========================= */
 
-    const inside =
+    const overlapX =
 
-      rect.left >=
-        canvasRect.left &&
+      Math.max(
+        0,
 
-      rect.right <=
-        canvasRect.right &&
+        Math.min(
+          rect.right,
+          canvasRect.right
+        ) -
 
-      rect.top >=
-        canvasRect.top &&
+        Math.max(
+          rect.left,
+          canvasRect.left
+        )
+      );
 
-      rect.bottom <=
-        canvasRect.bottom;
+    const overlapY =
 
-    if (inside) {
+      Math.max(
+        0,
+
+        Math.min(
+          rect.bottom,
+          canvasRect.bottom
+        ) -
+
+        Math.max(
+          rect.top,
+          canvasRect.top
+        )
+      );
+
+    const overlapArea =
+      overlapX * overlapY;
+
+    const stickerArea =
+      rect.width * rect.height;
+
+    const overlapRatio =
+      overlapArea /
+      stickerArea;
+
+    /* =========================
+       ACCEPT POSITION
+    ========================= */
+
+    if (overlapRatio >= 0.33) {
 
       sticker.x =
         currentX;
@@ -1062,7 +886,7 @@ function enableDragging(
       /* SNAP BACK */
 
       el.style.transition =
-        "0.25s";
+        "0.25s ease";
 
       el.style.left =
         sticker.x + "px";
@@ -1081,9 +905,6 @@ function enableDragging(
     bin.classList.remove(
       "bin-active"
     );
-
-    el.style.cursor =
-      "grab";
 
     el.style.zIndex =
       "1";
