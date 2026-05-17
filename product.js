@@ -2,56 +2,84 @@ import { db } from "./firebase-config.js";
 
 import {
   doc,
-  getDoc,
-  collection,
-  getDocs
-} from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+  getDoc
+}
+from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
-/* =========================
+/* =========================================
    ELEMENTS
-========================= */
+========================================= */
 
 const productTitle =
-  document.getElementById("productTitle");
+  document.getElementById(
+    "productTitle"
+  );
 
 const productName =
-  document.getElementById("productName");
+  document.getElementById(
+    "productName"
+  );
 
 const productPrice =
-  document.getElementById("productPrice");
+  document.getElementById(
+    "productPrice"
+  );
 
 const productDescription =
-  document.getElementById("productDescription");
+  document.getElementById(
+    "productDescription"
+  );
 
 const mainImage =
-  document.getElementById("mainImage");
+  document.getElementById(
+    "mainImage"
+  );
 
 const thumbnailRow =
-  document.getElementById("thumbnailRow");
+  document.getElementById(
+    "thumbnailRow"
+  );
 
 const suggestionList =
-  document.getElementById("suggestionList");
+  document.getElementById(
+    "suggestionList"
+  );
 
 const addToCartBtn =
-  document.getElementById("addToCartBtn");
+  document.getElementById(
+    "addToCartBtn"
+  );
 
-/* =========================
-   LOAD SAVED THEME
-========================= */
+/* =========================================
+   PRODUCT ID
+========================================= */
+
+const params =
+  new URLSearchParams(
+    window.location.search
+  );
+
+const productId =
+  params.get("id");
+
+/* =========================================
+   LOAD THEME
+========================================= */
 
 function loadSavedTheme() {
 
   const savedTheme =
     JSON.parse(
-      localStorage.getItem("theme")
+      localStorage.getItem(
+        "theme"
+      )
     );
 
-  if (!savedTheme) return;
+  if (!savedTheme)
+    return;
 
   const root =
     document.documentElement;
-
-  /* IMPORTANT */
 
   root.style.setProperty(
     "--main-bg",
@@ -65,53 +93,81 @@ function loadSavedTheme() {
 
   document.body.style.background =
     savedTheme.main;
-
-  /* BACK BUTTON */
-
-  const backBtn =
-    document.querySelector(".back-btn");
-
-  if (backBtn) {
-
-    backBtn.style.background =
-      savedTheme.sub;
-
-    backBtn.style.color =
-      "#5d4358";
-  }
-
-  /* PRODUCT BUTTON */
-
-  if (addToCartBtn) {
-
-    addToCartBtn.style.background =
-      savedTheme.main;
-
-    addToCartBtn.style.color =
-      "white";
-  }
 }
 
-/* =========================
-   GET PRODUCT ID
-========================= */
+/* =========================================
+   IMAGE EXISTS
+========================================= */
 
-const params =
-  new URLSearchParams(window.location.search);
+function imageExists(src) {
 
-const productId =
-  params.get("id");
+  return new Promise(
+    (resolve) => {
 
-/* =========================
+      const img =
+        new Image();
+
+      img.onload =
+        () => resolve(true);
+
+      img.onerror =
+        () => resolve(false);
+
+      img.src = src;
+    }
+  );
+}
+
+/* =========================================
+   LOAD NUMBERED IMAGES
+========================================= */
+
+async function loadImages(
+  folder
+) {
+
+  const images = [];
+
+  const cover =
+    `assets/products/${folder}/cover.png`;
+
+  images.push(cover);
+
+  for (
+    let i = 1;
+    i <= 20;
+    i++
+  ) {
+
+    const path =
+      `assets/products/${folder}/${i}.png`;
+
+    const exists =
+      await imageExists(path);
+
+    if (exists) {
+
+      images.push(path);
+
+    } else {
+
+      break;
+    }
+  }
+
+  return images;
+}
+
+/* =========================================
    LOAD PRODUCT
-========================= */
+========================================= */
 
 async function loadProduct() {
 
   if (!productId) {
 
     productTitle.textContent =
-      "Missing Product ID";
+      "Missing Product";
 
     return;
   }
@@ -119,12 +175,20 @@ async function loadProduct() {
   try {
 
     const productRef =
-      doc(db, "products", productId);
+      doc(
+        db,
+        "products",
+        productId
+      );
 
     const snapshot =
-      await getDoc(productRef);
+      await getDoc(
+        productRef
+      );
 
-    if (!snapshot.exists()) {
+    if (
+      !snapshot.exists()
+    ) {
 
       productTitle.textContent =
         "Product Not Found";
@@ -132,39 +196,38 @@ async function loadProduct() {
       return;
     }
 
-    const product = snapshot.data();
+    const product =
+      snapshot.data();
 
-    /* =========================
-       TEXT
-    ========================= */
+    const folder =
+      product.folder;
+
+    /* INFO */
 
     productTitle.textContent =
-      product.name || "Unnamed Product";
+      product.name;
 
     productName.textContent =
-      `${product.emoji || "🧶"} ${product.name || ""}`;
+      product.name;
 
     productPrice.textContent =
-      `${Number(product.price || 0)
+      `${Number(product.price)
         .toLocaleString()} VND`;
 
     productDescription.textContent =
       product.description ||
-      "No description yet.";
+      "";
 
-    /* =========================
-       IMAGES
-    ========================= */
+    /* IMAGES */
 
-    const images = [
+    const images =
+      await loadImages(
+        folder
+      );
 
-      product.coverImage,
-
-      ...(product.displayImages || [])
-
-    ].filter(Boolean);
-
-    if (images.length > 0) {
+    if (
+      images.length > 0
+    ) {
 
       mainImage.src =
         images[0];
@@ -172,62 +235,73 @@ async function loadProduct() {
       thumbnailRow.innerHTML =
         "";
 
-      images.forEach((imageUrl) => {
+      images.forEach(
+        (imageUrl) => {
 
-        const img =
-          document.createElement("img");
+          const img =
+            document.createElement(
+              "img"
+            );
 
-        img.src =
-          imageUrl;
+          img.src =
+            imageUrl;
 
-        img.className =
-          "thumbnail-image";
+          img.className =
+            "thumbnail-image";
 
-        img.addEventListener(
-          "click",
-          () => {
+          img.onclick =
+            () => {
 
-            mainImage.src =
-              imageUrl;
-          }
-        );
+              mainImage.src =
+                imageUrl;
+            };
 
-        thumbnailRow.appendChild(img);
-
-      });
-
+          thumbnailRow.appendChild(
+            img
+          );
+        }
+      );
     }
 
-    /* =========================
-       ADD TO CART
-    ========================= */
+    /* ADD TO CART */
 
     addToCartBtn.onclick =
       () => {
 
         const cart =
           JSON.parse(
-            localStorage.getItem("cart")
+            localStorage.getItem(
+              "cart"
+            )
           ) || [];
 
         const existing =
           cart.find(
             item =>
-              item.id === productId
+              item.id ===
+              productId
           );
+
+        const sticker = {
+
+          x:
+            40 +
+            Math.random() *
+              120,
+
+          y:
+            40 +
+            Math.random() *
+              120
+        };
 
         if (existing) {
 
           existing.quantity++;
 
-          existing.stickers.push({
-
-            x:
-              40 + Math.random() * 110,
-
-            y:
-              40 + Math.random() * 110
-          });
+          existing.stickers.push(
+            sticker
+          );
 
         } else {
 
@@ -238,25 +312,24 @@ async function loadProduct() {
             name:
               product.name,
 
+            folder,
+
             price:
               Number(
-                product.price || 0
+                product.price
               ),
 
             coverImage:
-              product.coverImage || "",
+              `assets/products/${folder}/cover.png`,
 
-            emoji:
-              product.emoji || "🧶",
+            emojiImage:
+              `assets/products/${folder}/emoji.png`,
 
             quantity: 1,
 
-            stickers: [{
-
-              x: 50,
-
-              y: 50
-            }]
+            stickers: [
+              sticker
+            ]
           });
         }
 
@@ -267,113 +340,23 @@ async function loadProduct() {
           JSON.stringify(cart)
         );
 
-        addToCartBtn.textContent =
-          "Added 🛒";
-
-        setTimeout(() => {
-
-          addToCartBtn.textContent =
-            "Add To Cart";
-
-        }, 1200);
+        alert(
+          "Added To Cart 🧶"
+        );
       };
-
-    /* =========================
-       SUGGESTIONS
-    ========================= */
-
-    loadSuggestions(productId);
 
   } catch (error) {
 
     console.error(error);
 
     productTitle.textContent =
-      "Failed To Load Product";
+      "Failed To Load";
   }
 }
 
-/* =========================
-   LOAD SUGGESTIONS
-========================= */
-
-async function loadSuggestions(currentId) {
-
-  try {
-
-    const snapshot =
-      await getDocs(
-        collection(db, "products")
-      );
-
-    suggestionList.innerHTML =
-      "";
-
-    snapshot.forEach((docSnap) => {
-
-      if (
-        docSnap.id === currentId
-      ) return;
-
-      const product =
-        docSnap.data();
-
-      const card =
-        document.createElement("div");
-
-      card.className =
-        "catalog-card";
-
-      card.innerHTML = `
-
-        <img
-          src="${product.coverImage || ""}"
-          alt="${product.name || ""}"
-          class="catalog-image"
-        >
-
-        <div class="catalog-info">
-
-          <h3>
-
-            ${product.emoji || "🧶"}
-
-            ${product.name || ""}
-
-          </h3>
-
-          <p>
-
-            ${Number(product.price || 0)
-              .toLocaleString()} VND
-
-          </p>
-
-        </div>
-      `;
-
-      card.onclick =
-        () => {
-
-          window.location.href =
-            `product.html?id=${docSnap.id}`;
-        };
-
-      suggestionList.appendChild(
-        card
-      );
-
-    });
-
-  } catch (error) {
-
-    console.error(error);
-  }
-}
-
-/* =========================
+/* =========================================
    START
-========================= */
+========================================= */
 
 loadSavedTheme();
 
