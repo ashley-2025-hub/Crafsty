@@ -13,166 +13,106 @@ from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
    ELEMENTS
 ========================================= */
 
+const productForm =
+  document.getElementById(
+    "productForm"
+  );
+
 const productList =
   document.getElementById(
     "productList"
   );
 
 /* =========================================
-   BUILD PRODUCT PATHS
-========================================= */
-
-function buildProductData(
-  folder
-) {
-
-  const base =
-    `assets/products/${folder}`;
-
-  return {
-
-    folder,
-
-    coverImage:
-      `${base}/cover.png`,
-
-    emojiImage:
-      `${base}/emoji.png`,
-
-    displayImages: [
-
-      `${base}/1.png`,
-      `${base}/2.png`,
-      `${base}/3.png`,
-      `${base}/4.png`
-
-    ],
-
-    iconFolder:
-      `${base}/icon`,
-
-    subFolder:
-      `${base}/icon/sub`
-  };
-}
-
-/* =========================================
    ADD PRODUCT
 ========================================= */
 
-async function addProduct() {
+productForm.addEventListener(
 
-  try {
+  "submit",
 
-    const name =
-      document.getElementById(
-        "name"
-      ).value.trim();
+  async (e) => {
 
-    const folder =
-      document.getElementById(
-        "folder"
-      ).value.trim();
+    e.preventDefault();
 
-    const price =
-      Number(
+    try {
+
+      const name =
         document.getElementById(
-          "price"
-        ).value
+          "name"
+        ).value.trim();
+
+      const folder =
+        document.getElementById(
+          "folder"
+        ).value.trim();
+
+      const price =
+        Number(
+          document.getElementById(
+            "price"
+          ).value
+        );
+
+      const description =
+        document.getElementById(
+          "description"
+        ).value.trim();
+
+      /* VALIDATION */
+
+      if (
+        !name ||
+        !folder ||
+        !price
+      ) {
+
+        alert(
+          "Please fill all fields"
+        );
+
+        return;
+      }
+
+      /* FIREBASE */
+
+      await addDoc(
+
+        collection(
+          db,
+          "products"
+        ),
+
+        {
+
+          name,
+          folder,
+          price,
+          description,
+
+          createdAt:
+            Date.now()
+        }
       );
 
-    const description =
-      document.getElementById(
-        "description"
-      ).value.trim();
+      /* RESET */
 
-    /* VALIDATION */
-
-    if (
-      !name ||
-      !folder ||
-      !price
-    ) {
+      productForm.reset();
 
       alert(
-        "Please fill all fields"
+        "Product Added 🧶"
       );
 
-      return;
+    } catch (error) {
+
+      console.error(error);
+
+      alert(
+        "Failed To Add Product"
+      );
     }
-
-    /* AUTO BUILD */
-
-    const autoData =
-      buildProductData(
-        folder
-      );
-
-    /* FIREBASE */
-
-    await addDoc(
-      collection(
-        db,
-        "products"
-      ),
-      {
-
-        name,
-        folder,
-        price,
-        description,
-
-        coverImage:
-          autoData.coverImage,
-
-        emojiImage:
-          autoData.emojiImage,
-
-        displayImages:
-          autoData.displayImages,
-
-        iconFolder:
-          autoData.iconFolder,
-
-        subFolder:
-          autoData.subFolder,
-
-        createdAt:
-          Date.now()
-      }
-    );
-
-    /* CLEAR */
-
-    document.getElementById(
-      "name"
-    ).value = "";
-
-    document.getElementById(
-      "folder"
-    ).value = "";
-
-    document.getElementById(
-      "price"
-    ).value = "";
-
-    document.getElementById(
-      "description"
-    ).value = "";
-
-    alert(
-      "Product Added 🧶"
-    );
-
-  } catch (error) {
-
-    console.error(error);
-
-    alert(
-      "Failed to add product"
-    );
   }
-}
+);
 
 /* =========================================
    LIVE PRODUCTS
@@ -193,6 +133,9 @@ onSnapshot(
         const product =
           docSnap.data();
 
+        const cover =
+          `assets/products/${product.folder}/cover.png`;
+
         const card =
           document.createElement(
             "div"
@@ -204,7 +147,7 @@ onSnapshot(
         card.innerHTML = `
 
           <img
-            src="${product.coverImage}"
+            src="${cover}"
             alt="${product.name}"
           >
 
@@ -224,11 +167,25 @@ onSnapshot(
           </p>
 
           <button
-            onclick="deleteProduct('${docSnap.id}')"
+            class="delete-btn"
+            data-id="${docSnap.id}"
           >
             Delete
           </button>
         `;
+
+        const deleteBtn =
+          card.querySelector(
+            ".delete-btn"
+          );
+
+        deleteBtn.onclick =
+          () => {
+
+            deleteProduct(
+              docSnap.id
+            );
+          };
 
         productList.appendChild(
           card
@@ -274,13 +231,3 @@ async function deleteProduct(
     );
   }
 }
-
-/* =========================================
-   WINDOW
-========================================= */
-
-window.addProduct =
-  addProduct;
-
-window.deleteProduct =
-  deleteProduct;
