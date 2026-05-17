@@ -3,7 +3,8 @@ import { db } from "./firebase-config.js";
 import {
   collection,
   onSnapshot
-} from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+}
+from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
 /* =========================================
    DATA
@@ -12,7 +13,9 @@ import {
 let products = [];
 
 let cart =
-  JSON.parse(localStorage.getItem("cart")) || [];
+  JSON.parse(
+    localStorage.getItem("cart")
+  ) || [];
 
 /* =========================================
    ELEMENTS
@@ -28,38 +31,29 @@ const totalEl =
   document.getElementById("total");
 
 const suggestionList =
-  document.getElementById("suggestionList");
+  document.getElementById(
+    "suggestionList"
+  );
 
 const emptyText =
   document.getElementById("empty");
 
 const orderData =
-  document.getElementById("orderData");
+  document.getElementById(
+    "orderData"
+  );
 
 const totalData =
-  document.getElementById("totalData");
+  document.getElementById(
+    "totalData"
+  );
 
 const canvas =
   document.getElementById("canvas");
 
 /* =========================================
-   HELPERS
+   SAVE CART
 ========================================= */
-
-function getProductFolder(product) {
-
-  return `assets/products/${product.folder}`;
-}
-
-function getCoverImage(product) {
-
-  return `${getProductFolder(product)}/cover.png`;
-}
-
-function getEmojiImage(product) {
-
-  return `${getProductFolder(product)}/emoji.png`;
-}
 
 function saveCart() {
 
@@ -76,8 +70,11 @@ function saveCart() {
 function saveTheme(main, sub) {
 
   localStorage.setItem(
+
     "theme",
+
     JSON.stringify({
+
       main,
       sub
     })
@@ -103,8 +100,15 @@ function applyTheme(main, sub) {
     sub
   );
 
+  root.style.setProperty(
+    "--sub-bg",
+    sub
+  );
+
   document.body.style.background =
     main;
+
+  /* NAV BUTTONS */
 
   document
     .querySelectorAll(".nav button")
@@ -116,6 +120,8 @@ function applyTheme(main, sub) {
       btn.style.color =
         "#5d4358";
     });
+
+  /* ORDER BUTTON */
 
   const orderBtn =
     document.querySelector(
@@ -130,6 +136,8 @@ function applyTheme(main, sub) {
     orderBtn.style.color =
       "white";
   }
+
+  /* BIN */
 
   const bin =
     document.getElementById("bin");
@@ -209,7 +217,7 @@ window.changeTheme =
   };
 
 /* =========================================
-   CANVAS COLOR
+   BOX COLOR
 ========================================= */
 
 window.changeSelectedColor =
@@ -237,7 +245,7 @@ window.changeSelectedColor =
   };
 
 /* =========================================
-   FIREBASE REALTIME SYNC
+   FIREBASE REALTIME
 ========================================= */
 
 onSnapshot(
@@ -247,24 +255,12 @@ onSnapshot(
   (snapshot) => {
 
     products =
-      snapshot.docs.map(doc => {
+      snapshot.docs.map(doc => ({
 
-        const data =
-          doc.data();
+        id: doc.id,
 
-        return {
-
-          id: doc.id,
-
-          ...data,
-
-          coverImage:
-            `assets/products/${data.folder}/cover.png`,
-
-          emojiImage:
-            `assets/products/${data.folder}/emoji.png`
-        };
-      });
+        ...doc.data()
+      }));
 
     renderCatalog();
 
@@ -277,7 +273,7 @@ onSnapshot(
 );
 
 /* =========================================
-   CART OPERATIONS
+   ADD ITEM
 ========================================= */
 
 function addItem(product) {
@@ -289,9 +285,9 @@ function addItem(product) {
 
   const sticker = {
 
-    x: 40 + Math.random() * 110,
+    x: 40 + Math.random() * 120,
 
-    y: 40 + Math.random() * 110
+    y: 40 + Math.random() * 120
   };
 
   if (existing) {
@@ -310,16 +306,17 @@ function addItem(product) {
 
       name: product.name,
 
-      price: Number(product.price),
-
-      coverImage:
-        product.coverImage,
-
-      emojiImage:
-        product.emojiImage,
-
       folder:
         product.folder,
+
+      price:
+        Number(product.price),
+
+      coverImage:
+        `assets/products/${product.folder}/cover.png`,
+
+      emojiImage:
+        `assets/products/${product.folder}/emoji.png`,
 
       quantity: 1,
 
@@ -335,6 +332,10 @@ function addItem(product) {
 
   renderBox();
 }
+
+/* =========================================
+   REMOVE ITEM
+========================================= */
 
 function removeItem(id) {
 
@@ -365,6 +366,10 @@ function removeItem(id) {
 
   renderBox();
 }
+
+/* =========================================
+   WINDOW FUNCTIONS
+========================================= */
 
 window.addItemById =
   function(id) {
@@ -412,6 +417,9 @@ function renderCatalog() {
 
   products.forEach(product => {
 
+    const cover =
+      `assets/products/${product.folder}/cover.png`;
+
     const card =
       document.createElement("div");
 
@@ -421,7 +429,7 @@ function renderCatalog() {
     card.innerHTML = `
 
       <img
-        src="${product.coverImage}"
+        src="${cover}"
         alt="${product.name}"
       >
 
@@ -450,7 +458,7 @@ function renderCatalog() {
       () => {
 
         window.location.href =
-          \`product.html?id=\${product.id}\`;
+          `product.html?id=${product.id}`;
       }
     );
 
@@ -481,6 +489,9 @@ function renderSuggestions() {
 
     .forEach(product => {
 
+      const cover =
+        `assets/products/${product.folder}/cover.png`;
+
       const div =
         document.createElement("div");
 
@@ -490,7 +501,7 @@ function renderSuggestions() {
       div.innerHTML = `
 
         <img
-          src="${product.coverImage}"
+          src="${cover}"
           alt="${product.name}"
         >
 
@@ -501,8 +512,8 @@ function renderSuggestions() {
         </p>
       `;
 
-      div.onclick = () =>
-        addItem(product);
+      div.onclick =
+        () => addItem(product);
 
       suggestionList.appendChild(div);
     });
@@ -572,13 +583,13 @@ function renderCart() {
 
     li.querySelector(
       ".minus-btn"
-    ).onclick = () =>
-      removeItem(item.id);
+    ).onclick =
+      () => removeItem(item.id);
 
     li.querySelector(
       ".plus-btn"
-    ).onclick = () =>
-      addItem(item);
+    ).onclick =
+      () => addItem(item);
 
     cartList.appendChild(li);
   });
@@ -586,9 +597,12 @@ function renderCart() {
   totalEl.innerText =
     total.toLocaleString();
 
+  /* ORDER FORMAT */
+
   if (orderData) {
 
     const prettyOrder =
+
       cart.map(item => {
 
         return `${item.name} x${item.quantity}`;
@@ -602,6 +616,7 @@ function renderCart() {
   if (totalData) {
 
     totalData.value =
+
       total.toLocaleString() +
       " VND";
   }
@@ -619,36 +634,33 @@ function renderBox() {
 
   cart.forEach(item => {
 
-    item.stickers.forEach(
+    item.stickers.forEach(sticker => {
 
-      sticker => {
+      const el =
+        document.createElement("img");
 
-        const el =
-          document.createElement("img");
+      el.className =
+        "sticker";
 
-        el.className =
-          "sticker";
+      el.src =
+        item.emojiImage;
 
-        el.src =
-          item.emojiImage;
+      el.draggable =
+        false;
 
-        el.draggable =
-          false;
+      el.style.left =
+        sticker.x + "px";
 
-        el.style.left =
-          sticker.x + "px";
+      el.style.top =
+        sticker.y + "px";
 
-        el.style.top =
-          sticker.y + "px";
+      enableDragging(
+        el,
+        sticker
+      );
 
-        enableDragging(
-          el,
-          sticker
-        );
-
-        canvas.appendChild(el);
-      }
-    );
+      canvas.appendChild(el);
+    });
   });
 }
 
@@ -796,6 +808,7 @@ if (orderForm) {
       if (orderData) {
 
         const prettyOrder =
+
           cart.map(item => {
 
             return `${item.name} x${item.quantity}`;
@@ -809,6 +822,7 @@ if (orderForm) {
       if (totalData) {
 
         totalData.value =
+
           total.toLocaleString() +
           " VND";
       }
