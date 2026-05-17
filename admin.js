@@ -1,5 +1,3 @@
-// admin.js
-
 import { db } from "./firebase-config.js";
 
 import {
@@ -11,203 +9,275 @@ import {
 }
 from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
-// ===== ELEMENT =====
+/* =========================================
+   ELEMENTS
+========================================= */
 
 const productList =
-  document.getElementById("productList");
+  document.getElementById(
+    "productList"
+  );
 
-// ===== ADD PRODUCT =====
+/* =========================================
+   BUILD PRODUCT PATHS
+========================================= */
+
+function buildProductData(
+  folder
+) {
+
+  const base =
+    `assets/products/${folder}`;
+
+  return {
+
+    folder,
+
+    coverImage:
+      `${base}/cover.png`,
+
+    emojiImage:
+      `${base}/emoji.png`,
+
+    displayImages: [
+
+      `${base}/1.png`,
+      `${base}/2.png`,
+      `${base}/3.png`,
+      `${base}/4.png`
+
+    ],
+
+    iconFolder:
+      `${base}/icon`,
+
+    subFolder:
+      `${base}/icon/sub`
+  };
+}
+
+/* =========================================
+   ADD PRODUCT
+========================================= */
 
 async function addProduct() {
 
   try {
 
     const name =
-      document.getElementById("name")
-      .value
-      .trim();
+      document.getElementById(
+        "name"
+      ).value.trim();
+
+    const folder =
+      document.getElementById(
+        "folder"
+      ).value.trim();
 
     const price =
       Number(
-        document.getElementById("price")
-        .value
+        document.getElementById(
+          "price"
+        ).value
       );
 
-    const emoji =
-      document.getElementById("emoji")
-      .value
-      .trim();
-
-    const coverImage =
-      document.getElementById("coverImage")
-      .value
-      .trim();
-
     const description =
-      document.getElementById("description")
-      .value
-      .trim();
+      document.getElementById(
+        "description"
+      ).value.trim();
 
-    // DISPLAY IMAGES
-
-    const displayImages =
-      document.getElementById("displayImages")
-      .value
-      .split("\n")
-      .map(img => img.trim())
-      .filter(Boolean);
-
-    // VALIDATION
+    /* VALIDATION */
 
     if (
       !name ||
-      !price ||
-      !coverImage
+      !folder ||
+      !price
     ) {
 
       alert(
-        "Please fill required fields"
+        "Please fill all fields"
       );
 
       return;
     }
 
-    // FIREBASE
+    /* AUTO BUILD */
+
+    const autoData =
+      buildProductData(
+        folder
+      );
+
+    /* FIREBASE */
 
     await addDoc(
-      collection(db, "products"),
+      collection(
+        db,
+        "products"
+      ),
       {
+
         name,
+        folder,
         price,
-        emoji,
-        coverImage,
         description,
-        displayImages,
-        createdAt: Date.now()
+
+        coverImage:
+          autoData.coverImage,
+
+        emojiImage:
+          autoData.emojiImage,
+
+        displayImages:
+          autoData.displayImages,
+
+        iconFolder:
+          autoData.iconFolder,
+
+        subFolder:
+          autoData.subFolder,
+
+        createdAt:
+          Date.now()
       }
     );
 
-    // CLEAR FORM
+    /* CLEAR */
 
-    document.getElementById("name")
-      .value = "";
+    document.getElementById(
+      "name"
+    ).value = "";
 
-    document.getElementById("price")
-      .value = "";
+    document.getElementById(
+      "folder"
+    ).value = "";
 
-    document.getElementById("emoji")
-      .value = "";
+    document.getElementById(
+      "price"
+    ).value = "";
 
-    document.getElementById("coverImage")
-      .value = "";
+    document.getElementById(
+      "description"
+    ).value = "";
 
-    document.getElementById("description")
-      .value = "";
-
-    document.getElementById("displayImages")
-      .value = "";
-
-    alert("Product Added 🧶");
+    alert(
+      "Product Added 🧶"
+    );
 
   } catch (error) {
 
     console.error(error);
 
-    alert("Failed to add product");
+    alert(
+      "Failed to add product"
+    );
   }
 }
 
-// ===== LIVE PRODUCTS =====
+/* =========================================
+   LIVE PRODUCTS
+========================================= */
 
 onSnapshot(
+
   collection(db, "products"),
+
   (snapshot) => {
 
-    productList.innerHTML = "";
+    productList.innerHTML =
+      "";
 
-    snapshot.forEach((docSnap) => {
+    snapshot.forEach(
+      (docSnap) => {
 
-      const product =
-        docSnap.data();
+        const product =
+          docSnap.data();
 
-      const card =
-        document.createElement("div");
+        const card =
+          document.createElement(
+            "div"
+          );
 
-      card.className =
-        "product-card";
+        card.className =
+          "product-card";
 
-      card.innerHTML = `
+        card.innerHTML = `
 
-        <img
-          src="${
-            product.coverImage
-          }"
-          alt="${
-            product.name
-          }"
-        >
+          <img
+            src="${product.coverImage}"
+            alt="${product.name}"
+          >
 
-        <h3>
-          ${
-            product.emoji || "🧶"
-          }
-          ${product.name}
-        </h3>
+          <h3>
+            ${product.name}
+          </h3>
 
-        <p>
-          ${Number(product.price)
-            .toLocaleString()}
-          VND
-        </p>
+          <p>
+            Folder:
+            ${product.folder}
+          </p>
 
-        <p>
-          ${
-            product.displayImages
-              ?.length || 0
-          }
-          display images
-        </p>
+          <p>
+            ${Number(product.price)
+              .toLocaleString()}
+            VND
+          </p>
 
-        <button
-          onclick="deleteProduct(
-            '${docSnap.id}'
-          )"
-        >
-          Delete
-        </button>
-      `;
+          <button
+            onclick="deleteProduct('${docSnap.id}')"
+          >
+            Delete
+          </button>
+        `;
 
-      productList.appendChild(card);
-    });
+        productList.appendChild(
+          card
+        );
+      }
+    );
   }
 );
 
-// ===== DELETE =====
+/* =========================================
+   DELETE
+========================================= */
 
-async function deleteProduct(id) {
+async function deleteProduct(
+  id
+) {
 
   const confirmDelete =
     confirm(
       "Delete this product?"
     );
 
-  if (!confirmDelete) return;
+  if (!confirmDelete)
+    return;
 
   try {
 
     await deleteDoc(
-      doc(db, "products", id)
+
+      doc(
+        db,
+        "products",
+        id
+      )
     );
 
   } catch (error) {
 
     console.error(error);
 
-    alert("Delete failed");
+    alert(
+      "Delete failed"
+    );
   }
 }
 
-// ===== WINDOW =====
+/* =========================================
+   WINDOW
+========================================= */
 
 window.addProduct =
   addProduct;
