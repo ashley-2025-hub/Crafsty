@@ -585,6 +585,25 @@ span {
   object-fit: contain;
 }
 
+.variant-panel {
+
+  pointer-events: none;
+}
+
+.variant-panel.show {
+
+  pointer-events: auto;
+}
+.variant-panel {
+
+  display: none;
+}
+
+.variant-panel.show {
+
+  display: block;
+}
+
 /* =========================================
    BIN
 ========================================= */
