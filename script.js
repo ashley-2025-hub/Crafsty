@@ -624,8 +624,7 @@ function renderBox() {
 
 function enableDragging(
   el,
-  sticker,
-  item
+  sticker
 ) {
 
   const bin =
@@ -641,12 +640,14 @@ function enableDragging(
 
   let initialY = 0;
 
-  let currentX = 0;
+  let latestX = 0;
 
-  let currentY = 0;
+  let latestY = 0;
 
   el.addEventListener(
+
     "pointerdown",
+
     (e) => {
 
       dragging = true;
@@ -663,11 +664,15 @@ function enableDragging(
       initialY =
         sticker.y;
 
-      el.style.zIndex =
-        "9999";
+      latestX =
+        sticker.x;
 
-      el.style.cursor =
-        "grabbing";
+      latestY =
+        sticker.y;
+
+      el.classList.add(
+        "dragging"
+      );
 
       el.setPointerCapture(
         e.pointerId
@@ -676,7 +681,9 @@ function enableDragging(
   );
 
   el.addEventListener(
+
     "pointermove",
+
     (e) => {
 
       if (!dragging) return;
@@ -687,17 +694,237 @@ function enableDragging(
       const dy =
         e.clientY - startY;
 
-      currentX =
+      latestX =
         initialX + dx;
 
-      currentY =
+      latestY =
         initialY + dy;
 
       el.style.left =
-        currentX + "px";
+        latestX + "px";
 
       el.style.top =
-        currentY + "px";
+        latestY + "px";
+
+      /* BIN DETECTION */
+
+      if (bin) {
+
+        const binRect =
+          bin.getBoundingClientRect();
+
+        const stickerRect =
+          el.getBoundingClientRect();
+
+        const touchingBin =
+
+          !(
+            stickerRect.right <
+              binRect.left ||
+
+            stickerRect.left >
+              binRect.right ||
+
+            stickerRect.bottom <
+              binRect.top ||
+
+            stickerRect.top >
+              binRect.bottom
+          );
+
+        if (touchingBin) {
+
+          bin.classList.add(
+            "bin-active"
+          );
+
+        } else {
+
+          bin.classList.remove(
+            "bin-active"
+          );
+        }
+      }
+    }
+  );
+
+  const stopDragging =
+    () => {
+
+      if (!dragging) return;
+
+      dragging = false;
+
+      el.classList.remove(
+        "dragging"
+      );
+
+      const canvasRect =
+        canvas.getBoundingClientRect();
+
+      const binRect =
+        bin.getBoundingClientRect();
+
+      const stickerRect =
+        el.getBoundingClientRect();
+
+      /* =========================
+         DROP ON BIN
+      ========================= */
+
+      const droppedOnBin =
+
+        !(
+          stickerRect.right <
+            binRect.left ||
+
+          stickerRect.left >
+            binRect.right ||
+
+          stickerRect.bottom <
+            binRect.top ||
+
+          stickerRect.top >
+            binRect.bottom
+        );
+
+      if (droppedOnBin) {
+
+        cart.forEach(item => {
+
+          item.stickers =
+            item.stickers.filter(
+              s => s !== sticker
+            );
+
+          item.quantity =
+            item.stickers.length;
+        });
+
+        cart =
+          cart.filter(
+            item =>
+              item.quantity > 0
+          );
+
+        saveCart();
+
+        renderCart();
+
+        renderBox();
+
+        bin.classList.remove(
+          "bin-active"
+        );
+
+        return;
+      }
+
+      /* =========================
+         ALLOW 1/3 INSIDE BOX
+      ========================= */
+
+      const overlapX =
+
+        Math.max(
+          0,
+
+          Math.min(
+            stickerRect.right,
+            canvasRect.right
+          ) -
+
+          Math.max(
+            stickerRect.left,
+            canvasRect.left
+          )
+        );
+
+      const overlapY =
+
+        Math.max(
+          0,
+
+          Math.min(
+            stickerRect.bottom,
+            canvasRect.bottom
+          ) -
+
+          Math.max(
+            stickerRect.top,
+            canvasRect.top
+          )
+        );
+
+      const overlapArea =
+        overlapX * overlapY;
+
+      const stickerArea =
+        stickerRect.width *
+        stickerRect.height;
+
+      const overlapRatio =
+        overlapArea /
+        stickerArea;
+
+      /* =========================
+         ACCEPT DROP
+      ========================= */
+
+      if (overlapRatio >= 0.33) {
+
+        const relativeX =
+
+          latestX;
+
+        const relativeY =
+
+          latestY;
+
+        sticker.x =
+          relativeX;
+
+        sticker.y =
+          relativeY;
+
+        saveCart();
+
+      } else {
+
+        /* SNAP BACK */
+
+        el.style.transition =
+          "0.25s ease";
+
+        el.style.left =
+          sticker.x + "px";
+
+        el.style.top =
+          sticker.y + "px";
+
+        setTimeout(() => {
+
+          el.style.transition =
+            "";
+
+        }, 250);
+      }
+
+      bin.classList.remove(
+        "bin-active"
+      );
+    };
+
+  el.addEventListener(
+    "pointerup",
+    stopDragging
+  );
+
+  el.addEventListener(
+    "pointercancel",
+    stopDragging
+  );
+}
 
       /* BIN */
 
