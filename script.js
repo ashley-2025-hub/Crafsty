@@ -235,9 +235,20 @@ function addItem(product) {
 
   const sticker = {
 
-    x: 40 + Math.random() * 120,
+    x: 40 + Math.random() * 110,
 
-    y: 40 + Math.random() * 120
+    y: 40 + Math.random() * 110,
+
+    /* DEFAULT STICKER */
+
+    mainVariant: null,
+
+    subVariant: null,
+
+    /* DEFAULT IMAGE */
+
+    image:
+      `assets/products/${product.folder}/emoji.png`
   };
 
   if (existing) {
@@ -256,9 +267,16 @@ function addItem(product) {
 
       name: product.name,
 
-      price: Number(product.price),
-
       folder: product.folder,
+
+      price:
+        Number(product.price),
+
+      coverImage:
+        `assets/products/${product.folder}/cover.png`,
+
+      emojiImage:
+        `assets/products/${product.folder}/emoji.png`,
 
       quantity: 1,
 
