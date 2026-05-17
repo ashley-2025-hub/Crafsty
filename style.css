@@ -603,3 +603,35 @@ textarea {
     grid-template-columns: 1fr;
   }
 }
+.sticker {
+
+  position: absolute;
+
+  width: 72px;
+
+  height: 72px;
+
+  cursor: grab;
+
+  user-select: none;
+
+  touch-action: none;
+}
+
+.sticker img {
+
+  position: absolute;
+
+  width: 100%;
+
+  height: 100%;
+
+  object-fit: contain;
+
+  pointer-events: none;
+}
+
+.sticker-sub {
+
+  z-index: 2;
+}
