@@ -51,10 +51,11 @@ img {
 ========================================= */
 
 .back-btn {
+  margin-right: auto;
 
   display: inline-flex;
 
-  align-items: left;
+  align-items: center;
 
   gap: 10px;
 
@@ -94,7 +95,7 @@ img {
 
 #productTitle {
 
-  text-align: left;
+  text-align: center;
 
   color: white;
 
