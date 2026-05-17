@@ -3,8 +3,7 @@ import { db } from "./firebase-config.js";
 import {
   collection,
   onSnapshot
-}
-from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+} from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
 /* =========================================
    DATA
@@ -13,9 +12,7 @@ from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 let products = [];
 
 let cart =
-  JSON.parse(
-    localStorage.getItem("cart")
-  ) || [];
+  JSON.parse(localStorage.getItem("cart")) || [];
 
 /* =========================================
    ELEMENTS
@@ -31,25 +28,38 @@ const totalEl =
   document.getElementById("total");
 
 const suggestionList =
-  document.getElementById(
-    "suggestionList"
-  );
+  document.getElementById("suggestionList");
 
 const emptyText =
   document.getElementById("empty");
 
 const orderData =
-  document.getElementById(
-    "orderData"
-  );
+  document.getElementById("orderData");
 
 const totalData =
-  document.getElementById(
-    "totalData"
-  );
+  document.getElementById("totalData");
 
 const canvas =
   document.getElementById("canvas");
+
+/* =========================================
+   HELPERS
+========================================= */
+
+function getProductPath(folder) {
+
+  return `assets/products/${folder}`;
+}
+
+function getCover(folder) {
+
+  return `${getProductPath(folder)}/cover.png`;
+}
+
+function getEmoji(folder) {
+
+  return `${getProductPath(folder)}/emoji.png`;
+}
 
 /* =========================================
    SAVE CART
@@ -64,26 +74,19 @@ function saveCart() {
 }
 
 /* =========================================
-   SAVE THEME
+   THEME
 ========================================= */
 
 function saveTheme(main, sub) {
 
   localStorage.setItem(
-
     "theme",
-
     JSON.stringify({
-
       main,
       sub
     })
   );
 }
-
-/* =========================================
-   APPLY THEME
-========================================= */
 
 function applyTheme(main, sub) {
 
@@ -100,58 +103,9 @@ function applyTheme(main, sub) {
     sub
   );
 
-  root.style.setProperty(
-    "--sub-bg",
-    sub
-  );
-
   document.body.style.background =
     main;
-
-  /* NAV BUTTONS */
-
-  document
-    .querySelectorAll(".nav button")
-    .forEach(btn => {
-
-      btn.style.background =
-        sub;
-
-      btn.style.color =
-        "#5d4358";
-    });
-
-  /* ORDER BUTTON */
-
-  const orderBtn =
-    document.querySelector(
-      "#orderForm button"
-    );
-
-  if (orderBtn) {
-
-    orderBtn.style.background =
-      main;
-
-    orderBtn.style.color =
-      "white";
-  }
-
-  /* BIN */
-
-  const bin =
-    document.getElementById("bin");
-
-  if (bin) {
-
-    bin.style.background =
-      main;
-  }
 }
-
-/* =========================================
-   LOAD SAVED THEME
-========================================= */
 
 function loadSavedTheme() {
 
@@ -170,7 +124,7 @@ function loadSavedTheme() {
 }
 
 /* =========================================
-   UI NAVIGATION
+   NAVIGATION
 ========================================= */
 
 window.showSection =
@@ -203,10 +157,6 @@ window.showSection =
         "block";
     }
   };
-
-/* =========================================
-   THEME SWITCHER
-========================================= */
 
 window.changeTheme =
   function(main, sub) {
@@ -245,7 +195,7 @@ window.changeSelectedColor =
   };
 
 /* =========================================
-   FIREBASE REALTIME
+   FIREBASE
 ========================================= */
 
 onSnapshot(
@@ -273,7 +223,7 @@ onSnapshot(
 );
 
 /* =========================================
-   ADD ITEM
+   CART
 ========================================= */
 
 function addItem(product) {
@@ -306,17 +256,9 @@ function addItem(product) {
 
       name: product.name,
 
-      folder:
-        product.folder,
+      price: Number(product.price),
 
-      price:
-        Number(product.price),
-
-      coverImage:
-        `assets/products/${product.folder}/cover.png`,
-
-      emojiImage:
-        `assets/products/${product.folder}/emoji.png`,
+      folder: product.folder,
 
       quantity: 1,
 
@@ -332,10 +274,6 @@ function addItem(product) {
 
   renderBox();
 }
-
-/* =========================================
-   REMOVE ITEM
-========================================= */
 
 function removeItem(id) {
 
@@ -367,30 +305,6 @@ function removeItem(id) {
   renderBox();
 }
 
-/* =========================================
-   WINDOW FUNCTIONS
-========================================= */
-
-window.addItemById =
-  function(id) {
-
-    const product =
-      products.find(
-        p => p.id === id
-      );
-
-    if (product) {
-
-      addItem(product);
-    }
-  };
-
-window.removeItemById =
-  function(id) {
-
-    removeItem(id);
-  };
-
 window.clearCart =
   function() {
 
@@ -406,7 +320,7 @@ window.clearCart =
   };
 
 /* =========================================
-   RENDER CATALOG
+   CATALOG
 ========================================= */
 
 function renderCatalog() {
@@ -417,9 +331,6 @@ function renderCatalog() {
 
   products.forEach(product => {
 
-    const cover =
-      `assets/products/${product.folder}/cover.png`;
-
     const card =
       document.createElement("div");
 
@@ -429,32 +340,27 @@ function renderCatalog() {
     card.innerHTML = `
 
       <img
-        src="${cover}"
+        src="${getCover(product.folder)}"
         alt="${product.name}"
       >
 
       <div class="catalog-info">
 
         <h3>
-
           ${product.name}
-
         </h3>
 
         <p>
-
           ${Number(product.price)
-            .toLocaleString()} VND
-
+            .toLocaleString()}
+          VND
         </p>
 
       </div>
     `;
 
     card.addEventListener(
-
       "click",
-
       () => {
 
         window.location.href =
@@ -489,9 +395,6 @@ function renderSuggestions() {
 
     .forEach(product => {
 
-      const cover =
-        `assets/products/${product.folder}/cover.png`;
-
       const div =
         document.createElement("div");
 
@@ -501,26 +404,24 @@ function renderSuggestions() {
       div.innerHTML = `
 
         <img
-          src="${cover}"
+          src="${getCover(product.folder)}"
           alt="${product.name}"
         >
 
         <p>
-
           ${product.name}
-
         </p>
       `;
 
-      div.onclick =
-        () => addItem(product);
+      div.onclick = () =>
+        addItem(product);
 
       suggestionList.appendChild(div);
     });
 }
 
 /* =========================================
-   RENDER CART
+   CART UI
 ========================================= */
 
 function renderCart() {
@@ -552,14 +453,11 @@ function renderCart() {
 
         <img
           class="cart-img"
-          src="${item.coverImage}"
-          alt="${item.name}"
+          src="${getCover(item.folder)}"
         >
 
         <span>
-
           ${item.name}
-
         </span>
 
       </div>
@@ -583,13 +481,23 @@ function renderCart() {
 
     li.querySelector(
       ".minus-btn"
-    ).onclick =
-      () => removeItem(item.id);
+    ).onclick = () =>
+      removeItem(item.id);
 
     li.querySelector(
       ".plus-btn"
-    ).onclick =
-      () => addItem(item);
+    ).onclick = () => {
+
+      const product =
+        products.find(
+          p => p.id === item.id
+        );
+
+      if (product) {
+
+        addItem(product);
+      }
+    };
 
     cartList.appendChild(li);
   });
@@ -597,33 +505,26 @@ function renderCart() {
   totalEl.innerText =
     total.toLocaleString();
 
-  /* ORDER FORMAT */
-
   if (orderData) {
 
-    const prettyOrder =
-
-      cart.map(item => {
-
-        return `${item.name} x${item.quantity}`;
-
-      }).join(" | ");
-
     orderData.value =
-      prettyOrder;
+      cart.map(item =>
+
+        `${item.name} x${item.quantity}`
+
+      ).join(" | ");
   }
 
   if (totalData) {
 
     totalData.value =
-
       total.toLocaleString() +
       " VND";
   }
 }
 
 /* =========================================
-   RENDER BOX
+   BOX
 ========================================= */
 
 function renderBox() {
@@ -634,33 +535,33 @@ function renderBox() {
 
   cart.forEach(item => {
 
-    item.stickers.forEach(sticker => {
+    item.stickers.forEach(
 
-      const el =
-        document.createElement("img");
+      sticker => {
 
-      el.className =
-        "sticker";
+        const el =
+          document.createElement("img");
 
-      el.src =
-        item.emojiImage;
+        el.className =
+          "sticker";
 
-      el.draggable =
-        false;
+        el.src =
+          getEmoji(item.folder);
 
-      el.style.left =
-        sticker.x + "px";
+        el.style.left =
+          sticker.x + "px";
 
-      el.style.top =
-        sticker.y + "px";
+        el.style.top =
+          sticker.y + "px";
 
-      enableDragging(
-        el,
-        sticker
-      );
+        enableDragging(
+          el,
+          sticker
+        );
 
-      canvas.appendChild(el);
-    });
+        canvas.appendChild(el);
+      }
+    );
   });
 }
 
@@ -684,24 +585,18 @@ function enableDragging(
   let initialY = 0;
 
   el.addEventListener(
-
     "pointerdown",
-
     (e) => {
 
       dragging = true;
 
-      startX =
-        e.clientX;
+      startX = e.clientX;
 
-      startY =
-        e.clientY;
+      startY = e.clientY;
 
-      initialX =
-        sticker.x;
+      initialX = sticker.x;
 
-      initialY =
-        sticker.y;
+      initialY = sticker.y;
 
       el.setPointerCapture(
         e.pointerId
@@ -710,9 +605,7 @@ function enableDragging(
   );
 
   el.addEventListener(
-
     "pointermove",
-
     (e) => {
 
       if (!dragging) return;
@@ -723,115 +616,33 @@ function enableDragging(
       const dy =
         e.clientY - startY;
 
-      let newX =
+      sticker.x =
         initialX + dx;
 
-      let newY =
+      sticker.y =
         initialY + dy;
 
-      const maxX =
-        canvas.clientWidth - 48;
-
-      const maxY =
-        canvas.clientHeight - 48;
-
-      newX = Math.max(
-        4,
-        Math.min(maxX, newX)
-      );
-
-      newY = Math.max(
-        4,
-        Math.min(maxY, newY)
-      );
-
-      sticker.x = newX;
-
-      sticker.y = newY;
-
       el.style.left =
-        newX + "px";
+        sticker.x + "px";
 
       el.style.top =
-        newY + "px";
+        sticker.y + "px";
     }
   );
-
-  const stopDragging =
-    () => {
-
-      if (dragging) {
-
-        dragging = false;
-
-        saveCart();
-      }
-    };
 
   el.addEventListener(
     "pointerup",
-    stopDragging
-  );
-
-  el.addEventListener(
-    "pointercancel",
-    stopDragging
-  );
-}
-
-/* =========================================
-   FORM SUBMIT
-========================================= */
-
-const orderForm =
-  document.getElementById(
-    "orderForm"
-  );
-
-if (orderForm) {
-
-  orderForm.addEventListener(
-
-    "submit",
-
     () => {
 
-      let total = 0;
+      dragging = false;
 
-      cart.forEach(item => {
-
-        total +=
-          item.price *
-          item.quantity;
-      });
-
-      if (orderData) {
-
-        const prettyOrder =
-
-          cart.map(item => {
-
-            return `${item.name} x${item.quantity}`;
-
-          }).join(" | ");
-
-        orderData.value =
-          prettyOrder;
-      }
-
-      if (totalData) {
-
-        totalData.value =
-
-          total.toLocaleString() +
-          " VND";
-      }
+      saveCart();
     }
   );
 }
 
 /* =========================================
-   INITIALIZE
+   INIT
 ========================================= */
 
 loadSavedTheme();
