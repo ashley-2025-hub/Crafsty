@@ -43,8 +43,23 @@ const canvas =
   document.getElementById("canvas");
 
 /* =========================================
-   SAVE CART
+   HELPERS
 ========================================= */
+
+function getProductFolder(product) {
+
+  return `assets/products/${product.folder}`;
+}
+
+function getCoverImage(product) {
+
+  return `${getProductFolder(product)}/cover.png`;
+}
+
+function getEmojiImage(product) {
+
+  return `${getProductFolder(product)}/emoji.png`;
+}
 
 function saveCart() {
 
@@ -91,8 +106,6 @@ function applyTheme(main, sub) {
   document.body.style.background =
     main;
 
-  /* NAV BUTTONS */
-
   document
     .querySelectorAll(".nav button")
     .forEach(btn => {
@@ -103,8 +116,6 @@ function applyTheme(main, sub) {
       btn.style.color =
         "#5d4358";
     });
-
-  /* ORDER BUTTON */
 
   const orderBtn =
     document.querySelector(
@@ -119,8 +130,6 @@ function applyTheme(main, sub) {
     orderBtn.style.color =
       "white";
   }
-
-  /* BIN */
 
   const bin =
     document.getElementById("bin");
@@ -238,12 +247,24 @@ onSnapshot(
   (snapshot) => {
 
     products =
-      snapshot.docs.map(doc => ({
+      snapshot.docs.map(doc => {
 
-        id: doc.id,
+        const data =
+          doc.data();
 
-        ...doc.data()
-      }));
+        return {
+
+          id: doc.id,
+
+          ...data,
+
+          coverImage:
+            `assets/products/${data.folder}/cover.png`,
+
+          emojiImage:
+            `assets/products/${data.folder}/emoji.png`
+        };
+      });
 
     renderCatalog();
 
@@ -294,8 +315,11 @@ function addItem(product) {
       coverImage:
         product.coverImage,
 
-      emoji:
-        product.emoji || "🧶",
+      emojiImage:
+        product.emojiImage,
+
+      folder:
+        product.folder,
 
       quantity: 1,
 
@@ -405,8 +429,6 @@ function renderCatalog() {
 
         <h3>
 
-          ${product.emoji || "🧶"}
-
           ${product.name}
 
         </h3>
@@ -428,7 +450,7 @@ function renderCatalog() {
       () => {
 
         window.location.href =
-          `product.html?id=${product.id}`;
+          \`product.html?id=\${product.id}\`;
       }
     );
 
@@ -473,8 +495,6 @@ function renderSuggestions() {
         >
 
         <p>
-
-          ${product.emoji || "🧶"}
 
           ${product.name}
 
@@ -566,14 +586,12 @@ function renderCart() {
   totalEl.innerText =
     total.toLocaleString();
 
-  /* PRETTY ORDER FORMAT */
-
   if (orderData) {
 
     const prettyOrder =
       cart.map(item => {
 
-        return `${item.emoji || "🧶"} ${item.name} x${item.quantity}`;
+        return `${item.name} x${item.quantity}`;
 
       }).join(" | ");
 
@@ -606,13 +624,16 @@ function renderBox() {
       sticker => {
 
         const el =
-          document.createElement("div");
+          document.createElement("img");
 
         el.className =
           "sticker";
 
-        el.innerText =
-          item.emoji || "🧶";
+        el.src =
+          item.emojiImage;
+
+        el.draggable =
+          false;
 
         el.style.left =
           sticker.x + "px";
@@ -777,7 +798,7 @@ if (orderForm) {
         const prettyOrder =
           cart.map(item => {
 
-            return `${item.emoji || "🧶"} ${item.name} x${item.quantity}`;
+            return `${item.name} x${item.quantity}`;
 
           }).join(" | ");
 
