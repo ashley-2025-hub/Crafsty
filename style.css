@@ -236,18 +236,19 @@ span {
 
   width: 100%;
 
-  max-width: 1200px;
+  max-width: 1400px;
 
   margin: auto;
 
-  display: grid;
+  display: flex;
 
-  grid-template-columns:
-    repeat(3, minmax(300px, 1fr));
+  flex-wrap: wrap;
+
+  justify-content: center;
+
+  align-items: flex-start;
 
   gap: 28px;
-
-  align-items: start;
 }
 
 /* =========================================
@@ -257,7 +258,9 @@ span {
 .products,
 .box {
 
-  width: 100%;
+  width: 320px;
+
+  min-width: 320px;
 
   padding: 24px;
 
@@ -267,6 +270,8 @@ span {
 
   box-shadow:
     0 18px 45px rgba(0, 0, 0, 0.08);
+
+  flex-shrink: 0;
 
   position: relative;
 }
@@ -437,6 +442,8 @@ span {
 
   align-items: center;
 
+  gap: 0;
+
   margin-bottom: 20px;
 }
 
@@ -455,6 +462,8 @@ span {
   background: white;
 
   border: 3px solid #d4acb4;
+
+  flex-shrink: 0;
 
   touch-action: none;
 
@@ -654,7 +663,7 @@ span {
 
   height: 60px;
 
-  margin-top: 18px;
+  margin: 18px auto 0;
 
   display: flex;
 
