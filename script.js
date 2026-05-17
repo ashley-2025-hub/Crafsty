@@ -643,6 +643,9 @@ function enableDragging(
   sticker
 ) {
 
+  const bin =
+    document.getElementById("bin");
+
   let dragging = false;
 
   let startX = 0;
@@ -653,19 +656,35 @@ function enableDragging(
 
   let initialY = 0;
 
+  let latestX = 0;
+
+  let latestY = 0;
+
   el.addEventListener(
+
     "pointerdown",
+
     (e) => {
 
       dragging = true;
 
-      startX = e.clientX;
+      startX =
+        e.clientX;
 
-      startY = e.clientY;
+      startY =
+        e.clientY;
 
-      initialX = sticker.x;
+      initialX =
+        sticker.x;
 
-      initialY = sticker.y;
+      initialY =
+        sticker.y;
+
+      el.style.zIndex =
+        "999";
+
+      el.style.cursor =
+        "grabbing";
 
       el.setPointerCapture(
         e.pointerId
@@ -674,7 +693,9 @@ function enableDragging(
   );
 
   el.addEventListener(
+
     "pointermove",
+
     (e) => {
 
       if (!dragging) return;
@@ -685,28 +706,194 @@ function enableDragging(
       const dy =
         e.clientY - startY;
 
-      sticker.x =
+      latestX =
         initialX + dx;
 
-      sticker.y =
+      latestY =
         initialY + dy;
 
       el.style.left =
-        sticker.x + "px";
+        latestX + "px";
 
       el.style.top =
-        sticker.y + "px";
+        latestY + "px";
+
+      /* BIN DETECTION */
+
+      if (bin) {
+
+        const binRect =
+          bin.getBoundingClientRect();
+
+        const stickerRect =
+          el.getBoundingClientRect();
+
+        const touchingBin =
+
+          !(
+            stickerRect.right <
+              binRect.left ||
+
+            stickerRect.left >
+              binRect.right ||
+
+            stickerRect.bottom <
+              binRect.top ||
+
+            stickerRect.top >
+              binRect.bottom
+          );
+
+        if (touchingBin) {
+
+          bin.classList.add(
+            "bin-active"
+          );
+
+        } else {
+
+          bin.classList.remove(
+            "bin-active"
+          );
+        }
+      }
     }
   );
 
-  el.addEventListener(
-    "pointerup",
+  const stopDragging =
     () => {
+
+      if (!dragging) return;
 
       dragging = false;
 
-      saveCart();
-    }
+      el.style.zIndex =
+        "1";
+
+      el.style.cursor =
+        "grab";
+
+      const canvasRect =
+        canvas.getBoundingClientRect();
+
+      const binRect =
+        bin.getBoundingClientRect();
+
+      const stickerRect =
+        el.getBoundingClientRect();
+
+      /* DROP ON BIN */
+
+      const droppedOnBin =
+
+        !(
+          stickerRect.right <
+            binRect.left ||
+
+          stickerRect.left >
+            binRect.right ||
+
+          stickerRect.bottom <
+            binRect.top ||
+
+          stickerRect.top >
+            binRect.bottom
+        );
+
+      if (droppedOnBin) {
+
+        cart.forEach(item => {
+
+          item.stickers =
+            item.stickers.filter(
+              s => s !== sticker
+            );
+
+          item.quantity =
+            item.stickers.length;
+        });
+
+        cart =
+          cart.filter(
+            item =>
+              item.quantity > 0
+          );
+
+        saveCart();
+
+        renderCart();
+
+        renderBox();
+
+        bin.classList.remove(
+          "bin-active"
+        );
+
+        return;
+      }
+
+      /* OUTSIDE BOX */
+
+      const insideBox =
+
+        stickerRect.left >=
+          canvasRect.left &&
+
+        stickerRect.right <=
+          canvasRect.right &&
+
+        stickerRect.top >=
+          canvasRect.top &&
+
+        stickerRect.bottom <=
+          canvasRect.bottom;
+
+      if (!insideBox) {
+
+        /* SNAP BACK */
+
+        el.style.transition =
+          "0.25s";
+
+        el.style.left =
+          sticker.x + "px";
+
+        el.style.top =
+          sticker.y + "px";
+
+        setTimeout(() => {
+
+          el.style.transition =
+            "";
+
+        }, 250);
+
+      } else {
+
+        /* SAVE POSITION */
+
+        sticker.x =
+          latestX;
+
+        sticker.y =
+          latestY;
+
+        saveCart();
+      }
+
+      bin.classList.remove(
+        "bin-active"
+      );
+    };
+
+  el.addEventListener(
+    "pointerup",
+    stopDragging
+  );
+
+  el.addEventListener(
+    "pointercancel",
+    stopDragging
   );
 }
 
