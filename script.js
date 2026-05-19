@@ -120,6 +120,12 @@ function applyTheme(main, sub) {
 
   document.body.style.background =
     main;
+  
+document.querySelectorAll(".nav button").forEach(btn => {
+      btn.style.background = sub;
+      btn.style.color = "#5d4358";
+    });
+
 }
 
 function loadSavedTheme() {
