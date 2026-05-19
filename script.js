@@ -587,7 +587,7 @@ function openVariantPanel(
     "variant-label";
 
   mainLabel.innerText =
-    "Main Designs";
+    "Color";
 
   variantPanel.appendChild(mainLabel);
 
@@ -635,7 +635,7 @@ function openVariantPanel(
     "variant-label";
 
   subLabel.innerText =
-    "Accessories";
+    "Other";
 
   variantPanel.appendChild(subLabel);
 
