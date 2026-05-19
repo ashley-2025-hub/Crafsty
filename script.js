@@ -573,8 +573,7 @@ function openVariantPanel(
   variantPanel.style.display =
     "flex";
 
-  variantPanel.style.position =
-    "fixed";
+  /* POSITION */
 
   variantPanel.style.left =
     x + "px";
@@ -582,8 +581,7 @@ function openVariantPanel(
   variantPanel.style.top =
     y + "px";
 
-  variantPanel.style.zIndex =
-    "999999";
+  /* MAIN VARIANTS */
 
   for (
     let i = 1;
@@ -597,27 +595,16 @@ function openVariantPanel(
     img.src =
       `assets/products/${item.folder}/icon/${i}.png`;
 
-    img.style.width =
-      "45px";
-
-    img.style.height =
-      "45px";
-
-    img.style.cursor =
-      "pointer";
-
     img.onerror =
       () => {
 
         img.remove();
       };
 
-    img.addEventListener(
-      "click",
+    img.onclick =
       () => {
 
-        sticker.mainVariant =
-          i;
+        sticker.mainVariant = i;
 
         saveCart();
 
@@ -625,8 +612,7 @@ function openVariantPanel(
 
         variantPanel.style.display =
           "none";
-      }
-    );
+      };
 
     variantPanel.appendChild(img);
   }
