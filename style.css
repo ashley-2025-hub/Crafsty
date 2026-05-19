@@ -611,7 +611,7 @@ textarea {
 }
 
 /* =========================================
-   FLOATING PANEL
+   FLOATING VARIANT PANEL
 ========================================= */
 
 #variantPanel {
@@ -620,56 +620,123 @@ textarea {
 
   display: none;
 
-  width: 320px;
-  max-height: 280px;
+  flex-direction: column;
 
-  overflow-y: auto;
+  gap: 14px;
 
-  padding: 16px;
+  width: 640px;
 
-  border-radius: 24px;
+  max-width: 90vw;
+
+  padding: 18px;
+
+  border-radius: 28px;
 
   background: white;
 
   box-shadow:
-    0 20px 45px rgba(0,0,0,0.18);
+    0 24px 60px rgba(0, 0, 0, 0.18);
 
   z-index: 99999;
 
-  transform: translate(-50%, -110%);
+  transform:
+    translate(-50%, -110%);
 
-  gap: 12px;
-
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
+  animation:
+    popIn 0.18s ease;
 }
 
-#variantPanel img {
+/* ROWS */
 
-  width: 88px;
-  height: 88px;
+.variant-row {
+
+  display: flex;
+
+  gap: 14px;
+
+  overflow-x: auto;
+
+  overflow-y: hidden;
+
+  padding-bottom: 4px;
+
+  scrollbar-width: thin;
+}
+
+/* ICONS */
+
+.variant-row img {
+
+  width: 84px;
+
+  height: 84px;
 
   padding: 10px;
 
-  border-radius: 18px;
+  border-radius: 20px;
 
-  background: #f5f5f5;
+  background: #f7f7f7;
 
   object-fit: contain;
 
+  flex-shrink: 0;
+
   cursor: pointer;
 
-  transition: 0.18s ease;
-
-  flex-shrink: 0;
+  transition:
+    transform 0.18s ease,
+    background 0.18s ease,
+    box-shadow 0.18s ease;
 }
 
-#variantPanel img:hover {
+.variant-row img:hover {
 
   transform: scale(1.08);
 
   background: #ececec;
+
+  box-shadow:
+    0 8px 18px rgba(0, 0, 0, 0.08);
+}
+
+/* LABELS */
+
+.variant-label {
+
+  font-size: 15px;
+
+  font-weight: bold;
+
+  color: var(--text-dark);
+
+  text-align: left;
+
+  margin-bottom: 4px;
+}
+
+/* =========================================
+   PANEL ANIMATION
+========================================= */
+
+@keyframes popIn {
+
+  from {
+
+    opacity: 0;
+
+    transform:
+      translate(-50%, -95%)
+      scale(0.92);
+  }
+
+  to {
+
+    opacity: 1;
+
+    transform:
+      translate(-50%, -110%)
+      scale(1);
+  }
 }
 
 /* =========================================
