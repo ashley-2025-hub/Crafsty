@@ -1,13 +1,9 @@
 :root {
 
   --main-bg: #9e7e67;
-
   --card-bg: #e4dbd5;
-
   --button-bg: #e4dbd5;
-
   --text-dark: #5d4358;
-
   --text-light: #6a5963;
 }
 
@@ -16,40 +12,21 @@
 ========================================= */
 
 * {
-
   box-sizing: border-box;
 }
 
 html,
 body {
-
   overflow-x: hidden;
-}
-
-img {
-
-  max-width: 100%;
-
-  display: block;
-}
-
-button,
-input,
-textarea {
-
-  font-family: inherit;
 }
 
 body {
 
   margin: 0;
-
   padding: 24px;
-
   min-height: 100vh;
 
   font-family: "Comic Sans MS", cursive;
-
   text-align: center;
 
   background: var(--main-bg);
@@ -57,6 +34,17 @@ body {
   transition:
     background 0.3s ease,
     color 0.3s ease;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+button,
+input,
+textarea {
+  font-family: inherit;
 }
 
 /* =========================================
@@ -74,20 +62,18 @@ h1 {
   line-height: 1.1;
 
   text-shadow:
-    0 6px 16px rgba(0, 0, 0, 0.15);
+    0 6px 16px rgba(0,0,0,0.15);
 }
 
 h2,
 h3 {
 
   color: var(--text-dark);
-
   margin-top: 0;
 }
 
 p,
 span {
-
   color: var(--text-light);
 }
 
@@ -100,9 +86,7 @@ span {
   width: 100%;
 
   display: flex;
-
   flex-direction: column;
-
   align-items: center;
 
   gap: 18px;
@@ -111,17 +95,14 @@ span {
 }
 
 /* =========================================
-   NAVIGATION
+   NAV
 ========================================= */
 
 .nav {
 
   display: flex;
-
   justify-content: center;
-
   align-items: center;
-
   flex-wrap: wrap;
 
   gap: 14px;
@@ -132,25 +113,20 @@ span {
   padding: 12px 24px;
 
   border: none;
-
   border-radius: 18px;
 
+  background: var(--button-bg);
   color: var(--text-dark);
 
-  background: var(--button-bg);
-
   font-size: 15px;
-
   font-weight: bold;
 
   cursor: pointer;
 
   box-shadow:
-    0 6px 14px rgba(0, 0, 0, 0.10);
+    0 6px 14px rgba(0,0,0,0.10);
 
-  transition:
-    transform 0.2s ease,
-    opacity 0.2s ease;
+  transition: 0.2s ease;
 }
 
 .nav button:hover {
@@ -161,17 +137,14 @@ span {
 }
 
 /* =========================================
-   THEME PICKER
+   THEMES
 ========================================= */
 
 .theme-picker {
 
   display: flex;
-
   justify-content: center;
-
   align-items: center;
-
   flex-wrap: wrap;
 
   gap: 12px;
@@ -182,49 +155,39 @@ span {
   margin: 0;
 
   color: white;
-
   font-weight: bold;
 }
 
 .theme-btn {
 
   width: 42px;
-
   height: 42px;
 
   border: 3px solid white;
-
   border-radius: 50%;
 
   cursor: pointer;
 
-  transition:
-    transform 0.2s ease,
-    opacity 0.2s ease;
+  transition: 0.2s ease;
 }
 
 .theme-btn:hover {
-
   transform: scale(1.12);
 }
 
 .theme-btn.brown {
-
   background: #9e7e67;
 }
 
 .theme-btn.blue {
-
   background: #bbc8d8;
 }
 
 .theme-btn.pink {
-
   background: #d4acb4;
 }
 
 .theme-btn.purple {
-
   background: #734f96;
 }
 
@@ -235,18 +198,14 @@ span {
 .container {
 
   width: 100%;
-
   max-width: 1400px;
 
   margin: auto;
 
   display: flex;
-
-  flex-wrap: wrap;
-
   justify-content: center;
-
   align-items: flex-start;
+  flex-wrap: wrap;
 
   gap: 28px;
 }
@@ -260,7 +219,6 @@ span {
 .info-panel {
 
   width: 320px;
-
   min-width: 320px;
 
   padding: 24px;
@@ -270,7 +228,7 @@ span {
   background: var(--card-bg);
 
   box-shadow:
-    0 18px 45px rgba(0, 0, 0, 0.08);
+    0 18px 45px rgba(0,0,0,0.08);
 
   flex-shrink: 0;
 }
@@ -282,34 +240,29 @@ span {
 .box {
 
   display: flex;
-
   flex-direction: column;
-
   align-items: center;
 
-  gap: 24px;
+  gap: 22px;
 }
 
 .box-layout {
 
+  width: 100%;
+
   display: flex;
-
   flex-direction: column;
-
   align-items: center;
 
-  gap: 20px;
-
-  width: 100%;
+  gap: 22px;
 }
 
 #canvas {
 
   position: relative;
 
-  width: 220px;
-
-  height: 220px;
+  width: 240px;
+  height: 240px;
 
   overflow: hidden;
 
@@ -322,15 +275,13 @@ span {
   touch-action: none;
 
   box-shadow:
-    inset 0 2px 10px rgba(0, 0, 0, 0.05);
+    inset 0 2px 10px rgba(0,0,0,0.05);
 }
 
 .box-bottom {
 
   display: flex;
-
   flex-direction: column;
-
   align-items: center;
 
   gap: 14px;
@@ -344,23 +295,19 @@ span {
 
   position: absolute;
 
-  width: 72px;
+  width: 84px;
+  height: 84px;
 
-  height: 72px;
-
-  user-select: none;
-
-  touch-action: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   cursor: grab;
 
+  user-select: none;
+  touch-action: none;
+
   z-index: 5;
-
-  display: flex;
-
-  justify-content: center;
-
-  align-items: center;
 }
 
 .sticker.dragging {
@@ -373,7 +320,6 @@ span {
 .sticker img {
 
   width: 100%;
-
   height: 100%;
 
   object-fit: contain;
@@ -381,21 +327,18 @@ span {
   pointer-events: none;
 
   user-select: none;
-
   -webkit-user-drag: none;
 }
 
 .sticker-main {
 
   position: relative;
-
   z-index: 1;
 }
 
 .sticker-sub {
 
   position: absolute;
-
   inset: 0;
 
   z-index: 2;
@@ -410,22 +353,18 @@ span {
   list-style: none;
 
   padding: 0;
-
   margin: 0;
 }
 
 #cart li {
 
   display: flex;
-
   justify-content: space-between;
-
   align-items: center;
 
   gap: 12px;
 
   margin-bottom: 14px;
-
   padding: 12px;
 
   border-radius: 18px;
@@ -436,7 +375,6 @@ span {
 .cart-left {
 
   display: flex;
-
   align-items: center;
 
   gap: 10px;
@@ -449,7 +387,6 @@ span {
 .cart-img {
 
   width: 52px;
-
   height: 52px;
 
   object-fit: cover;
@@ -462,7 +399,6 @@ span {
 .cart-controls {
 
   display: flex;
-
   align-items: center;
 
   gap: 8px;
@@ -471,15 +407,12 @@ span {
 .cart-controls button {
 
   width: 28px;
-
   height: 28px;
 
   border: none;
-
   border-radius: 10px;
 
   background: var(--button-bg);
-
   color: var(--text-dark);
 
   font-weight: bold;
@@ -492,14 +425,12 @@ span {
 ========================================= */
 
 #suggestions {
-
   margin-top: 26px;
 }
 
 #suggestionList {
 
   display: flex;
-
   flex-direction: column;
 
   gap: 14px;
@@ -515,23 +446,17 @@ span {
 
   cursor: pointer;
 
-  transition:
-    transform 0.2s ease,
-    box-shadow 0.2s ease;
+  transition: 0.2s ease;
 }
 
 .suggest-card:hover {
 
   transform: translateY(-4px);
-
-  box-shadow:
-    0 12px 25px rgba(0, 0, 0, 0.08);
 }
 
 .suggest-card img {
 
   width: 100%;
-
   height: 240px;
 
   object-fit: cover;
@@ -540,7 +465,6 @@ span {
 .suggest-card p {
 
   padding: 14px;
-
   margin: 0;
 
   font-weight: bold;
@@ -553,13 +477,10 @@ span {
 #bin {
 
   width: 60px;
-
   height: 60px;
 
   display: flex;
-
   justify-content: center;
-
   align-items: center;
 
   border-radius: 50%;
@@ -572,19 +493,16 @@ span {
 
   cursor: pointer;
 
-  transition:
-    transform 0.2s ease,
-    filter 0.2s ease;
+  transition: 0.2s ease;
 }
 
 #bin:hover {
-
   transform: scale(1.08);
 }
 
 .bin-active {
 
-  transform: scale(1.22);
+  transform: scale(1.18);
 
   filter: brightness(1.15);
 }
@@ -603,7 +521,6 @@ textarea {
   margin-top: 12px;
 
   border: none;
-
   border-radius: 18px;
 
   font-size: 15px;
@@ -614,7 +531,6 @@ textarea {
 }
 
 textarea {
-
   resize: none;
 }
 
@@ -623,11 +539,9 @@ textarea {
   width: 100%;
 
   margin-top: 15px;
-
   padding: 14px;
 
   border: none;
-
   border-radius: 18px;
 
   background: var(--main-bg);
@@ -639,7 +553,7 @@ textarea {
   cursor: pointer;
 
   box-shadow:
-    0 6px 14px rgba(0, 0, 0, 0.10);
+    0 6px 14px rgba(0,0,0,0.10);
 }
 
 /* =========================================
@@ -649,7 +563,6 @@ textarea {
 .catalog {
 
   width: 100%;
-
   max-width: 1300px;
 
   margin: auto;
@@ -671,13 +584,11 @@ textarea {
   background: var(--card-bg);
 
   box-shadow:
-    0 12px 30px rgba(0, 0, 0, 0.08);
+    0 12px 30px rgba(0,0,0,0.08);
 
   cursor: pointer;
 
-  transition:
-    transform 0.25s ease,
-    box-shadow 0.25s ease;
+  transition: 0.25s ease;
 }
 
 .catalog-card:hover {
@@ -690,80 +601,17 @@ textarea {
 .catalog-card img {
 
   width: 100%;
-
   height: 260px;
 
   object-fit: cover;
 }
 
 .catalog-info {
-
   padding: 18px;
 }
 
 /* =========================================
-   SECTIONS
-========================================= */
-
-#shopSection {
-
-  display: block;
-}
-
-#catalogSection {
-
-  display: none;
-}
-
-/* =========================================
-   MOBILE
-========================================= */
-
-@media (max-width: 950px) {
-
-  body {
-
-    padding: 18px;
-  }
-
-  h1 {
-
-    font-size: 42px;
-  }
-
-  .container {
-
-    flex-direction: column;
-
-    align-items: center;
-  }
-
-  .products,
-  .box,
-  .info-panel {
-
-    width: 100%;
-
-    min-width: unset;
-
-    max-width: 380px;
-  }
-
-  #canvas {
-
-    width: 200px;
-
-    height: 200px;
-  }
-
-  .catalog {
-
-    grid-template-columns: 1fr;
-  }
-}
-
-/* =========================================
-   FLOATING VARIANT PANEL
+   FLOATING PANEL
 ========================================= */
 
 #variantPanel {
@@ -772,61 +620,49 @@ textarea {
 
   display: none;
 
-  gap: 10px;
+  width: 320px;
+  max-height: 280px;
 
-  flex-wrap: wrap;
+  overflow-y: auto;
 
-  justify-content: center;
-
-  align-items: center;
-
-  width: 260px;
-
-  padding: 14px;
+  padding: 16px;
 
   border-radius: 24px;
 
   background: white;
 
   box-shadow:
-    0 20px 45px rgba(0, 0, 0, 0.18);
+    0 20px 45px rgba(0,0,0,0.18);
 
   z-index: 99999;
 
-  transform:
-    translate(-50%, -110%);
+  transform: translate(-50%, -110%);
 
-  animation:
-    popIn 0.18s ease;
+  gap: 12px;
 
-  max-height: 240px;
-
-  overflow-y: auto;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
 }
 
 #variantPanel img {
 
-  width: 72px;
+  width: 88px;
+  height: 88px;
 
-  height: 72px;
-
-  padding: 8px;
+  padding: 10px;
 
   border-radius: 18px;
 
-  object-fit: contain;
+  background: #f5f5f5;
 
-  background: #f7f7f7;
+  object-fit: contain;
 
   cursor: pointer;
 
-  transition:
-    transform 0.18s ease,
-    background 0.18s ease;
+  transition: 0.18s ease;
 
   flex-shrink: 0;
-
-  aspect-ratio: 1 / 1;
 }
 
 #variantPanel img:hover {
@@ -837,26 +673,64 @@ textarea {
 }
 
 /* =========================================
-   PANEL ANIMATION
+   SECTIONS
 ========================================= */
 
-@keyframes popIn {
+#shopSection {
+  display: block;
+}
 
-  from {
+#catalogSection {
+  display: none;
+}
 
-    opacity: 0;
+/* =========================================
+   MOBILE
+========================================= */
 
-    transform:
-      translate(-50%, -95%)
-      scale(0.92);
+@media (max-width: 950px) {
+
+  body {
+    padding: 18px;
   }
 
-  to {
+  h1 {
+    font-size: 42px;
+  }
 
-    opacity: 1;
+  .container {
 
-    transform:
-      translate(-50%, -110%)
-      scale(1);
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .products,
+  .box,
+  .info-panel {
+
+    width: 100%;
+    min-width: unset;
+    max-width: 380px;
+  }
+
+  #canvas {
+
+    width: 210px;
+    height: 210px;
+  }
+
+  .catalog {
+    grid-template-columns: 1fr;
+  }
+
+  #variantPanel {
+
+    width: 260px;
+  }
+
+  #variantPanel img {
+
+    width: 72px;
+    height: 72px;
   }
 }
