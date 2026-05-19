@@ -806,13 +806,13 @@ textarea {
 
 #variantPanel img {
 
-  width: 52px;
+  width: 72px;
 
-  height: 52px;
+  height: 72px;
 
-  padding: 6px;
+  padding: 8px;
 
-  border-radius: 14px;
+  border-radius: 18px;
 
   object-fit: contain;
 
@@ -823,6 +823,10 @@ textarea {
   transition:
     transform 0.18s ease,
     background 0.18s ease;
+
+  flex-shrink: 0;
+
+  aspect-ratio: 1 / 1;
 }
 
 #variantPanel img:hover {
