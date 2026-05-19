@@ -761,3 +761,98 @@ textarea {
     grid-template-columns: 1fr;
   }
 }
+
+/* =========================================
+   FLOATING VARIANT PANEL
+========================================= */
+
+#variantPanel {
+
+  position: fixed;
+
+  display: none;
+
+  gap: 10px;
+
+  flex-wrap: wrap;
+
+  justify-content: center;
+
+  align-items: center;
+
+  width: 260px;
+
+  padding: 14px;
+
+  border-radius: 24px;
+
+  background: white;
+
+  box-shadow:
+    0 20px 45px rgba(0, 0, 0, 0.18);
+
+  z-index: 99999;
+
+  transform:
+    translate(-50%, -110%);
+
+  animation:
+    popIn 0.18s ease;
+
+  max-height: 240px;
+
+  overflow-y: auto;
+}
+
+#variantPanel img {
+
+  width: 52px;
+
+  height: 52px;
+
+  padding: 6px;
+
+  border-radius: 14px;
+
+  object-fit: contain;
+
+  background: #f7f7f7;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.18s ease,
+    background 0.18s ease;
+}
+
+#variantPanel img:hover {
+
+  transform: scale(1.08);
+
+  background: #ececec;
+}
+
+/* =========================================
+   PANEL ANIMATION
+========================================= */
+
+@keyframes popIn {
+
+  from {
+
+    opacity: 0;
+
+    transform:
+      translate(-50%, -95%)
+      scale(0.92);
+  }
+
+  to {
+
+    opacity: 1;
+
+    transform:
+      translate(-50%, -110%)
+      scale(1);
+  }
+}
