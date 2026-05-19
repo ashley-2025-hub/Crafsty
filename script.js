@@ -570,24 +570,34 @@ function openVariantPanel(
 
   variantPanel.innerHTML = "";
 
-  variantPanel.style.display =
-    "flex";
+  variantPanel.style.display = "flex";
 
-  /* POSITION */
+  variantPanel.style.left = x + "px";
 
-  variantPanel.style.left =
-    x + "px";
+  variantPanel.style.top = y + "px";
 
-  variantPanel.style.top =
-    y + "px";
+  /* =========================
+     MAIN ROW
+  ========================= */
 
-  /* MAIN VARIANTS */
+  const mainLabel =
+    document.createElement("div");
 
-  for (
-    let i = 1;
-    i <= 20;
-    i++
-  ) {
+  mainLabel.className =
+    "variant-label";
+
+  mainLabel.innerText =
+    "Main Designs";
+
+  variantPanel.appendChild(mainLabel);
+
+  const mainRow =
+    document.createElement("div");
+
+  mainRow.className =
+    "variant-row";
+
+  for (let i = 1; i <= 20; i++) {
 
     const img =
       document.createElement("img");
@@ -595,27 +605,72 @@ function openVariantPanel(
     img.src =
       `assets/products/${item.folder}/icon/${i}.png`;
 
-    img.onerror =
-      () => {
+    img.onerror = () => {
 
-        img.remove();
-      };
+      img.remove();
+    };
 
-    img.onclick =
-      () => {
+    img.onclick = () => {
 
-        sticker.mainVariant = i;
+      sticker.mainVariant = i;
 
-        saveCart();
+      saveCart();
 
-        renderBox();
+      renderBox();
+    };
 
-        variantPanel.style.display =
-          "none";
-      };
-
-    variantPanel.appendChild(img);
+    mainRow.appendChild(img);
   }
+
+  variantPanel.appendChild(mainRow);
+
+  /* =========================
+     SUB ROW
+  ========================= */
+
+  const subLabel =
+    document.createElement("div");
+
+  subLabel.className =
+    "variant-label";
+
+  subLabel.innerText =
+    "Accessories";
+
+  variantPanel.appendChild(subLabel);
+
+  const subRow =
+    document.createElement("div");
+
+  subRow.className =
+    "variant-row";
+
+  for (let i = 1; i <= 20; i++) {
+
+    const img =
+      document.createElement("img");
+
+    img.src =
+      `assets/products/${item.folder}/icon/sub/${i}.png`;
+
+    img.onerror = () => {
+
+      img.remove();
+    };
+
+    img.onclick = () => {
+
+      sticker.subVariant = i;
+
+      saveCart();
+
+      renderBox();
+    };
+
+    subRow.appendChild(img);
+  }
+
+  variantPanel.appendChild(subRow);
 }
 
 /* =========================================
