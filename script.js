@@ -120,12 +120,14 @@ function applyTheme(main, sub) {
 
   document.body.style.background =
     main;
-  
-document.querySelectorAll(".nav button").forEach(btn => {
+
+  document
+    .querySelectorAll(".nav button")
+    .forEach(btn => {
+
       btn.style.background = sub;
       btn.style.color = "#5d4358";
     });
-
 }
 
 function loadSavedTheme() {
@@ -241,9 +243,9 @@ function addItem(product) {
 
   const sticker = {
 
-    x: 40 + Math.random() * 120,
+    x: 70 + Math.random() * 60,
 
-    y: 40 + Math.random() * 120,
+    y: 70 + Math.random() * 60,
 
     mainVariant: null,
 
@@ -384,7 +386,7 @@ function renderCatalog() {
       () => {
 
         window.location.href =
-          `product.html?id=${product.id}`;
+          \`product.html?id=${product.id}\`;
       }
     );
 
@@ -562,22 +564,30 @@ function renderCart() {
 function openVariantPanel(
   sticker,
   item,
-  x,
-  y
+  element
 ) {
 
   if (!variantPanel) return;
 
   variantPanel.innerHTML = "";
 
-  variantPanel.style.display = "flex";
+  const rect =
+    element.getBoundingClientRect();
 
-  variantPanel.style.left = x + "px";
+  variantPanel.style.display =
+    "flex";
 
-  variantPanel.style.top = y + "px";
+  variantPanel.style.left =
+    `${rect.left + rect.width / 2}px`;
+
+  variantPanel.style.top =
+    `${rect.bottom + 16}px`;
+
+  variantPanel.style.transform =
+    "translateX(-50%)";
 
   /* =========================
-     MAIN ROW
+     MAIN
   ========================= */
 
   const mainLabel =
@@ -625,7 +635,7 @@ function openVariantPanel(
   variantPanel.appendChild(mainRow);
 
   /* =========================
-     SUB ROW
+     SUB
   ========================= */
 
   const subLabel =
@@ -708,8 +718,7 @@ function renderBox() {
           openVariantPanel(
             sticker,
             item,
-            e.clientX,
-            e.clientY
+            wrap
           );
         }
       );
@@ -848,42 +857,6 @@ function enableDragging(
 
       el.style.top =
         currentY + "px";
-
-      if (bin) {
-
-        const binRect =
-          bin.getBoundingClientRect();
-
-        const rect =
-          el.getBoundingClientRect();
-
-        const touching =
-
-          rect.right >
-            binRect.left &&
-
-          rect.left <
-            binRect.right &&
-
-          rect.bottom >
-            binRect.top &&
-
-          rect.top <
-            binRect.bottom;
-
-        if (touching) {
-
-          bin.classList.add(
-            "bin-active"
-          );
-
-        } else {
-
-          bin.classList.remove(
-            "bin-active"
-          );
-        }
-      }
     }
   );
 
@@ -904,13 +877,6 @@ function enableDragging(
       currentY;
 
     saveCart();
-
-    if (bin) {
-
-      bin.classList.remove(
-        "bin-active"
-      );
-    }
   }
 
   el.addEventListener(
