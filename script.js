@@ -126,6 +126,7 @@ function applyTheme(main, sub) {
     .forEach(btn => {
 
       btn.style.background = sub;
+
       btn.style.color = "#5d4358";
     });
 }
@@ -386,7 +387,7 @@ function renderCatalog() {
       () => {
 
         window.location.href =
-          \`product.html?id=${product.id}`;
+          `product.html?id=${product.id}`;
       }
     );
 
@@ -627,6 +628,9 @@ function openVariantPanel(
       saveCart();
 
       renderBox();
+
+      variantPanel.style.display =
+        "none";
     };
 
     mainRow.appendChild(img);
@@ -675,6 +679,9 @@ function openVariantPanel(
       saveCart();
 
       renderBox();
+
+      variantPanel.style.display =
+        "none";
     };
 
     subRow.appendChild(img);
@@ -779,12 +786,8 @@ function renderBox() {
 
 function enableDragging(
   el,
-  sticker,
-  item
+  sticker
 ) {
-
-  const bin =
-    document.getElementById("bin");
 
   let dragging = false;
 
