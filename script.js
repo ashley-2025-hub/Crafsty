@@ -54,7 +54,8 @@ const variantPanel =
 
 if (variantPanel) {
 
-  variantPanel.style.display = "none";
+  variantPanel.style.display =
+    "none";
 }
 
 /* =========================================
@@ -125,9 +126,11 @@ function applyTheme(main, sub) {
     .querySelectorAll(".nav button")
     .forEach(btn => {
 
-      btn.style.background = sub;
+      btn.style.background =
+        sub;
 
-      btn.style.color = "#5d4358";
+      btn.style.color =
+        "#5d4358";
     });
 }
 
@@ -588,7 +591,7 @@ function openVariantPanel(
     "translateX(-50%)";
 
   /* =========================
-     MAIN
+     COLOR
   ========================= */
 
   const mainLabel =
@@ -639,7 +642,7 @@ function openVariantPanel(
   variantPanel.appendChild(mainRow);
 
   /* =========================
-     SUB
+     OTHER
   ========================= */
 
   const subLabel =
@@ -991,36 +994,6 @@ function enableDragging(
     bin.classList.remove(
       "bin-active"
     );
-  }
-
-  el.addEventListener(
-    "pointerup",
-    stopDragging
-  );
-
-  el.addEventListener(
-    "pointercancel",
-    stopDragging
-  );
-}
-
-  function stopDragging() {
-
-    if (!dragging) return;
-
-    dragging = false;
-
-    el.classList.remove(
-      "dragging"
-    );
-
-    sticker.x =
-      currentX;
-
-    sticker.y =
-      currentY;
-
-    saveCart();
   }
 
   el.addEventListener(
