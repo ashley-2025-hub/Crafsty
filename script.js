@@ -786,8 +786,12 @@ function renderBox() {
 
 function enableDragging(
   el,
-  sticker
+  sticker,
+  item
 ) {
+
+  const bin =
+    document.getElementById("bin");
 
   let dragging = false;
 
@@ -802,6 +806,8 @@ function enableDragging(
   let currentX = 0;
 
   let currentY = 0;
+
+  let touchingBin = false;
 
   el.addEventListener(
     "pointerdown",
@@ -855,13 +861,148 @@ function enableDragging(
       currentY =
         initialY + dy;
 
+      /* =========================
+         KEEP INSIDE BOX
+      ========================= */
+
+      currentX = Math.max(
+        0,
+        Math.min(
+          currentX,
+          canvas.clientWidth -
+          el.offsetWidth
+        )
+      );
+
+      currentY = Math.max(
+        0,
+        Math.min(
+          currentY,
+          canvas.clientHeight -
+          el.offsetHeight
+        )
+      );
+
       el.style.left =
         currentX + "px";
 
       el.style.top =
         currentY + "px";
+
+      /* =========================
+         BIN DETECTION
+      ========================= */
+
+      if (bin) {
+
+        const binRect =
+          bin.getBoundingClientRect();
+
+        const rect =
+          el.getBoundingClientRect();
+
+        touchingBin =
+
+          rect.right >
+            binRect.left &&
+
+          rect.left <
+            binRect.right &&
+
+          rect.bottom >
+            binRect.top &&
+
+          rect.top <
+            binRect.bottom;
+
+        if (touchingBin) {
+
+          bin.classList.add(
+            "bin-active"
+          );
+
+        } else {
+
+          bin.classList.remove(
+            "bin-active"
+          );
+        }
+      }
     }
   );
+
+  function stopDragging() {
+
+    if (!dragging) return;
+
+    dragging = false;
+
+    el.classList.remove(
+      "dragging"
+    );
+
+    /* =========================
+       DELETE IF TOUCH BIN
+    ========================= */
+
+    if (touchingBin) {
+
+      item.stickers =
+        item.stickers.filter(
+          s => s !== sticker
+        );
+
+      item.quantity =
+        item.stickers.length;
+
+      if (
+        item.stickers.length === 0
+      ) {
+
+        cart =
+          cart.filter(
+            c => c.id !== item.id
+          );
+      }
+
+      saveCart();
+
+      renderCart();
+
+      renderSuggestions();
+
+      renderBox();
+
+      bin.classList.remove(
+        "bin-active"
+      );
+
+      return;
+    }
+
+    sticker.x =
+      currentX;
+
+    sticker.y =
+      currentY;
+
+    saveCart();
+
+    bin.classList.remove(
+      "bin-active"
+    );
+  }
+
+  el.addEventListener(
+    "pointerup",
+    stopDragging
+  );
+
+  el.addEventListener(
+    "pointercancel",
+    stopDragging
+  );
+}
 
   function stopDragging() {
 
