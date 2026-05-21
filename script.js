@@ -386,7 +386,7 @@ function renderCatalog() {
       () => {
 
         window.location.href =
-          \`product.html?id=${product.id}\`;
+          \`product.html?id=${product.id}`;
       }
     );
 
