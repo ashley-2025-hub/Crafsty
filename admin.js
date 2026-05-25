@@ -4,26 +4,30 @@ import { collection, addDoc, deleteDoc, doc, onSnapshot } from "https://www.gsta
 /* ========================================= ELEMENTS ========================================= */
 const productForm = document.getElementById("productForm");
 const productList = document.getElementById("productList");
-const productTagsInput = document.getElementById("productTags"); // Tag input element
+const productTagsInput = document.getElementById("productTags");
 
 /* ========================================= ADD PRODUCT ========================================= */
 productForm.addEventListener("submit", async (e) => {
   e.preventDefault();
 
   try {
-    // 1. Grab values from the inputs securely
-    const name = document.getElementById("name").value.trim();
-    const folder = document.getElementById("folder").value.trim();
-    const price = Number(document.getElementById("price").value);
-    const description = document.getElementById("description").value.trim();
+    const nameInput = document.getElementById("name");
+    const folderInput = document.getElementById("folder");
+    const priceInput = document.getElementById("price");
+    const descriptionInput = document.getElementById("description");
+
+    // Grab values securely
+    const name = nameInput ? nameInput.value.trim() : "";
+    const folder = folderInput ? folderInput.value.trim() : "";
+    const price = priceInput ? Number(priceInput.value) : 0;
+    const description = descriptionInput ? descriptionInput.value.trim() : "";
     
-    // 2. Process the raw tags string into a clean array: ["bear", "cute", "brown"]
+    // Process tags safely
     const tagsRaw = productTagsInput ? productTagsInput.value : "";
     const tagsArray = tagsRaw
       ? tagsRaw.split(",").map(tag => tag.trim().toLowerCase()).filter(tag => tag !== "")
       : [];
 
-    /* VALIDATION */
     if (!name || !folder || !price) {
       alert("Please fill all required fields (Name, Folder, Price)");
       return;
@@ -35,7 +39,7 @@ productForm.addEventListener("submit", async (e) => {
       folder,
       price,
       description,
-      tags: tagsArray, // Saves your keywords array cleanly to Firestore
+      tags: tagsArray,
       createdAt: Date.now()
     });
 
@@ -50,6 +54,7 @@ productForm.addEventListener("submit", async (e) => {
 
 /* ========================================= LIVE PRODUCTS ========================================= */
 onSnapshot(collection(db, "products"), (snapshot) => {
+  if (!productList) return;
   productList.innerHTML = "";
 
   snapshot.forEach((docSnap) => {
@@ -59,7 +64,7 @@ onSnapshot(collection(db, "products"), (snapshot) => {
     card.className = "product-card";
     
     card.innerHTML = `
-      <img src="${cover}" alt="${product.name}" >
+      <img src="${cover}" alt="${product.name}" onerror="this.src='images/placeholder.png'">
       <h3> ${product.name} </h3>
       <p> Folder: ${product.folder} </p>
       <p> Tags: ${product.tags ? product.tags.join(", ") : "None"} </p>
@@ -68,9 +73,9 @@ onSnapshot(collection(db, "products"), (snapshot) => {
     `;
 
     const deleteBtn = card.querySelector(".delete-btn");
-    deleteBtn.onclick = () => {
-      deleteProduct(docSnap.id);
-    };
+    if (deleteBtn) {
+      deleteBtn.onclick = () => deleteProduct(docSnap.id);
+    }
 
     productList.appendChild(card);
   });
