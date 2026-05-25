@@ -1,8 +1,11 @@
 import { db } from "./firebase-config.js";
 
 import {
+  collection,
+  addDoc,
+  deleteDoc,
   doc,
-  getDoc
+  onSnapshot
 }
 from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
@@ -10,354 +13,221 @@ from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
    ELEMENTS
 ========================================= */
 
-const productTitle =
+const productForm =
   document.getElementById(
-    "productTitle"
+    "productForm"
   );
 
-const productName =
+const productList =
   document.getElementById(
-    "productName"
-  );
-
-const productPrice =
-  document.getElementById(
-    "productPrice"
-  );
-
-const productDescription =
-  document.getElementById(
-    "productDescription"
-  );
-
-const mainImage =
-  document.getElementById(
-    "mainImage"
-  );
-
-const thumbnailRow =
-  document.getElementById(
-    "thumbnailRow"
-  );
-
-const suggestionList =
-  document.getElementById(
-    "suggestionList"
-  );
-
-const addToCartBtn =
-  document.getElementById(
-    "addToCartBtn"
+    "productList"
   );
 
 /* =========================================
-   PRODUCT ID
+   ADD PRODUCT
 ========================================= */
 
-const params =
-  new URLSearchParams(
-    window.location.search
-  );
+productForm.addEventListener(
 
-const productId =
-  params.get("id");
+  "submit",
 
-/* =========================================
-   LOAD THEME
-========================================= */
+  async (e) => {
 
-function loadSavedTheme() {
+    e.preventDefault();
 
-  const savedTheme =
-    JSON.parse(
-      localStorage.getItem(
-        "theme"
-      )
-    );
+    try {
 
-  if (!savedTheme)
-    return;
+      const name =
+        document.getElementById(
+          "name"
+        ).value.trim();
 
-  const root =
-    document.documentElement;
+      const folder =
+        document.getElementById(
+          "folder"
+        ).value.trim();
 
-  root.style.setProperty(
-    "--main-bg",
-    savedTheme.main
-  );
+      const price =
+        Number(
+          document.getElementById(
+            "price"
+          ).value
+        );
 
-  root.style.setProperty(
-    "--sub-bg",
-    savedTheme.sub
-  );
+      const description =
+        document.getElementById(
+          "description"
+        ).value.trim();
 
-  document.body.style.background =
-    savedTheme.main;
-}
+      /* VALIDATION */
 
-/* =========================================
-   IMAGE EXISTS
-========================================= */
+      if (
+        !name ||
+        !folder ||
+        !price
+      ) {
 
-function imageExists(src) {
+        alert(
+          "Please fill all fields"
+        );
 
-  return new Promise(
-    (resolve) => {
+        return;
+      }
 
-      const img =
-        new Image();
+      /* FIREBASE */
 
-      img.onload =
-        () => resolve(true);
+      await addDoc(
 
-      img.onerror =
-        () => resolve(false);
+        collection(
+          db,
+          "products"
+        ),
 
-      img.src = src;
+        {
+
+          name,
+          folder,
+          price,
+          description,
+
+          createdAt:
+            Date.now()
+        }
+      );
+
+      /* RESET */
+
+      productForm.reset();
+
+      alert(
+        "Product Added 🧶"
+      );
+
+    } catch (error) {
+
+      console.error(error);
+
+      alert(
+        "Failed To Add Product"
+      );
     }
-  );
-}
+  }
+);
 
 /* =========================================
-   LOAD NUMBERED IMAGES
+   LIVE PRODUCTS
 ========================================= */
 
-async function loadImages(
-  folder
+onSnapshot(
+
+  collection(db, "products"),
+
+  (snapshot) => {
+
+    productList.innerHTML =
+      "";
+
+    snapshot.forEach(
+      (docSnap) => {
+
+        const product =
+          docSnap.data();
+
+        const cover =
+          `assets/products/${product.folder}/cover.png`;
+
+        const card =
+          document.createElement(
+            "div"
+          );
+
+        card.className =
+          "product-card";
+
+        card.innerHTML = `
+
+          <img
+            src="${cover}"
+            alt="${product.name}"
+          >
+
+          <h3>
+            ${product.name}
+          </h3>
+
+          <p>
+            Folder:
+            ${product.folder}
+          </p>
+
+          <p>
+            ${Number(product.price)
+              .toLocaleString()}
+            VND
+          </p>
+
+          <button
+            class="delete-btn"
+            data-id="${docSnap.id}"
+          >
+            Delete
+          </button>
+        `;
+
+        const deleteBtn =
+          card.querySelector(
+            ".delete-btn"
+          );
+
+        deleteBtn.onclick =
+          () => {
+
+            deleteProduct(
+              docSnap.id
+            );
+          };
+
+        productList.appendChild(
+          card
+        );
+      }
+    );
+  }
+);
+
+/* =========================================
+   DELETE
+========================================= */
+
+async function deleteProduct(
+  id
 ) {
 
-  const images = [];
+  const confirmDelete =
+    confirm(
+      "Delete this product?"
+    );
 
-  const cover =
-    `assets/products/${folder}/cover.png`;
-
-  images.push(cover);
-
-  for (
-    let i = 1;
-    i <= 20;
-    i++
-  ) {
-
-    const path =
-      `assets/products/${folder}/${i}.png`;
-
-    const exists =
-      await imageExists(path);
-
-    if (exists) {
-
-      images.push(path);
-
-    } else {
-
-      break;
-    }
-  }
-
-  return images;
-}
-
-/* =========================================
-   LOAD PRODUCT
-========================================= */
-
-async function loadProduct() {
-
-  if (!productId) {
-
-    productTitle.textContent =
-      "Missing Product";
-
+  if (!confirmDelete)
     return;
-  }
 
   try {
 
-    const productRef =
+    await deleteDoc(
+
       doc(
         db,
         "products",
-        productId
-      );
-
-    const snapshot =
-      await getDoc(
-        productRef
-      );
-
-    if (
-      !snapshot.exists()
-    ) {
-
-      productTitle.textContent =
-        "Product Not Found";
-
-      return;
-    }
-
-    const product =
-      snapshot.data();
-
-    const folder =
-      product.folder;
-
-    /* INFO */
-
-    productTitle.textContent =
-      product.name;
-
-    productName.textContent =
-      product.name;
-
-    productPrice.textContent =
-      `${Number(product.price)
-        .toLocaleString()} VND`;
-
-    productDescription.textContent =
-      product.description ||
-      "";
-
-    /* IMAGES */
-
-    const images =
-      await loadImages(
-        folder
-      );
-
-    if (
-      images.length > 0
-    ) {
-
-      mainImage.src =
-        images[0];
-
-      thumbnailRow.innerHTML =
-        "";
-
-      images.forEach(
-        (imageUrl) => {
-
-          const img =
-            document.createElement(
-              "img"
-            );
-
-          img.src =
-            imageUrl;
-
-          img.className =
-            "thumbnail-image";
-
-          img.onclick =
-            () => {
-
-              mainImage.src =
-                imageUrl;
-            };
-
-          thumbnailRow.appendChild(
-            img
-          );
-        }
-      );
-    }
-
-    /* ADD TO CART */
-
-    addToCartBtn.onclick =
-      () => {
-
-        const cart =
-          JSON.parse(
-            localStorage.getItem(
-              "cart"
-            )
-          ) || [];
-
-        const existing =
-          cart.find(
-            item =>
-              item.id ===
-              productId
-          );
-
-        const sticker = {
-
-          x:
-            40 +
-            Math.random() *
-              120,
-
-          y:
-            40 +
-            Math.random() *
-              120
-        };
-
-        if (existing) {
-
-          existing.quantity++;
-
-          existing.stickers.push(
-            sticker
-          );
-
-        } else {
-
-          cart.push({
-
-            id: productId,
-
-            name:
-              product.name,
-
-            folder,
-
-            price:
-              Number(
-                product.price
-              ),
-
-            coverImage:
-              `assets/products/${folder}/cover.png`,
-
-            emojiImage:
-              `assets/products/${folder}/emoji.png`,
-
-            quantity: 1,
-
-            stickers: [
-              sticker
-            ]
-          });
-        }
-
-        localStorage.setItem(
-
-          "cart",
-
-          JSON.stringify(cart)
-        );
-
-        alert(
-          "Added To Cart 🧶"
-        );
-      };
+        id
+      )
+    );
 
   } catch (error) {
 
     console.error(error);
 
-    productTitle.textContent =
-      "Failed To Load";
+    alert(
+      "Delete failed"
+    );
   }
 }
-
-/* =========================================
-   START
-========================================= */
-
-loadSavedTheme();
-
-loadProduct();
