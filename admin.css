@@ -4,8 +4,7 @@
   --button-bg: #8f705a;
   --text-dark: #5d4358;
   --text-light: #7a6672;
-  --shadow: #875927
-  
+  --shadow: #875927;
 }
 
 /* =========================================
@@ -233,4 +232,12 @@ img {
   }
 
   .admin-wrapper {
-    grid-template-columns:
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+
+  .admin-box {
+    position: relative;
+    top: 0;
+  }
+}
