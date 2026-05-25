@@ -32,7 +32,7 @@ function renderCatalog() {
 
   // Display message if zero entries correspond with query
   if (filteredProducts.length === 0) {
-    catalog.innerHTML = "<p class='no-results'>No matching products found.</p>";
+    catalog.innerHTML = "<p class='no-results' style='color: white; grid-column: 1/-1;'>No matching products found.</p>";
     return;
   }
 
@@ -63,18 +63,7 @@ onSnapshot(collection(db, "products"), (snapshot) => {
   renderCatalog();
 });
 
-/* ========================================= EXTRA PLACEHOLDER LOGIC ========================================= */
-function renderCart() { console.log("Cart loaded"); }
-function renderSuggestions() { console.log("Suggestions loaded"); }
-function renderBox() { console.log("Box loaded"); }
-function loadSavedTheme() { console.log("Theme loaded"); }
-
 /* ========================================= INIT & LIVE EVENT LISTENER ========================================= */
-loadSavedTheme();
-renderCart();
-renderSuggestions();
-renderBox();
-
 // Listens to immediate keystrokes to update the shop grid automatically
 if (searchInput) {
   searchInput.addEventListener("input", () => {
