@@ -1,36 +1,91 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Crafsty - Admin Panel</title>
-  <link rel="stylesheet" href="admin.css">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>
+    Admin Panel
+  </title>
+
+  <link
+    rel="stylesheet"
+    href="style.css"
+  >
+
+  <link
+    rel="stylesheet"
+    href="admin.css"
+  >
+
 </head>
+
 <body>
 
-  <h1>Crafsty Admin Panel 🧶</h1>
+  <h1>
+    Admin Panel 🧶
+  </h1>
 
   <div class="admin-wrapper">
-    <!-- LEFT PANEL: YOUR STICKY FORM CONTAINER -->
+
+    <!-- LEFT -->
+
     <div class="admin-box">
-      <h2>Add New Product</h2>
+
+      <h2>
+        Add Product
+      </h2>
+
       <form id="productForm">
-        <input type="text" id="productName" placeholder="Product Name *" required />
-        <input type="text" id="productFolder" placeholder="Product Folder Name *" required />
-        <input type="number" id="productPrice" placeholder="Price (VND) *" required />
-        <textarea id="productDescription" placeholder="Describe the item (e.g., soft plush bear, handmade)..." rows="4"></textarea>
-        <input type="text" id="productTags" placeholder="Product Tags (comma-separated, e.g. bear, cute)" />
-        <button type="submit">Add Product to Catalog</button>
+
+        <input
+          id="name"
+          type="text"
+          placeholder="Product Name"
+        >
+
+        <input
+          id="folder"
+          type="text"
+          placeholder="Folder Name (example: bear)"
+        >
+
+        <input
+          id="price"
+          type="number"
+          placeholder="Price"
+        >
+
+        <textarea
+          id="description"
+          placeholder="Description"
+        ></textarea>
+
+<button type="submit">
+  Add Product
+</button>
+        
       </form>
+
     </div>
 
-    <!-- RIGHT PANEL: YOUR LIVE GRIDS DISPLAY -->
-    <div id="productList">
-      <!-- Live Firebase products inject here automatically -->
-    </div>
+    <!-- RIGHT -->
+
+    <div id="productList"></div>
+
   </div>
 
-  <!-- FIREBASE & CORE LOGIC INTERACTION -->
-  <script type="module" src="admin.js"></script>
+  <script
+    type="module"
+    src="./admin.js"
+  ></script>
+
 </body>
+
 </html>
