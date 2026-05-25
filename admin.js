@@ -1,91 +1,233 @@
 import { db } from "./firebase-config.js";
-import { collection, addDoc, deleteDoc, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
-/* ========================================= ELEMENTS ========================================= */
-const productForm = document.getElementById("productForm");
-const productList = document.getElementById("productList");
+import {
+  collection,
+  addDoc,
+  deleteDoc,
+  doc,
+  onSnapshot
+}
+from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
-/* ========================================= ADD PRODUCT ========================================= */
-if (productForm) {
-  productForm.addEventListener("submit", async (e) => {
+/* =========================================
+   ELEMENTS
+========================================= */
+
+const productForm =
+  document.getElementById(
+    "productForm"
+  );
+
+const productList =
+  document.getElementById(
+    "productList"
+  );
+
+/* =========================================
+   ADD PRODUCT
+========================================= */
+
+productForm.addEventListener(
+
+  "submit",
+
+  async (e) => {
+
     e.preventDefault();
 
     try {
-      // Securely grab elements matching the original layout configuration
-      const nameVal = document.getElementById("productName").value.trim();
-      const folderVal = document.getElementById("productFolder").value.trim();
-      const priceVal = Number(document.getElementById("productPrice").value);
-      
-      const descriptionInput = document.getElementById("productDescription");
-      const descriptionVal = descriptionInput ? descriptionInput.value.trim() : "";
-      
-      const productTagsInput = document.getElementById("productTags");
-      const tagsRaw = productTagsInput ? productTagsInput.value : "";
-      
-      // Split raw keywords string ("bear, cute") into database array (["bear", "cute"])
-      const tagsArray = tagsRaw
-        ? tagsRaw.split(",").map(tag => tag.trim().toLowerCase()).filter(tag => tag !== "")
-        : [];
 
-      /* FIREBASE UPLOAD */
-      await addDoc(collection(db, "products"), {
-        name: nameVal,
-        folder: folderVal,
-        price: priceVal,
-        description: descriptionVal,
-        tags: tagsArray,
-        createdAt: Date.now()
-      });
+      const name =
+        document.getElementById(
+          "name"
+        ).value.trim();
 
-      /* RESET FORM */
-      productForm.reset();
-      alert("Product Added Successfully! 🧶");
-    } catch (error) {
-      console.error("Firebase Add Error:", error);
-      alert("Failed To Add Product. Check your internet connection or browser console.");
-    }
-  });
-}
+      const folder =
+        document.getElementById(
+          "folder"
+        ).value.trim();
 
-/* ========================================= LIVE PRODUCTS MONITOR ========================================= */
-if (productList) {
-  onSnapshot(collection(db, "products"), (snapshot) => {
-    productList.innerHTML = "";
+      const price =
+        Number(
+          document.getElementById(
+            "price"
+          ).value
+        );
 
-    snapshot.forEach((docSnap) => {
-      const product = docSnap.data();
-      const cover = `assets/products/${product.folder}/cover.png`;
-      const card = document.createElement("div");
-      card.className = "product-card";
-      
-      card.innerHTML = `
-        <img src="${cover}" alt="${product.name || 'Product Image'}" onerror="this.src='images/placeholder.png'">
-        <h3> ${product.name || 'Unnamed Item'} </h3>
-        <p> Folder: ${product.folder || 'none'} </p>
-        <p> Tags: ${product.tags && product.tags.length > 0 ? product.tags.join(", ") : "None"} </p>
-        <p> ${product.price ? Number(product.price).toLocaleString() : 0} VND </p>
-        <button class="delete-btn" data-id="${docSnap.id}"> Delete </button>
-      `;
+      const description =
+        document.getElementById(
+          "description"
+        ).value.trim();
 
-      const deleteBtn = card.querySelector(".delete-btn");
-      if (deleteBtn) {
-        deleteBtn.onclick = () => deleteProduct(docSnap.id);
+      /* VALIDATION */
+
+      if (
+        !name ||
+        !folder ||
+        !price
+      ) {
+
+        alert(
+          "Please fill all fields"
+        );
+
+        return;
       }
 
-      productList.appendChild(card);
-    });
-  });
-}
+      /* FIREBASE */
 
-/* ========================================= DELETE PRODUCT ========================================= */
-async function deleteProduct(id) {
-  const confirmDelete = confirm("Delete this product permanently?");
-  if (!confirmDelete) return;
+      await addDoc(
+
+        collection(
+          db,
+          "products"
+        ),
+
+        {
+
+          name,
+          folder,
+          price,
+          description,
+
+          createdAt:
+            Date.now()
+        }
+      );
+
+      /* RESET */
+
+      productForm.reset();
+
+      alert(
+        "Product Added 🧶"
+      );
+
+    } catch (error) {
+
+      console.error(error);
+
+      alert(
+        "Failed To Add Product"
+      );
+    }
+  }
+);
+
+/* =========================================
+   LIVE PRODUCTS
+========================================= */
+
+onSnapshot(
+
+  collection(db, "products"),
+
+  (snapshot) => {
+
+    productList.innerHTML =
+      "";
+
+    snapshot.forEach(
+      (docSnap) => {
+
+        const product =
+          docSnap.data();
+
+        const cover =
+          `assets/products/${product.folder}/cover.png`;
+
+        const card =
+          document.createElement(
+            "div"
+          );
+
+        card.className =
+          "product-card";
+
+        card.innerHTML = `
+
+          <img
+            src="${cover}"
+            alt="${product.name}"
+          >
+
+          <h3>
+            ${product.name}
+          </h3>
+
+          <p>
+            Folder:
+            ${product.folder}
+          </p>
+
+          <p>
+            ${Number(product.price)
+              .toLocaleString()}
+            VND
+          </p>
+
+          <button
+            class="delete-btn"
+            data-id="${docSnap.id}"
+          >
+            Delete
+          </button>
+        `;
+
+        const deleteBtn =
+          card.querySelector(
+            ".delete-btn"
+          );
+
+        deleteBtn.onclick =
+          () => {
+
+            deleteProduct(
+              docSnap.id
+            );
+          };
+
+        productList.appendChild(
+          card
+        );
+      }
+    );
+  }
+);
+
+/* =========================================
+   DELETE
+========================================= */
+
+async function deleteProduct(
+  id
+) {
+
+  const confirmDelete =
+    confirm(
+      "Delete this product?"
+    );
+
+  if (!confirmDelete)
+    return;
 
   try {
-    await deleteDoc(doc(db, "products", id));
+
+    await deleteDoc(
+
+      doc(
+        db,
+        "products",
+        id
+      )
+    );
+
   } catch (error) {
-    console.error("Delete failed:", error);
-    alert("Delete failed");
+
+    console.error(error);
+
+    alert(
+      "Delete failed"
+    );
   }
 }
