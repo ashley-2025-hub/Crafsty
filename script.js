@@ -48,6 +48,9 @@ const canvas =
 const variantPanel =
   document.getElementById("variantPanel");
 
+const bin =
+  document.getElementById("bin");
+
 /* =========================================
    SAFE CHECK
 ========================================= */
@@ -590,21 +593,6 @@ function openVariantPanel(
   variantPanel.style.transform =
     "translateX(-50%)";
 
-  /* =========================
-     COLOR
-  ========================= */
-
-  const mainLabel =
-    document.createElement("div");
-
-  mainLabel.className =
-    "variant-label";
-
-  mainLabel.innerText =
-    "Color";
-
-  variantPanel.appendChild(mainLabel);
-
   const mainRow =
     document.createElement("div");
 
@@ -640,57 +628,6 @@ function openVariantPanel(
   }
 
   variantPanel.appendChild(mainRow);
-
-  /* =========================
-     OTHER
-  ========================= */
-
-  const subLabel =
-    document.createElement("div");
-
-  subLabel.className =
-    "variant-label";
-
-  subLabel.innerText =
-    "Other";
-
-  variantPanel.appendChild(subLabel);
-
-  const subRow =
-    document.createElement("div");
-
-  subRow.className =
-    "variant-row";
-
-  for (let i = 1; i <= 20; i++) {
-
-    const img =
-      document.createElement("img");
-
-    img.src =
-      `assets/products/${item.folder}/icon/sub/${i}.png`;
-
-    img.onerror = () => {
-
-      img.remove();
-    };
-
-    img.onclick = () => {
-
-      sticker.subVariant = i;
-
-      saveCart();
-
-      renderBox();
-
-      variantPanel.style.display =
-        "none";
-    };
-
-    subRow.appendChild(img);
-  }
-
-  variantPanel.appendChild(subRow);
 }
 
 /* =========================================
@@ -733,10 +670,10 @@ function renderBox() {
         }
       );
 
-      const mainImg =
+      const img =
         document.createElement("img");
 
-      mainImg.className =
+      img.className =
         "sticker-main";
 
       let imagePath =
@@ -751,26 +688,10 @@ function renderBox() {
           `assets/products/${item.folder}/icon/${sticker.mainVariant}.png`;
       }
 
-      mainImg.src =
+      img.src =
         imagePath;
 
-      wrap.appendChild(mainImg);
-
-      if (
-        sticker.subVariant
-      ) {
-
-        const subImg =
-          document.createElement("img");
-
-        subImg.className =
-          "sticker-sub";
-
-        subImg.src =
-          `assets/products/${item.folder}/icon/sub/${sticker.subVariant}.png`;
-
-        wrap.appendChild(subImg);
-      }
+      wrap.appendChild(img);
 
       enableDragging(
         wrap,
@@ -792,9 +713,6 @@ function enableDragging(
   sticker,
   item
 ) {
-
-  const bin =
-    document.getElementById("bin");
 
   let dragging = false;
 
@@ -864,27 +782,7 @@ function enableDragging(
       currentY =
         initialY + dy;
 
-      /* =========================
-         KEEP INSIDE BOX
-      ========================= */
-
-      currentX = Math.max(
-        0,
-        Math.min(
-          currentX,
-          canvas.clientWidth -
-          el.offsetWidth
-        )
-      );
-
-      currentY = Math.max(
-        0,
-        Math.min(
-          currentY,
-          canvas.clientHeight -
-          el.offsetHeight
-        )
-      );
+      /* allow dragging outside visually */
 
       el.style.left =
         currentX + "px";
@@ -892,9 +790,7 @@ function enableDragging(
       el.style.top =
         currentY + "px";
 
-      /* =========================
-         BIN DETECTION
-      ========================= */
+      /* BIN */
 
       if (bin) {
 
@@ -944,9 +840,7 @@ function enableDragging(
       "dragging"
     );
 
-    /* =========================
-       DELETE IF TOUCH BIN
-    ========================= */
+    /* DELETE */
 
     if (touchingBin) {
 
@@ -959,7 +853,7 @@ function enableDragging(
         item.stickers.length;
 
       if (
-        item.stickers.length === 0
+        item.quantity <= 0
       ) {
 
         cart =
@@ -976,24 +870,50 @@ function enableDragging(
 
       renderBox();
 
-      bin.classList.remove(
-        "bin-active"
-      );
+      if (bin) {
+
+        bin.classList.remove(
+          "bin-active"
+        );
+      }
 
       return;
     }
 
-    sticker.x =
-      currentX;
+    /* SNAP BACK INSIDE */
 
-    sticker.y =
-      currentY;
+    const maxX =
+      canvas.clientWidth -
+      el.offsetWidth;
+
+    const maxY =
+      canvas.clientHeight -
+      el.offsetHeight;
+
+    sticker.x = Math.max(
+      0,
+      Math.min(currentX, maxX)
+    );
+
+    sticker.y = Math.max(
+      0,
+      Math.min(currentY, maxY)
+    );
+
+    el.style.left =
+      sticker.x + "px";
+
+    el.style.top =
+      sticker.y + "px";
 
     saveCart();
 
-    bin.classList.remove(
-      "bin-active"
-    );
+    if (bin) {
+
+      bin.classList.remove(
+        "bin-active"
+      );
+    }
   }
 
   el.addEventListener(
