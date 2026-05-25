@@ -1,67 +1,279 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Crafsty</title>
-  <link rel="stylesheet" href="style.css">
+
+  <meta charset="UTF-8" />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
+  <title>
+    Crafsty
+  </title>
+
+  <link
+    rel="stylesheet"
+    href="style.css"
+  >
+
 </head>
+
 <body>
 
-  <!-- HEADER NAVIGATION CONTAINER -->
-  <header class="main-header">
-    <h1>My Crochet Shop 🧶</h1>
-    
-    <div class="search-container">
-      <input type="text" id="searchInput" placeholder="Search products...">
+  <!-- =========================================
+       TOP AREA
+  ========================================= -->
+
+  <div class="top-wrapper">
+
+    <h1>
+      My Crochet Shop 🧶
+    </h1>
+
+    <!-- NAV -->
+
+    <div class="nav">
+
+      <button
+        onclick="showSection('shop')"
+      >
+        🧾 Order
+      </button>
+
+      <button
+        onclick="showSection('catalog')"
+      >
+        🧸 Catalog
+      </button>
+
     </div>
 
-    <div class="nav-buttons">
-      <button class="nav-btn">🧾 Order</button>
-      <button class="nav-btn">🧸 Catalog</button>
+    <!-- THEMES -->
+
+    <div class="theme-picker">
+
+      <p>
+        Theme:
+      </p>
+
+      <button
+        class="theme-btn brown"
+        onclick="changeTheme('#9e7e67','#e4dbd5')"
+      ></button>
+
+      <button
+        class="theme-btn blue"
+        onclick="changeTheme('#7f9bb6','#dde6ef')"
+      ></button>
+
+      <button
+        class="theme-btn pink"
+        onclick="changeTheme('#bb8f9a','#eedee2')"
+      ></button>
+
+      <button
+        class="theme-btn purple"
+        onclick="changeTheme('#9678b6','#e6e6fa')"
+      ></button>
+
     </div>
 
-    <div class="theme-selector">
-      <span>Theme:</span>
-      <div class="theme-circle" data-theme="default"></div>
-      <div class="theme-circle" data-theme="blue"></div>
-      <div class="theme-circle" data-theme="pink"></div>
-      <div class="theme-circle" data-theme="purple"></div>
+  </div>
+
+<!-- =========================================
+     SHOP SECTION
+========================================= -->
+
+<section id="shopSection">
+
+  <div class="container">
+
+    <!-- =========================================
+         CART
+    ========================================= -->
+
+    <div class="products">
+
+      <h2>
+        🛒 In Cart
+      </h2>
+
+      <p id="empty">
+        Your cart is empty 🧺
+      </p>
+
+      <ul id="cart"></ul>
+
+      <!-- SUGGESTIONS -->
+
+      <div id="suggestions">
+
+        <h3>
+          ✨ You may also like
+        </h3>
+
+        <div id="suggestionList"></div>
+
+      </div>
+
     </div>
-  </header>
 
-  <!-- STOREFRONT GRIDS -->
-  <div id="catalog">
-    <!-- Live Firebase products inject here automatically -->
+    <!-- =========================================
+         BOX
+    ========================================= -->
+
+    <div class="box">
+
+      <h2>
+        Your Box
+      </h2>
+
+      <!-- VARIANT PANEL -->
+
+      <div id="variantPanel"></div>
+
+      <!-- BOX CONTENT -->
+
+      <div class="box-layout">
+
+        <!-- STICKER AREA -->
+
+        <div id="canvas"></div>
+
+      </div>
+
+      <!-- TOTAL -->
+
+      <h2 class="total-text">
+
+        Total:
+
+        <span id="total">
+          0
+        </span>
+
+        VND
+
+      </h2>
+
+      <!-- BIN -->
+
+      <div
+        id="bin"
+        onclick="clearCart()"
+      >
+        🗑️
+      </div>
+
+    </div>
+
+    <!-- =========================================
+         CUSTOMER INFO
+    ========================================= -->
+
+    <div class="products info-panel">
+
+      <h2>
+        💖 Your Info
+      </h2>
+
+      <form
+
+        id="orderForm"
+
+        action="https://formspree.io/f/xeenrvvk"
+
+        method="POST"
+      >
+
+        <!-- NAME -->
+
+        <input
+          type="text"
+          name="customer_name"
+          placeholder="Your name"
+          required
+        >
+
+        <!-- CONTACT -->
+
+        <input
+          type="text"
+          name="contact"
+          placeholder="Phone / Instagram"
+          required
+        >
+
+        <!-- NOTES -->
+
+        <textarea
+          name="notes"
+          placeholder="Notes..."
+          rows="4"
+        ></textarea>
+
+        <!-- CART DATA -->
+
+        <input
+          type="hidden"
+          id="orderData"
+          name="order_items"
+        >
+
+        <!-- TOTAL -->
+
+        <input
+          type="hidden"
+          id="totalData"
+          name="total_price"
+        >
+
+        <!-- REDIRECT -->
+
+        <input
+          type="hidden"
+          name="_next"
+          value="https://ashley-2025-hub.github.io/Crafsty/"
+        >
+
+        <!-- BUTTON -->
+
+        <button type="submit">
+
+          Place Order
+
+        </button>
+
+      </form>
+
+    </div>
+
   </div>
 
-  <!-- CHECKOUT PANEL MONITOR -->
-  <div class="checkout-box">
-    <h2>🛒 In Cart</h2>
-    <p class="empty-msg">Your cart is empty 🧺</p>
-    
-    <h3>✨ You may also like</h3>
-    <div id="suggestions"></div>
+</section>
 
-    <h3>Your Box</h3>
-    <div id="box-container"></div>
+  <!-- =========================================
+       CATALOG SECTION
+  ========================================= -->
 
-    <h2>Total: <span id="total-price">0</span> VND</h2>
-    <button class="clear-btn">🗑️</button>
-  </div>
+  <section id="catalogSection">
 
-  <!-- CONTACT INTAKE FORM -->
-  <div class="info-box">
-    <h2>💖 Your Info</h2>
-    <form id="orderForm">
-      <input type="text" placeholder="Your name *" required>
-      <input type="text" placeholder="Phone / Instagram *" required>
-      <textarea placeholder="Notes..." rows="4"></textarea>
-      <button type="submit" class="order-btn">Place Order</button>
-    </form>
-  </div>
+    <div class="catalog"></div>
 
-  <!-- CORE SCRIPT INTERACTION -->
-  <script type="module" src="script.js"></script>
+  </section>
+
+  <!-- =========================================
+       SCRIPT
+  ========================================= -->
+
+  <script
+    type="module"
+    src="script.js"
+  ></script>
+
 </body>
+
 </html>
