@@ -11,11 +11,11 @@ if (productForm) {
     e.preventDefault();
 
     try {
-      // Grab HTML fields matching your admin.html exactly
-      const nameVal = document.getElementById("name").value.trim();
-      const folderVal = document.getElementById("folder").value.trim();
-      const priceVal = Number(document.getElementById("price").value);
-      const descriptionVal = document.getElementById("description") ? document.getElementById("description").value.trim() : "";
+      // Realigned selectors matching original layouts
+      const nameVal = document.getElementById("productName").value.trim();
+      const folderVal = document.getElementById("productFolder").value.trim();
+      const priceVal = Number(document.getElementById("productPrice").value);
+      const descriptionVal = document.getElementById("productDescription") ? document.getElementById("productDescription").value.trim() : "";
       const productTagsInput = document.getElementById("productTags");
       
       // Convert raw tag string ("bear, cute") into clean database array (["bear", "cute"])
