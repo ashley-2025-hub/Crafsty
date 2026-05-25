@@ -37,6 +37,24 @@ productForm.addEventListener(
 
     try {
 
+      // 1. Get the raw string from the input (e.g., "bear, cute, brown")
+const tagsRaw = productTagsInput ? productTagsInput.value : "";
+
+// 2. Convert the string into a clean array: ["bear", "cute", "brown"]
+const tagsArray = tagsRaw
+  ? tagsRaw.split(",").map(tag => tag.trim().toLowerCase()).filter(tag => tag !== "")
+  : [];
+
+// 3. Add tagsArray to your Firestore payload object
+const productData = {
+  name: productNameInput.value,
+  price: Number(productPriceInput.value),
+  folder: productFolderInput.value,
+  tags: tagsArray, // <-- ADD THIS LINE TO YOUR FIRESTORE PAYLOAD
+  timestamp: new Date()
+};
+
+// ... your existing db.collection("products").add(productData) or setDoc logic ...
       const name =
         document.getElementById(
           "name"
@@ -59,6 +77,8 @@ productForm.addEventListener(
           "description"
         ).value.trim();
 
+      const productTagsInput = document.getElementById("productTags");
+      
       /* VALIDATION */
 
       if (
