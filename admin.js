@@ -11,15 +11,18 @@ if (productForm) {
     e.preventDefault();
 
     try {
-      // Realigned selectors matching original layouts
+      // Securely grab elements matching the fixed HTML layout
       const nameVal = document.getElementById("productName").value.trim();
       const folderVal = document.getElementById("productFolder").value.trim();
       const priceVal = Number(document.getElementById("productPrice").value);
-      const descriptionVal = document.getElementById("productDescription") ? document.getElementById("productDescription").value.trim() : "";
-      const productTagsInput = document.getElementById("productTags");
       
-      // Convert raw tag string ("bear, cute") into clean database array (["bear", "cute"])
+      const descriptionInput = document.getElementById("productDescription");
+      const descriptionVal = descriptionInput ? descriptionInput.value.trim() : "";
+      
+      const productTagsInput = document.getElementById("productTags");
       const tagsRaw = productTagsInput ? productTagsInput.value : "";
+      
+      // Split raw keywords string ("bear, cute") into database array (["bear", "cute"])
       const tagsArray = tagsRaw
         ? tagsRaw.split(",").map(tag => tag.trim().toLowerCase()).filter(tag => tag !== "")
         : [];
@@ -39,7 +42,7 @@ if (productForm) {
       alert("Product Added Successfully! 🧶");
     } catch (error) {
       console.error("Firebase Add Error:", error);
-      alert("Failed To Add Product. Open console (F12) to see details.");
+      alert("Failed To Add Product. Check your internet connection or browser console.");
     }
   });
 }
