@@ -4,6 +4,10 @@ import { collection, addDoc, deleteDoc, doc, onSnapshot } from "https://www.gsta
 /* ========================================= ELEMENTS ========================================= */
 const productForm = document.getElementById("productForm");
 const productList = document.getElementById("productList");
+const searchInput = document.getElementById("searchInput"); // Tracks the admin search bar
+
+/* ========================================= GLOBAL VARIABLES ========================================= */
+let products = [];
 
 /* ========================================= ADD PRODUCT ========================================= */
 if (productForm) {
@@ -47,33 +51,60 @@ if (productForm) {
   });
 }
 
+/* ========================================= RENDER ADMIN MONITOR GRID ========================================= */
+function renderAdminMonitor() {
+  if (!productList) return;
+  productList.innerHTML = "";
+
+  // Capture search box query text cleanly
+  const query = searchInput ? searchInput.value.toLowerCase().trim() : "";
+
+  // Filter products matching your engine configuration
+  const filteredProducts = products.filter(product => {
+    const matchesName = product.name && product.name.toLowerCase().includes(query);
+    const matchesFolder = product.folder && product.folder.toLowerCase().includes(query);
+    const matchesTags = product.tags && product.tags.some(tag => tag.toLowerCase().includes(query));
+
+    return matchesName || matchesFolder || matchesTags;
+  });
+
+  // Generate layout nodes inside the admin workspace
+  filteredProducts.forEach((product) => {
+    const cover = `assets/products/${product.folder}/cover.png`;
+    const card = document.createElement("div");
+    card.className = "product-card";
+    
+    card.innerHTML = `
+      <img src="${cover}" alt="${product.name || 'Product Image'}" onerror="this.src='images/placeholder.png'">
+      <h3> ${product.name || 'Unnamed Item'} </h3>
+      <p> Folder: ${product.folder || 'none'} </p>
+      <p> Tags: ${product.tags && product.tags.length > 0 ? product.tags.join(", ") : "None"} </p>
+      <p> ${product.price ? Number(product.price).toLocaleString() : 0} VND </p>
+      <button class="delete-btn" data-id="${product.id}"> Delete </button>
+    `;
+
+    const deleteBtn = card.querySelector(".delete-btn");
+    if (deleteBtn) {
+      deleteBtn.onclick = () => deleteProduct(product.id);
+    }
+
+    productList.appendChild(card);
+  });
+}
+
 /* ========================================= LIVE PRODUCTS MONITOR ========================================= */
-if (productList) {
-  onSnapshot(collection(db, "products"), (snapshot) => {
-    productList.innerHTML = "";
+onSnapshot(collection(db, "products"), (snapshot) => {
+  products = [];
+  snapshot.forEach((doc) => {
+    products.push({ id: doc.id, ...doc.data() });
+  });
+  renderAdminMonitor();
+});
 
-    snapshot.forEach((docSnap) => {
-      const product = docSnap.data();
-      const cover = `assets/products/${product.folder}/cover.png`;
-      const card = document.createElement("div");
-      card.className = "product-card";
-      
-      card.innerHTML = `
-        <img src="${cover}" alt="${product.name || 'Product Image'}" onerror="this.src='images/placeholder.png'">
-        <h3> ${product.name || 'Unnamed Item'} </h3>
-        <p> Folder: ${product.folder || 'none'} </p>
-        <p> Tags: ${product.tags && product.tags.length > 0 ? product.tags.join(", ") : "None"} </p>
-        <p> ${product.price ? Number(product.price).toLocaleString() : 0} VND </p>
-        <button class="delete-btn" data-id="${docSnap.id}"> Delete </button>
-      `;
-
-      const deleteBtn = card.querySelector(".delete-btn");
-      if (deleteBtn) {
-        deleteBtn.onclick = () => deleteProduct(docSnap.id);
-      }
-
-      productList.appendChild(card);
-    });
+/* ========================================= SEARCH LISTENERS ========================================= */
+if (searchInput) {
+  searchInput.addEventListener("input", () => {
+    renderAdminMonitor();
   });
 }
 
