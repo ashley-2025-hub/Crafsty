@@ -18,10 +18,10 @@ function renderCatalog() {
   if (!catalog) return;
   catalog.innerHTML = "";
 
-  // Get current typed value safely
+  // Capture input string cleanly
   const query = searchInput ? searchInput.value.toLowerCase().trim() : "";
 
-  // Dynamic Filtering Logic (Queries names, folders, or individual array tags)
+  // Query validation loops
   const filteredProducts = products.filter(product => {
     const matchesName = product.name && product.name.toLowerCase().includes(query);
     const matchesFolder = product.folder && product.folder.toLowerCase().includes(query);
@@ -30,13 +30,12 @@ function renderCatalog() {
     return matchesName || matchesFolder || matchesTags;
   });
 
-  // Display message if zero entries correspond with query
   if (filteredProducts.length === 0) {
-    catalog.innerHTML = "<p class='no-results' style='color: white; grid-column: 1/-1;'>No matching products found.</p>";
+    catalog.innerHTML = "<p class='no-results' style='color: white; font-weight: bold; grid-column: 1/-1;'>No matching products found.</p>";
     return;
   }
 
-  // Generate Catalog Display Grid
+  // Create individual presentation loops
   filteredProducts.forEach(product => {
     const card = document.createElement("div");
     card.className = "catalog-card";
@@ -63,8 +62,7 @@ onSnapshot(collection(db, "products"), (snapshot) => {
   renderCatalog();
 });
 
-/* ========================================= INIT & LIVE EVENT LISTENER ========================================= */
-// Listens to immediate keystrokes to update the shop grid automatically
+/* ========================================= LIVE RE-RENDERING SYNCS ========================================= */
 if (searchInput) {
   searchInput.addEventListener("input", () => {
     renderCatalog();
