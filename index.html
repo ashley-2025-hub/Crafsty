@@ -29,41 +29,31 @@
     </div>
   </header>
 
-  <div class="shop-layout">
+  <div id="catalog">
+    </div>
+
+  <div class="checkout-box">
+    <h2>🛒 In Cart</h2>
+    <p class="empty-msg">Your cart is empty 🧺</p>
     
-    <main class="catalog-section">
-      <div id="catalog">
-        </div>
-    </main>
+    <h3>✨ You may also like</h3>
+    <div id="suggestions"></div>
 
-    <aside class="checkout-panel">
-      <div class="checkout-box">
-        <h2>🛒 In Cart</h2>
-        <p class="empty-msg">Your cart is empty 🧺</p>
-        
-        <h3>✨ You may also like</h3>
-        <div id="suggestions"></div>
+    <h3>Your Box</h3>
+    <div id="box-container"></div>
 
-        <h3>Your Box</h3>
-        <div id="box-container"></div>
+    <h2>Total: <span id="total-price">0</span> VND</h2>
+    <button class="clear-btn">🗑️</button>
+  </div>
 
-        <h2>Total: <span id="total-price">0</span> VND</h2>
-        <button class="clear-btn">🗑️</button>
-      </div>
-    </aside>
-
-    <section class="info-panel">
-      <div class="info-box">
-        <h2>💖 Your Info</h2>
-        <form id="orderForm">
-          <input type="text" placeholder="Your name *" required>
-          <input type="text" placeholder="Phone / Instagram *" required>
-          <textarea placeholder="Notes..." rows="4"></textarea>
-          <button type="submit" class="order-btn">Place Order</button>
-        </form>
-      </div>
-    </section>
-
+  <div class="info-box">
+    <h2>💖 Your Info</h2>
+    <form id="orderForm">
+      <input type="text" placeholder="Your name *" required>
+      <input type="text" placeholder="Phone / Instagram *" required>
+      <textarea placeholder="Notes..." rows="4"></textarea>
+      <button type="submit" class="order-btn">Place Order</button>
+    </form>
   </div>
 
   <script type="module" src="script.js"></script>
