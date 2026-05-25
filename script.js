@@ -935,14 +935,15 @@ document.addEventListener(
   }
 );
 
-/* =========================================
-   INIT
-========================================= */
-
+/* ========================================= INIT ========================================= */
 loadSavedTheme();
-
 renderCart();
-
 renderSuggestions();
-
 renderBox();
+
+// ADD THIS SO THE SEARCH LOGIC ACTUALLY RUNS:
+if (searchInput) {
+  searchInput.addEventListener("input", () => {
+    renderCatalog();
+  });
+}
