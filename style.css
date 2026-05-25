@@ -800,3 +800,20 @@ textarea {
     height: 72px;
   }
 }
+
+/* Add this to your style.css file */
+.search-container {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 100; /* Ensures it sits above other background elements */
+}
+
+#searchInput {
+  padding: 8px 12px;
+  border: 1px solid #5d4358;
+  border-radius: 20px;
+  background-color: var(--card-bg, #ffffff);
+  color: #5d4358;
+  outline: none;
+}
