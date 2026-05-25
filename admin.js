@@ -11,7 +11,7 @@ if (productForm) {
     e.preventDefault();
 
     try {
-      // Securely grab elements matching the fixed HTML layout
+      // Securely grab elements matching the original layout configuration
       const nameVal = document.getElementById("productName").value.trim();
       const folderVal = document.getElementById("productFolder").value.trim();
       const priceVal = Number(document.getElementById("productPrice").value);
