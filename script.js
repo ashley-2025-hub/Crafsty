@@ -361,10 +361,17 @@ function renderCatalog() {
   // Get the search query and convert to lowercase for case-insensitive matching
   const query = searchInput ? searchInput.value.toLowerCase().trim() : "";
 
-  // Filter products based on the name
-  const filteredProducts = products.filter(product => 
-    product.name.toLowerCase().includes(query)
+// Filter products based on name OR matching tags
+const filteredProducts = products.filter(product => {
+  const matchesName = product.name.toLowerCase().includes(query);
+  
+  // Check if any tag matches the search query
+  const matchesTags = product.tags && product.tags.some(tag => 
+    tag.toLowerCase().includes(query)
   );
+
+  return matchesName || matchesTags;
+});
 
   // If no products match, you can optionally show a message
   if (filteredProducts.length === 0) {
