@@ -805,7 +805,7 @@ textarea {
 .search-container {
   position: absolute;
   top: 20px;
-  left: 20px;
+  right: 20px;
   z-index: 100; /* Ensures it sits above other background elements */
 }
 
