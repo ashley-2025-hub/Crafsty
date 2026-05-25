@@ -8,56 +8,26 @@
 </head>
 <body>
 
-  <div class="admin-container">
-    <header class="admin-header">
-      <h1>Crafsty Admin Panel 🧶</h1>
-      <a href="index.html" class="back-btn">← Back to Shop</a>
-    </header>
+  <h1>Crafsty Admin Panel 🧶</h1>
 
-    <main class="admin-content">
-      <!-- PRODUCT UPLOAD FORM -->
-      <section class="form-section">
-        <h2>Add New Product</h2>
-        <form id="productForm">
-          
-          <div class="form-group">
-            <label for="productName">Product Name *</label>
-            <input type="text" id="productName" placeholder="e.g., Cute Cozy Bear" required />
-          </div>
+  <div class="admin-wrapper">
+    <!-- LEFT PANEL: YOUR STICKY FORM CONTAINER -->
+    <div class="admin-box">
+      <h2>Add New Product</h2>
+      <form id="productForm">
+        <input type="text" id="productName" placeholder="Product Name *" required />
+        <input type="text" id="productFolder" placeholder="Product Folder Name *" required />
+        <input type="number" id="productPrice" placeholder="Price (VND) *" required />
+        <textarea id="productDescription" placeholder="Describe the item (e.g., soft plush bear, handmade)..." rows="4"></textarea>
+        <input type="text" id="productTags" placeholder="Product Tags (comma-separated, e.g. bear, cute)" />
+        <button type="submit">Add Product to Catalog</button>
+      </form>
+    </div>
 
-          <div class="form-group">
-            <label for="productFolder">Product Folder Name *</label>
-            <input type="text" id="productFolder" placeholder="e.g., bear (matches assets folder)" required />
-          </div>
-
-          <div class="form-group">
-            <label for="productPrice">Price (VND) *</label>
-            <input type="number" id="productPrice" placeholder="e.g., 25000" required />
-          </div>
-
-          <div class="form-group">
-            <label for="productDescription">Description</label>
-            <textarea id="productDescription" placeholder="Describe the item (e.g., soft plush bear, handmade)..." rows="4"></textarea>
-          </div>
-
-          <div class="form-group">
-            <label for="productTags">Product Tags (comma-separated)</label>
-            <input type="text" id="productTags" placeholder="e.g., bear, cute, brown, soft, sticker" />
-            <small class="help-text">Separate tags with commas. These help your search engine find items easily!</small>
-          </div>
-
-          <button type="submit" class="submit-btn">Add Product to Catalog</button>
-        </form>
-      </section>
-
-      <!-- LIVE PRODUCT MONITOR LIST -->
-      <section class="list-section">
-        <h2>Live Catalog Monitor</h2>
-        <div id="productList" class="product-grid">
-          <!-- Live Firebase products inject here automatically -->
-        </div>
-      </section>
-    </main>
+    <!-- RIGHT PANEL: YOUR LIVE GRIDS DISPLAY -->
+    <div id="productList">
+      <!-- Live Firebase products inject here automatically -->
+    </div>
   </div>
 
   <!-- FIREBASE & CORE LOGIC INTERACTION -->
