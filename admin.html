@@ -1,97 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
   <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
-  >
-
-  <title>
-    Admin Panel
-  </title>
-
-  <link
-    rel="stylesheet"
-    href="style.css"
-  >
-
-  <link
-    rel="stylesheet"
-    href="admin.css"
-  >
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Crafsty - Admin Panel</title>
+  <link rel="stylesheet" href="admin.css">
 </head>
-
 <body>
 
-  <h1>
-    Admin Panel 🧶
-  </h1>
+  <div class="admin-container">
+    <header class="admin-header">
+      <h1>Crafsty Admin Panel 🧶</h1>
+      <a href="index.html" class="back-btn">← Back to Shop</a>
+    </header>
 
-  <div class="admin-wrapper">
+    <main class="admin-content">
+      <section class="form-section">
+        <h2>Add New Product</h2>
+        <form id="productForm">
+          
+          <div class="form-group">
+            <label for="name">Product Name *</label>
+            <input type="text" id="name" placeholder="e.g., Cute Cozy Bear" required />
+          </div>
 
-    <!-- LEFT -->
+          <div class="form-group">
+            <label for="folder">Product Folder Name *</label>
+            <input type="text" id="folder" placeholder="e.g., bear (matches assets folder)" required />
+          </div>
 
-    <div class="admin-box">
+          <div class="form-group">
+            <label for="price">Price (VND) *</label>
+            <input type="number" id="price" placeholder="e.g., 25000" required />
+          </div>
 
-      <h2>
-        Add Product
-      </h2>
+          <div class="form-group">
+            <label for="description">Description</label>
+            <textarea id="description" placeholder="Describe the item (e.g., soft plush bear, handmade)..." rows="4"></textarea>
+          </div>
 
-      <form id="productForm">
+          <div class="form-group">
+            <label for="productTags">Product Tags (comma-separated)</label>
+            <input type="text" id="productTags" placeholder="e.g., bear, cute, brown, soft, sticker" />
+            <small class="help-text">Separate tags with commas. These help your search engine find items easily!</small>
+          </div>
 
-        <input
-          id="name"
-          type="text"
-          placeholder="Product Name"
-        >
+          <button type="submit" class="submit-btn">Add Product to Catalog</button>
+        </form>
+      </section>
 
-        <input
-          id="folder"
-          type="text"
-          placeholder="Folder Name (example: bear)"
-        >
-
-        <!-- Add this inside your form, right under the Product Folder input -->
-<div class="form-group">
-  <label for="productTags">Product Tags (comma-separated):</label>
-  <input type="text" id="productTags" placeholder="e.g. bear, cute, brown, sticker" />
-</div>
-
-        <input
-          id="price"
-          type="number"
-          placeholder="Price"
-        >
-
-        <textarea
-          id="description"
-          placeholder="Description"
-        ></textarea>
-
-<button type="submit">
-  Add Product
-</button>
-        
-      </form>
-
-    </div>
-
-    <!-- RIGHT -->
-
-    <div id="productList"></div>
-
+      <section class="list-section">
+        <h2>Live Catalog Monitor</h2>
+        <div id="productList" class="product-grid">
+          </div>
+      </section>
+    </main>
   </div>
 
-  <script
-    type="module"
-    src="./admin.js"
-  ></script>
-
+  <script type="module" src="admin.js"></script>
 </body>
-
 </html>
