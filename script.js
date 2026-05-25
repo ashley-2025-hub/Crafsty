@@ -15,7 +15,7 @@ function getCover(folder) {
 
 /* ========================================= RENDER CATALOG ========================================= */
 function renderCatalog() {
-  if (!catalog) return;
+  if ( ! catalog ) return;
   catalog.innerHTML = "";
 
   // Capture input string cleanly
@@ -62,7 +62,19 @@ onSnapshot(collection(db, "products"), (snapshot) => {
   renderCatalog();
 });
 
-/* ========================================= LIVE RE-RENDERING SYNCS ========================================= */
+/* ========================================= CAROUSEL & OTHER MODULES ========================================= */
+function renderCart() {}
+function renderSuggestions() {}
+function renderBox() {}
+function loadSavedTheme() {}
+
+/* ========================================= INIT & LISTENERS ========================================= */
+loadSavedTheme();
+renderCart();
+renderSuggestions();
+renderBox();
+
+// Listens to keyboard input to trigger searching live
 if (searchInput) {
   searchInput.addEventListener("input", () => {
     renderCatalog();
