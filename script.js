@@ -12,6 +12,8 @@ from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
 
 let products = [];
 
+const searchInput = document.getElementById("searchInput");
+
 let cart =
   JSON.parse(
     localStorage.getItem("cart")
@@ -353,50 +355,36 @@ window.clearCart =
 ========================================= */
 
 function renderCatalog() {
-
   if (!catalog) return;
-
   catalog.innerHTML = "";
 
-  products.forEach(product => {
+  // Get the search query and convert to lowercase for case-insensitive matching
+  const query = searchInput ? searchInput.value.toLowerCase().trim() : "";
 
-    const card =
-      document.createElement("div");
+  // Filter products based on the name
+  const filteredProducts = products.filter(product => 
+    product.name.toLowerCase().includes(query)
+  );
 
-    card.className =
-      "catalog-card";
+  // If no products match, you can optionally show a message
+  if (filteredProducts.length === 0) {
+    catalog.innerHTML = "<p class='no-results'>No products found.</p>";
+    return;
+  }
 
+  filteredProducts.forEach(product => {
+    const card = document.createElement("div");
+    card.className = "catalog-card";
     card.innerHTML = `
-
-      <img
-        src="${getCover(product.folder)}"
-        alt="${product.name}"
-      >
-
+      <img src="${getCover(product.folder)}" alt="${product.name}" >
       <div class="catalog-info">
-
-        <h3>
-          ${product.name}
-        </h3>
-
-        <p>
-          ${Number(product.price)
-            .toLocaleString()}
-          VND
-        </p>
-
+        <h3> ${product.name} </h3>
+        <p> ${Number(product.price).toLocaleString()} VND </p>
       </div>
     `;
-
-    card.addEventListener(
-      "click",
-      () => {
-
-        window.location.href =
-          `product.html?id=${product.id}`;
-      }
-    );
-
+    card.addEventListener("click", () => {
+      window.location.href = `product.html?id=${product.id}`;
+    });
     catalog.appendChild(card);
   });
 }
