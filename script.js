@@ -867,8 +867,8 @@ function enableDragging(
 /* ========================= KEEP INSIDE BOX ========================= */
 currentX = Math.max(0, Math.min(currentX, canvas.clientWidth - el.offsetWidth));
 
-// Add a buffer (e.g., + 50 pixels) to increase the vertical boundary downwards
-currentY = Math.max(0, Math.min(currentY, (canvas.clientHeight - el.offsetHeight) + 50));
+// Allowed to go 30px past the top edge, and trimmed the bottom buffer to 15px
+currentY = Math.max(-30, Math.min(currentY, (canvas.clientHeight - el.offsetHeight) + 15));
 
 el.style.left = currentX + "px";
 el.style.top = currentY + "px";
