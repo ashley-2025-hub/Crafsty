@@ -865,10 +865,10 @@ function enableDragging(
         initialY + dy;
 
 /* ========================= KEEP INSIDE BOX ========================= */
-currentX = Math.max(0, Math.min(currentX, canvas.clientWidth - el.offsetWidth));
+currentX = Math.max(-30, Math.min(currentX, canvas.clientWidth - el.offsetWidth) + 30);
 
 // Allowed to go 30px past the top edge, and trimmed the bottom buffer to 15px
-currentY = Math.max(-30, Math.min(currentY, (canvas.clientHeight - el.offsetHeight) + 15));
+currentY = Math.max(-30, Math.min(currentY, (canvas.clientHeight - el.offsetHeight) + 30));
 
 el.style.left = currentX + "px";
 el.style.top = currentY + "px";
