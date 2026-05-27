@@ -864,34 +864,15 @@ function enableDragging(
       currentY =
         initialY + dy;
 
-      /* =========================
-         KEEP INSIDE BOX
-      ========================= */
+/* ========================= KEEP INSIDE BOX ========================= */
+currentX = Math.max(0, Math.min(currentX, canvas.clientWidth - el.offsetWidth));
 
-      currentX = Math.max(
-        0,
-        Math.min(
-          currentX,
-          canvas.clientWidth -
-          el.offsetWidth
-        )
-      );
+// Add a buffer (e.g., + 50 pixels) to increase the vertical boundary downwards
+currentY = Math.max(0, Math.min(currentY, (canvas.clientHeight - el.offsetHeight) + 50));
 
-      currentY = Math.max(
-        0,
-        Math.min(
-          currentY,
-          canvas.clientHeight -
-          el.offsetHeight
-        )
-      );
-
-      el.style.left =
-        currentX + "px";
-
-      el.style.top =
-        currentY + "px";
-
+el.style.left = currentX + "px";
+el.style.top = currentY + "px";
+      
       /* =========================
          BIN DETECTION
       ========================= */
