@@ -846,109 +846,77 @@ function enableDragging(
     }
   );
 
-  el.addEventListener(
-    "pointermove",
-    (e) => {
+/* ========================= ALLOW DRAGGING EVERYWHERE ========================= */
+  el.addEventListener("pointermove", (e) => {
+    if (!dragging) return;
+    const dx = e.clientX - startX;
+    const dy = e.clientY - startY;
+    
+    // We update the tracking coordinates freely without locking them inside the box yet
+    currentX = initialX + dx;
+    currentY = initialY + dy;
 
-      if (!dragging) return;
+    el.style.left = currentX + "px";
+    el.style.top = currentY + "px";
 
-      const dx =
-        e.clientX - startX;
+    /* ========================= BIN HOVER DETECTION ========================= */
+    if (bin) {
+      const binRect = bin.getBoundingClientRect();
+      const rect = el.getBoundingClientRect();
+      touchingBin = rect.right > binRect.left && 
+                    rect.left < binRect.right && 
+                    rect.bottom > binRect.top && 
+                    rect.top < binRect.bottom;
 
-      const dy =
-        e.clientY - startY;
-
-      currentX =
-        initialX + dx;
-
-      currentY =
-        initialY + dy;
-
-/* ========================= KEEP INSIDE BOX ========================= */
-currentX = Math.max(-30, Math.min(currentX, canvas.clientWidth - el.offsetWidth) + 30);
-
-// Allowed to go 30px past the top edge, and trimmed the bottom buffer to 15px
-currentY = Math.max(-30, Math.min(currentY, (canvas.clientHeight - el.offsetHeight) + 30));
-
-el.style.left = currentX + "px";
-el.style.top = currentY + "px";
-      
-      /* =========================
-         BIN DETECTION
-      ========================= */
-
-      if (bin) {
-
-        const binRect =
-          bin.getBoundingClientRect();
-
-        const rect =
-          el.getBoundingClientRect();
-
-        touchingBin =
-
-          rect.right >
-            binRect.left &&
-
-          rect.left <
-            binRect.right &&
-
-          rect.bottom >
-            binRect.top &&
-
-          rect.top <
-            binRect.bottom;
-
-        if (touchingBin) {
-
-          bin.classList.add(
-            "bin-active"
-          );
-
-        } else {
-
-          bin.classList.remove(
-            "bin-active"
-          );
-        }
+      if (touchingBin) {
+        bin.classList.add("bin-active");
+      } else {
+        bin.classList.remove("bin-active");
       }
     }
-  );
+  });
 
+  /* ========================= DROP LOGIC ========================= */
   function stopDragging() {
-
     if (!dragging) return;
-
     dragging = false;
+    el.classList.remove("dragging");
 
-    el.classList.remove(
-      "dragging"
-    );
-
-    /* =========================
-       DELETE IF TOUCH BIN
-    ========================= */
-
+    /* 1. IF TOUCHING BIN ON DROP -> DELETE IT */
     if (touchingBin) {
-
-      item.stickers =
-        item.stickers.filter(
-          s => s !== sticker
-        );
-
-      item.quantity =
-        item.stickers.length;
-
-      if (
-        item.stickers.length === 0
-      ) {
-
-        cart =
-          cart.filter(
-            c => c.id !== item.id
-          );
+      item.stickers = item.stickers.filter(s => s !== sticker);
+      item.quantity = item.stickers.length;
+      if (item.stickers.length === 0) {
+        cart = cart.filter(c => c.id !== item.id);
       }
+      saveCart();
+      renderCart();
+      renderSuggestions();
+      renderBox();
+      bin.classList.remove("bin-active");
+      return;
+    }
 
+    /* 2. IF DROPPED OUTSIDE -> SNAP TO NEAREST ALLOWED PLACE INSIDE THE CANVAS */
+    // Define the strict boundary margins based on your canvas dimensions
+    const minX = 0;
+    const maxX = canvas.clientWidth - el.offsetWidth;
+    const minY = 0;
+    const maxY = canvas.clientHeight - el.offsetHeight;
+
+    // Clamp the values to the nearest edge
+    currentX = Math.max(minX, Math.min(currentX, maxX));
+    currentY = Math.max(minY, Math.min(currentY, maxY));
+
+    // Save the restricted coordinates back into the data
+    sticker.x = currentX;
+    sticker.y = currentY;
+    saveCart();
+    
+    // Rerender so it smoothly locks into its allowed boundary position
+    renderBox(); 
+    bin.classList.remove("bin-active");
+  }
       saveCart();
 
       renderCart();
