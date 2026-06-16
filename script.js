@@ -395,6 +395,10 @@ function enableDragging(el, sticker, item) {
     currentX = Math.max(minX, Math.min(currentX, maxX));
     currentY = Math.max(minY, Math.min(currentY, maxY));
     
+    // FIX: Apply restricted positions directly to element style so it snaps cleanly
+    el.style.left = currentX + "px";
+    el.style.top = currentY + "px";
+    
     // Save valid position coordinates
     sticker.x = currentX;
     sticker.y = currentY;
